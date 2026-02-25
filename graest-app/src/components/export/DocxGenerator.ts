@@ -85,6 +85,17 @@ function nodeToRuns(node: JSONContent): string {
   return "";
 }
 
+// Collected images from rich text fields, injected into the zip in post-processing
+interface CollectedImage {
+  src: string;       // /uploads/filename.png
+  rId: string;       // unique relationship ID
+  mediaPath: string; // word/media/contentImgN.ext
+}
+
+// Global collector — reset before each generateDocx call
+let collectedImages: CollectedImage[] = [];
+let contentImgCounter = 0;
+
 function tiptapToOoxml(content: JSONContent | null): string {
   if (!content || !content.content) {
     return `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
@@ -162,9 +173,27 @@ function tiptapToOoxml(content: JSONContent | null): string {
       }
 
       case "image": {
-        paragraphs.push(
-          `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/><w:color w:val="888888"/></w:rPr><w:t>[Imagem]</w:t></w:r></w:p>`
-        );
+        const src = (node.attrs?.src as string) || "";
+        if (src.startsWith("/uploads/")) {
+          // Local uploaded image — collect for DOCX embedding
+          contentImgCounter++;
+          const ext = src.split(".").pop()?.toLowerCase() || "png";
+          const rId = `rIdContentImg${contentImgCounter}`;
+          const mediaPath = `word/media/contentImg${contentImgCounter}.${ext}`;
+          collectedImages.push({ src, rId, mediaPath });
+
+          // Default size: ~14cm wide (reasonable for A4), auto height proportional
+          // Real dimensions will be read from file in post-processing
+          const widthEmu = 5040000;  // ~14cm
+          const heightEmu = 3780000; // ~10.5cm (3:4 default, adjusted later)
+          const drawingXml = buildImageDrawingXml(rId, widthEmu, heightEmu, `contentImg${contentImgCounter}`);
+          paragraphs.push(`<w:p><w:r>${drawingXml}</w:r></w:p>`);
+        } else {
+          // External URL — placeholder
+          paragraphs.push(
+            `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/><w:color w:val="888888"/></w:rPr><w:t>[Imagem: ${escapeXml(src)}]</w:t></w:r></w:p>`
+          );
+        }
         break;
       }
 
@@ -234,6 +263,10 @@ function buildCronogramaOoxml(activities: ActivityFormData[]): string {
 // ---------------------------------------------------------------------------
 
 export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
+  // Reset image collector
+  collectedImages = [];
+  contentImgCounter = 0;
+
   // 1. Read template
   const templatePath = path.join(process.cwd(), "public", "template.docx");
   const templateContent = fs.readFileSync(templatePath, "binary");
@@ -357,7 +390,10 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
   // 6. Post-process: inject dynamic logos into header
   injectHeaderImages(doc.getZip(), plan);
 
-  // 7. Generate output
+  // 7. Post-process: inject content images from rich text fields
+  injectContentImages(doc.getZip());
+
+  // 8. Generate output
   return doc.getZip().generate({ type: "nodebuffer" }) as Buffer;
 }
 
@@ -496,6 +532,58 @@ function injectHeaderImages(outputZip: PizZip, plan: PlanFormData): void {
     let ct = contentTypesFile.asText();
     for (const ext of imgContentTypes) {
       const mime = ext === "png" ? "image/png" : ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+      if (!ct.includes(`Extension="${ext}"`)) {
+        ct = ct.replace("</Types>", `<Default Extension="${ext}" ContentType="${mime}"/></Types>`);
+      }
+    }
+    outputZip.file("[Content_Types].xml", ct);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: inject content images from rich text into document.xml
+// ---------------------------------------------------------------------------
+
+function injectContentImages(outputZip: PizZip): void {
+  if (collectedImages.length === 0) return;
+
+  const newRels: string[] = [];
+  const imgExtensions: Set<string> = new Set();
+
+  for (const img of collectedImages) {
+    // Read file from public/uploads/
+    const filePath = path.join(process.cwd(), "public", img.src);
+    if (!fs.existsSync(filePath)) continue;
+
+    const buffer = fs.readFileSync(filePath);
+    const ext = img.mediaPath.split(".").pop() || "png";
+
+    // Add to zip
+    outputZip.file(img.mediaPath, buffer);
+    imgExtensions.add(ext);
+
+    // Add relationship
+    newRels.push(
+      `<Relationship Id="${img.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="${img.mediaPath.replace("word/", "")}"/>`
+    );
+  }
+
+  if (newRels.length === 0) return;
+
+  // Update document.xml.rels
+  const docRelsPath = "word/_rels/document.xml.rels";
+  const existingDocRels = outputZip.file(docRelsPath)?.asText() || "";
+  if (existingDocRels.includes("<Relationships")) {
+    const updatedRels = existingDocRels.replace("</Relationships>", newRels.join("") + "</Relationships>");
+    outputZip.file(docRelsPath, updatedRels);
+  }
+
+  // Ensure [Content_Types].xml includes image types
+  const contentTypesFile = outputZip.file("[Content_Types].xml");
+  if (contentTypesFile) {
+    let ct = contentTypesFile.asText();
+    for (const ext of imgExtensions) {
+      const mime = ext === "png" ? "image/png" : ext === "jpeg" ? "image/jpeg" : ext === "gif" ? "image/gif" : ext === "webp" ? "image/webp" : `image/${ext}`;
       if (!ct.includes(`Extension="${ext}"`)) {
         ct = ct.replace("</Types>", `<Default Extension="${ext}" ContentType="${mime}"/></Types>`);
       }

@@ -26,3 +26,6 @@ prisma/*.db-journal
 # IDE
 .vscode/
 .idea/
+
+# uploaded images
+public/uploads/
