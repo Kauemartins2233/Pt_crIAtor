@@ -41,6 +41,11 @@ function lookupLabel(
 }
 
 // ---------------------------------------------------------------------------
+// Default font: Verdana 10pt for all generated OOXML runs
+// ---------------------------------------------------------------------------
+const DEFAULT_FONT = '<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/>';
+
+// ---------------------------------------------------------------------------
 // TipTap JSON → OOXML conversion
 // ---------------------------------------------------------------------------
 
@@ -54,15 +59,15 @@ function escapeXml(text: string): string {
 }
 
 function buildRunProps(marks?: JSONContent["marks"]): string {
-  if (!marks || marks.length === 0) return "";
-  const props: string[] = [];
-  for (const mark of marks) {
-    if (mark.type === "bold") props.push("<w:b/>");
-    if (mark.type === "italic") props.push("<w:i/>");
-    if (mark.type === "underline") props.push('<w:u w:val="single"/>');
-    if (mark.type === "strike") props.push("<w:strike/>");
+  const props: string[] = [DEFAULT_FONT];
+  if (marks) {
+    for (const mark of marks) {
+      if (mark.type === "bold") props.push("<w:b/>");
+      if (mark.type === "italic") props.push("<w:i/>");
+      if (mark.type === "underline") props.push('<w:u w:val="single"/>');
+      if (mark.type === "strike") props.push("<w:strike/>");
+    }
   }
-  if (props.length === 0) return "";
   return `<w:rPr>${props.join("")}</w:rPr>`;
 }
 
@@ -70,6 +75,9 @@ function nodeToRuns(node: JSONContent): string {
   if (node.text) {
     const rPr = buildRunProps(node.marks);
     return `<w:r>${rPr}<w:t xml:space="preserve">${escapeXml(node.text)}</w:t></w:r>`;
+  }
+  if (node.type === "hardBreak") {
+    return `<w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:br/></w:r>`;
   }
   if (node.content) {
     return node.content.map((child) => nodeToRuns(child)).join("");
@@ -79,7 +87,7 @@ function nodeToRuns(node: JSONContent): string {
 
 function tiptapToOoxml(content: JSONContent | null): string {
   if (!content || !content.content) {
-    return '<w:p><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>';
+    return `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
   }
 
   const paragraphs: string[] = [];
@@ -97,7 +105,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
           ? node.content
               .map((child) => {
                 if (child.text) {
-                  return `<w:r><w:rPr><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr><w:t xml:space="preserve">${escapeXml(child.text)}</w:t></w:r>`;
+                  return `<w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr><w:t xml:space="preserve">${escapeXml(child.text)}</w:t></w:r>`;
                 }
                 return nodeToRuns(child);
               })
@@ -114,7 +122,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
               for (const child of listItem.content) {
                 const runs = nodeToRuns(child);
                 paragraphs.push(
-                  `<w:p><w:r><w:t xml:space="preserve">\u2022 </w:t></w:r>${runs}</w:p>`
+                  `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">\u2022 </w:t></w:r>${runs}</w:p>`
                 );
               }
             }
@@ -131,7 +139,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
               for (const child of listItem.content) {
                 const runs = nodeToRuns(child);
                 paragraphs.push(
-                  `<w:p><w:r><w:t xml:space="preserve">${counter}. </w:t></w:r>${runs}</w:p>`
+                  `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">${counter}. </w:t></w:r>${runs}</w:p>`
                 );
                 counter++;
               }
@@ -155,7 +163,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
 
       case "image": {
         paragraphs.push(
-          `<w:p><w:r><w:rPr><w:i/><w:color w:val="888888"/></w:rPr><w:t>[Imagem]</w:t></w:r></w:p>`
+          `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/><w:color w:val="888888"/></w:rPr><w:t>[Imagem]</w:t></w:r></w:p>`
         );
         break;
       }
@@ -172,7 +180,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
 
   return paragraphs.length > 0
     ? paragraphs.join("")
-    : '<w:p><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>';
+    : `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -183,7 +191,7 @@ import type { ActivityFormData } from "@/types/plan";
 
 function buildCronogramaOoxml(activities: ActivityFormData[]): string {
   if (activities.length === 0) {
-    return '<w:p><w:r><w:rPr><w:i/></w:rPr><w:t>Nenhuma atividade cadastrada.</w:t></w:r></w:p>';
+    return `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/></w:rPr><w:t>Nenhuma atividade cadastrada.</w:t></w:r></w:p>`;
   }
 
   const borderXml = '<w:tcBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tcBorders>';
@@ -194,10 +202,10 @@ function buildCronogramaOoxml(activities: ActivityFormData[]): string {
 
   // Header row
   const headerCells = [
-    `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}${headerShading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="18"/></w:rPr><w:t>Atividade</w:t></w:r></w:p></w:tc>`,
+    `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}${headerShading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>Atividade</w:t></w:r></w:p></w:tc>`,
     ...months.map(
       (m) =>
-        `<w:tc><w:tcPr>${borderXml}${headerShading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="18"/></w:rPr><w:t>${m}</w:t></w:r></w:p></w:tc>`
+        `<w:tc><w:tcPr>${borderXml}${headerShading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>${m}</w:t></w:r></w:p></w:tc>`
     ),
   ].join("");
 
@@ -206,12 +214,12 @@ function buildCronogramaOoxml(activities: ActivityFormData[]): string {
   // Data rows
   const dataRows = activities
     .map((act, idx) => {
-      const nameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}</w:tcPr><w:p><w:r><w:rPr><w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">${idx + 1}. ${escapeXml(act.name)}</w:t></w:r></w:p></w:tc>`;
+      const nameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}</w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t xml:space="preserve">${idx + 1}. ${escapeXml(act.name)}</w:t></w:r></w:p></w:tc>`;
 
       const monthCells = Array.from({ length: 12 }, (_, m) => {
         const active = act.activeMonths?.includes(m + 1) ?? false;
         const shading = active ? activeShading : "";
-        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:sz w:val="18"/></w:rPr><w:t>${active ? "X" : " "}</w:t></w:r></w:p></w:tc>`;
+        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>${active ? "X" : " "}</w:t></w:r></w:p></w:tc>`;
       }).join("");
 
       return `<w:tr>${nameCell}${monthCells}</w:tr>`;
