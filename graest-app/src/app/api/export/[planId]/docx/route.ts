@@ -65,6 +65,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       objetivosGerais: safeParse(plan.objetivosGerais) as PlanFormData["objetivosGerais"],
       objetivosEspecificos:
         safeParse(plan.objetivosEspecificos) as PlanFormData["objetivosEspecificos"],
+      useModulosApproach: plan.useModulosApproach ?? false,
       escopo: safeParse(plan.escopo) as PlanFormData["escopo"],
       estrategias: safeParse(plan.estrategias) as PlanFormData["estrategias"],
       activities: plan.activities.map(
@@ -77,7 +78,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
           startDate: a.startDate ?? "",
           endDate: a.endDate ?? "",
           activeMonths: (safeParse(a.activeMonths) as number[] | null) ?? [],
-          subActivities: (safeParse((a as any).subActivities) as string[] | null) ?? [""],
+          subActivities: (() => {
+            const raw = safeParse((a as any).subActivities);
+            if (!Array.isArray(raw) || raw.length === 0) return [{ name: "", description: "" }];
+            return raw.map((s: unknown) =>
+              typeof s === "string" ? { name: s, description: "" } : s
+            );
+          })() as { name: string; description: string }[],
         })
       ),
       professionals: plan.professionals.map(

@@ -29,6 +29,7 @@
     "docx": "^9.6.0",
     "docxtemplater": "^3.68.3",
     "file-saver": "^2.0.5",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^0.575.0",
     "next": "^16.1.6",
     "pdf-parse": "^2.4.5",

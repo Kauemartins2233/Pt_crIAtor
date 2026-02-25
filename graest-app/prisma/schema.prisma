@@ -41,6 +41,7 @@ model Plan {
   motivacao            String?
   objetivosGerais      String?
   objetivosEspecificos String?
+  useModulosApproach   Boolean @default(false)
   escopo               String?
   estrategias          String?
 

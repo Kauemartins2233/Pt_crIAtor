@@ -135,6 +135,7 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
           fieldName,
           currentContent,
           action: "generate",
+          useModulosApproach: formData.useModulosApproach,
           projectContext: {
             projectName: formData.projectName,
             projectNickname: formData.projectNickname,

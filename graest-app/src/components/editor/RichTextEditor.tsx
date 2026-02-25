@@ -26,6 +26,8 @@ interface RichTextEditorProps {
   section?: number;
   /** Field name for AI suggestions */
   fieldName?: string;
+  /** Callback when editor instance is ready */
+  onEditorReady?: (editor: import("@tiptap/react").Editor) => void;
 }
 
 // Upload image file to server, returns URL or null
@@ -66,6 +68,7 @@ export function RichTextEditor({
   placeholder,
   section,
   fieldName,
+  onEditorReady,
 }: RichTextEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -112,6 +115,12 @@ export function RichTextEditor({
       },
     },
   });
+
+  useEffect(() => {
+    if (editor && onEditorReady) {
+      onEditorReady(editor);
+    }
+  }, [editor, onEditorReady]);
 
   useEffect(() => {
     if (editor && content && !editor.isFocused) {

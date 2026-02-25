@@ -1,5 +1,23 @@
 import type { JSONContent } from "@tiptap/react";
 
+export interface SubActivity {
+  name: string;
+  description: string;
+}
+
+/** Normalize sub-activities from old string[] format or new object[] format */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function normalizeSubActivities(subs: any): SubActivity[] {
+  if (!subs || !Array.isArray(subs) || subs.length === 0) {
+    return [{ name: "", description: "" }];
+  }
+  return subs.map((s: unknown) => {
+    if (typeof s === "string") return { name: s, description: "" };
+    if (s && typeof s === "object" && "name" in s) return s as SubActivity;
+    return { name: "", description: "" };
+  });
+}
+
 export interface ActivityFormData {
   id?: string;
   orderIndex: number;
@@ -9,7 +27,7 @@ export interface ActivityFormData {
   startDate: string;
   endDate: string;
   activeMonths: number[];
-  subActivities: string[];
+  subActivities: SubActivity[];
 }
 
 export interface ProfessionalFormData {
@@ -64,6 +82,7 @@ export interface PlanFormData {
   motivacao: JSONContent | null;
   objetivosGerais: JSONContent | null;
   objetivosEspecificos: JSONContent | null;
+  useModulosApproach: boolean;
   escopo: JSONContent | null;
   estrategias: JSONContent | null;
 
@@ -108,14 +127,15 @@ export const defaultPlanFormData: PlanFormData = {
   motivacao: null,
   objetivosGerais: null,
   objetivosEspecificos: null,
+  useModulosApproach: false,
   escopo: null,
   estrategias: null,
   activities: [
-    { orderIndex: 0, name: "Planejamento, Coordenação e Gestão do Projeto", description: "Esta atividade compreende a estruturação estratégica, administrativa e técnica do projeto, garantindo sua execução conforme escopo aprovado, prazos estabelecidos e orçamento previsto. Abrange as etapas de inicialização, organização da equipe, gestão de riscos, controle financeiro e monitoramento contínuo da evolução técnica.", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
-    { orderIndex: 1, name: "Levantamento de Requisitos", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
-    { orderIndex: 2, name: "Pesquisa Científica e Desenvolvimento", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
-    { orderIndex: 3, name: "Testes, Ajuste e Validação do Software", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
-    { orderIndex: 4, name: "Integração, Treinamento, Implementação e Homologação do projeto", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+    { orderIndex: 0, name: "Planejamento, Coordenação e Gestão do Projeto", description: "Esta atividade compreende a estruturação estratégica, administrativa e técnica do projeto, garantindo sua execução conforme escopo aprovado, prazos estabelecidos e orçamento previsto. Abrange as etapas de inicialização, organização da equipe, gestão de riscos, controle financeiro e monitoramento contínuo da evolução técnica.", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [{ name: "", description: "" }] },
+    { orderIndex: 1, name: "Levantamento de Requisitos", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [{ name: "", description: "" }] },
+    { orderIndex: 2, name: "Pesquisa Científica e Desenvolvimento", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [{ name: "", description: "" }] },
+    { orderIndex: 3, name: "Testes, Ajuste e Validação do Software", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [{ name: "", description: "" }] },
+    { orderIndex: 4, name: "Integração, Treinamento, Implementação e Homologação do projeto", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [{ name: "", description: "" }] },
   ],
   professionals: [],
   indicators: {},

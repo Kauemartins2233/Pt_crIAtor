@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
       action = "generate", // "generate" | "expand" | "rewrite" | "custom"
       customInstruction,
       projectContext,
+      useModulosApproach,
     } = body;
 
     if (!planId || section == null) {
@@ -117,7 +118,13 @@ export async function POST(req: NextRequest) {
     const examplesText = await loadExamples(section);
 
     // 3. Build prompt — prefer field-specific prompt over generic section prompt
-    const sectionPrompt = (fieldName && AI_FIELD_PROMPTS[fieldName])
+    // When useModulosApproach is enabled for objetivosEspecificos, use the módulos prompt
+    const effectiveFieldName =
+      fieldName === "objetivosEspecificos" && useModulosApproach
+        ? "objetivosEspecificosModulos"
+        : fieldName;
+
+    const sectionPrompt = (effectiveFieldName && AI_FIELD_PROMPTS[effectiveFieldName])
       || AI_SECTION_PROMPTS[section]
       || `Seção ${section}: Gere conteúdo relevante para esta seção do plano de trabalho.`;
 

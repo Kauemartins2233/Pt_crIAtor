@@ -4,6 +4,7 @@ import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
 import { ExampleViewer } from "@/components/editor/ExampleViewer";
+import { Checkbox } from "@/components/ui/Checkbox";
 import type { JSONContent } from "@tiptap/react";
 
 export function Step05Objetivos() {
@@ -45,6 +46,12 @@ export function Step05Objetivos() {
         <p className="text-sm text-gray-500">
           Liste os objetivos detalhados e mensuráveis, ligados às atividades do projeto.
         </p>
+        <Checkbox
+          label="Abordagem por módulos (estilo Lity/MES)"
+          checked={formData.useModulosApproach}
+          onChange={(checked) => updateField("useModulosApproach", checked)}
+          className="mb-2"
+        />
         <RichTextEditor
           section={5}
           fieldName="objetivosEspecificos"

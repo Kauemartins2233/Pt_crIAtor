@@ -70,7 +70,8 @@ export function Step13Cronograma() {
     });
     const subs = act.subActivities || [];
     for (let subIdx = 0; subIdx < subs.length; subIdx++) {
-      const subText = subs[subIdx] || `Subatividade ${actIdx + 1}.${subIdx + 1}`;
+      const sub = subs[subIdx];
+      const subText = (typeof sub === "object" ? sub.name : sub) || `Subatividade ${actIdx + 1}.${subIdx + 1}`;
       rows.push({
         type: "sub",
         actIndex: actIdx,

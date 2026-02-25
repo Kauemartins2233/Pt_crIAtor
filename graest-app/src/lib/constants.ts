@@ -134,5 +134,25 @@ export const AI_SECTION_PROMPTS: Record<number, string> = {
 // Field-specific prompts that override section prompts when the fieldName matches
 export const AI_FIELD_PROMPTS: Record<string, string> = {
   objetivosGerais: `Campo "Objetivo Geral": Escreva APENAS o objetivo geral (macro) do projeto de P&D. Deve ser um texto corrido em um ou dois parágrafos descrevendo o propósito principal do projeto. NÃO inclua objetivos específicos, tópicos, listas ou itens numerados. Foque apenas na visão macro do que o projeto pretende alcançar.`,
-  objetivosEspecificos: `Campo "Objetivos Específicos": Escreva APENAS os objetivos específicos do projeto de P&D. Cada objetivo específico deve ser detalhado, mensurável e diretamente ligado às atividades do projeto. NÃO inclua o objetivo geral. FORMATO OBRIGATÓRIO: gere cada objetivo como um item de lista, um por linha, começando cada linha com "- " (hífen e espaço). Exemplo de formato:\n- Primeiro objetivo específico detalhado aqui.\n- Segundo objetivo específico detalhado aqui.`,
+  objetivosEspecificos: `Campo "Objetivos Específicos": Escreva APENAS os objetivos específicos do projeto de P&D. Comece com um parágrafo introdutório contextualizando os objetivos específicos e sua relação com o projeto. Em seguida, liste cada objetivo específico como um item, um por linha, começando cada linha com "- " (hífen e espaço). Cada objetivo deve ser detalhado, mensurável e diretamente ligado às atividades do projeto. NÃO inclua o objetivo geral.`,
+  objetivosEspecificosModulos: `Campo "Objetivos Específicos" (abordagem por módulos): Escreva os objetivos específicos do projeto de P&D organizados por MÓDULOS do sistema/solução. NÃO inclua o objetivo geral.
+
+FORMATO OBRIGATÓRIO:
+1. Comece com um parágrafo introdutório explicando que o projeto está organizado em módulos e contextualizando os objetivos específicos.
+2. Para cada módulo, escreva o nome do módulo em uma linha começando com "- " (ex: "- Módulo de Autenticação e Autorização:")
+3. Logo abaixo, liste os sub-objetivos desse módulo, cada um em uma linha começando com "- " (hífen e espaço)
+4. Separe cada módulo com uma linha em branco
+5. Gere entre 4 e 8 módulos com 2 a 4 sub-objetivos cada
+
+Exemplo de formato:
+Parágrafo introdutório aqui explicando a organização modular do projeto...
+
+- Módulo de Coleta de Dados:
+- Desenvolver mecanismos de captura de dados em tempo real.
+- Garantir a integridade e consistência dos dados coletados.
+- Implementar protocolos de comunicação compatíveis com os dispositivos.
+
+- Módulo de Processamento e Análise:
+- Aplicar algoritmos de aprendizado de máquina para análise dos dados.
+- Gerar relatórios automatizados com métricas de desempenho.`,
 };

@@ -35,6 +35,7 @@ function apiResponseToFormData(plan: any): PlanFormData {
     motivacao: plan.motivacao ?? null,
     objetivosGerais: plan.objetivosGerais ?? null,
     objetivosEspecificos: plan.objetivosEspecificos ?? null,
+    useModulosApproach: plan.useModulosApproach ?? false,
     escopo: plan.escopo ?? null,
     estrategias: plan.estrategias ?? null,
     activities: (plan.activities && plan.activities.length > 0)
@@ -47,7 +48,14 @@ function apiResponseToFormData(plan: any): PlanFormData {
           startDate: a.startDate ?? "",
           endDate: a.endDate ?? "",
           activeMonths: a.activeMonths ?? [],
-          subActivities: a.subActivities ?? [""],
+          subActivities: (() => {
+            const raw = a.subActivities ?? [];
+            if (!Array.isArray(raw) || raw.length === 0) return [{ name: "", description: "" }];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return raw.map((s: any) =>
+              typeof s === "string" ? { name: s, description: "" } : { name: s?.name ?? "", description: s?.description ?? "" }
+            );
+          })(),
         }))
       : defaultPlanFormData.activities,
     professionals: (plan.professionals ?? []).map((p: any) => ({
@@ -99,6 +107,7 @@ function formDataToApiPayload(data: PlanFormData): Record<string, any> {
     motivacao: data.motivacao,
     objetivosGerais: data.objetivosGerais,
     objetivosEspecificos: data.objetivosEspecificos,
+    useModulosApproach: data.useModulosApproach,
     escopo: data.escopo,
     estrategias: data.estrategias,
     activities: data.activities.map((a) => ({
@@ -108,7 +117,7 @@ function formDataToApiPayload(data: PlanFormData): Record<string, any> {
       startDate: a.startDate || undefined,
       endDate: a.endDate || undefined,
       activeMonths: a.activeMonths.length > 0 ? a.activeMonths : undefined,
-      subActivities: a.subActivities ?? [""],
+      subActivities: a.subActivities ?? [{ name: "", description: "" }],
     })),
     professionals: data.professionals.map((p) => ({
       name: p.name,

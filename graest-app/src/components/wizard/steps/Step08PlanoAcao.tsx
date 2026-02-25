@@ -34,14 +34,14 @@ export function Step08PlanoAcao() {
   function handleUpdateSubActivity(
     actIndex: number,
     subIndex: number,
+    field: "name" | "description",
     value: string
   ) {
     const updated = activities.map((act, i) => {
       if (i !== actIndex) return act;
-      const subs = act.subActivities || [""];
-      const newSubs = [...subs];
-      newSubs[subIndex] = value;
-      return { ...act, subActivities: newSubs };
+      const subs = [...(act.subActivities || [{ name: "", description: "" }])];
+      subs[subIndex] = { ...subs[subIndex], [field]: value };
+      return { ...act, subActivities: subs };
     });
     updateField("activities", updated);
   }
@@ -49,7 +49,7 @@ export function Step08PlanoAcao() {
   function handleAddSubActivity(actIndex: number) {
     const updated = activities.map((act, i) => {
       if (i !== actIndex) return act;
-      return { ...act, subActivities: [...(act.subActivities || [""]), ""] };
+      return { ...act, subActivities: [...(act.subActivities || []), { name: "", description: "" }] };
     });
     updateField("activities", updated);
   }
@@ -57,8 +57,8 @@ export function Step08PlanoAcao() {
   function handleRemoveSubActivity(actIndex: number, subIndex: number) {
     const updated = activities.map((act, i) => {
       if (i !== actIndex) return act;
-      const subs = act.subActivities || [""];
-      if (subs.length <= 1) return act; // Keep at least one
+      const subs = act.subActivities || [{ name: "", description: "" }];
+      if (subs.length <= 1) return act;
       const newSubs = subs.filter((_, j) => j !== subIndex);
       return { ...act, subActivities: newSubs };
     });
@@ -140,50 +140,43 @@ export function Step08PlanoAcao() {
                   <label className="block text-sm font-medium text-gray-700">
                     Subatividades
                   </label>
-                  {(activity.subActivities || [""]).map((sub, subIndex) => (
-                    <div key={subIndex} className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500 font-mono min-w-[40px]">
-                        {index + 1}.{subIndex + 1}
-                      </span>
-                      <input
-                        type="text"
-                        value={sub}
-                        onChange={(e) =>
-                          handleUpdateSubActivity(
-                            index,
-                            subIndex,
-                            e.target.value
-                          )
-                        }
-                        placeholder={`Subatividade ${index + 1}.${
-                          subIndex + 1
-                        }`}
-                        className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                      />
-                      {(activity.subActivities || []).length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleRemoveSubActivity(index, subIndex)
+                  {(activity.subActivities || [{ name: "", description: "" }]).map((sub, subIndex) => (
+                    <div key={subIndex} className="rounded-md border border-gray-200 bg-white p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500 font-mono min-w-[40px] font-semibold">
+                          {index + 1}.{subIndex + 1}
+                        </span>
+                        <input
+                          type="text"
+                          value={sub.name}
+                          onChange={(e) =>
+                            handleUpdateSubActivity(index, subIndex, "name", e.target.value)
                           }
-                          className="text-red-400 hover:text-red-600 transition-colors p-1"
-                          title="Remover subatividade"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                          placeholder={`Nome da subatividade ${index + 1}.${subIndex + 1}`}
+                          className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                        {(activity.subActivities || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSubActivity(index, subIndex)}
+                            className="text-red-400 hover:text-red-600 transition-colors p-1"
+                            title="Remover subatividade"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      )}
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                      <textarea
+                        value={sub.description}
+                        onChange={(e) =>
+                          handleUpdateSubActivity(index, subIndex, "description", e.target.value)
+                        }
+                        placeholder="Descrição da subatividade..."
+                        rows={2}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      />
                     </div>
                   ))}
                   <Button

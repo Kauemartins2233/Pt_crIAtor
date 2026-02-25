@@ -118,6 +118,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
           selectedText,
           action,
           customInstruction: instruction || undefined,
+          useModulosApproach: formData.useModulosApproach,
           projectContext: {
             projectName: formData.projectName,
             projectNickname: formData.projectNickname,

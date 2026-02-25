@@ -26,9 +26,16 @@ function parseJsonFields(plan: any) {
       activeMonths: a.activeMonths && typeof a.activeMonths === 'string'
         ? JSON.parse(a.activeMonths)
         : (a.activeMonths ?? []),
-      subActivities: a.subActivities && typeof a.subActivities === 'string'
-        ? JSON.parse(a.subActivities)
-        : (a.subActivities ?? [""]),
+      subActivities: (() => {
+        const raw = a.subActivities && typeof a.subActivities === 'string'
+          ? JSON.parse(a.subActivities)
+          : (a.subActivities ?? []);
+        // Normalize: old string[] → new { name, description }[]
+        if (!Array.isArray(raw) || raw.length === 0) return [{ name: "", description: "" }];
+        return raw.map((s: unknown) =>
+          typeof s === "string" ? { name: s, description: "" } : s
+        );
+      })(),
     }));
   }
   return parsed;
@@ -96,7 +103,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                   startDate?: string;
                   endDate?: string;
                   activeMonths?: number[];
-                  subActivities?: string[];
+                  subActivities?: { name: string; description: string }[];
                 },
                 index: number
               ) => ({

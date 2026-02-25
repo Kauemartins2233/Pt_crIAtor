@@ -1,13 +1,20 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
 import { ExampleViewer } from "@/components/editor/ExampleViewer";
-import type { JSONContent } from "@tiptap/react";
+import { EapTreeEditor } from "@/components/eap/EapTreeEditor";
+import type { JSONContent, Editor } from "@tiptap/react";
 
 export function Step06Escopo() {
   const { formData, updateField } = usePlanStore();
+  const [escopoEditor, setEscopoEditor] = useState<Editor | null>(null);
+
+  const handleEditorReady = useCallback((editor: Editor) => {
+    setEscopoEditor(editor);
+  }, []);
 
   const handleSnippetInsert = (fieldName: string) => (snippetContent: JSONContent) => {
     const current = formData[fieldName as keyof typeof formData] as JSONContent | null;
@@ -27,12 +34,16 @@ export function Step06Escopo() {
         ferramentas, linguagens.
       </p>
 
+      {/* EAP Tree Editor */}
+      <EapTreeEditor escopoEditor={escopoEditor} />
+
       <RichTextEditor
         section={6}
         fieldName="escopo"
         content={formData.escopo}
         onChange={(content) => updateField("escopo", content)}
         placeholder="Descreva o escopo do projeto..."
+        onEditorReady={handleEditorReady}
       />
       <div className="flex items-center gap-2">
         <SnippetPicker sectionNumber={6} onInsert={handleSnippetInsert("escopo")} />

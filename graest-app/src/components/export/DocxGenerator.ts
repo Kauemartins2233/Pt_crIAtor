@@ -259,14 +259,21 @@ function buildActivitiesOoxml(activities: ActivityFormData[]): string {
     }
 
     // Sub-activities (if any non-empty ones)
-    const subs = (act.subActivities || []).filter((s) => s.trim() !== "");
+    const rawSubs = act.subActivities || [];
+    const subs = rawSubs.filter((s) => {
+      const name = typeof s === "object" ? s.name : s;
+      return name && name.trim() !== "";
+    });
     if (subs.length > 0) {
       paragraphs.push(
         `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t>Subatividades:</w:t></w:r></w:p>`
       );
       for (let j = 0; j < subs.length; j++) {
+        const sub = subs[j];
+        const subName = typeof sub === "object" ? sub.name : sub;
+        const subDesc = typeof sub === "object" && sub.description ? sub.description : "";
         paragraphs.push(
-          `<w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:ind w:left="360"/></w:pPr><w:r><w:rPr>${FONT_SMALL}</w:rPr><w:t xml:space="preserve">${idx}.${j + 1} ${escapeXml(subs[j])}</w:t></w:r></w:p>`
+          `<w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:ind w:left="360"/></w:pPr><w:r><w:rPr>${FONT_SMALL}</w:rPr><w:t xml:space="preserve">${idx}.${j + 1} </w:t></w:r><w:r><w:rPr>${FONT_SMALL}<w:b/><w:bCs/></w:rPr><w:t xml:space="preserve">${escapeXml(subName)}:</w:t></w:r>${subDesc ? `<w:r><w:rPr>${FONT_SMALL}</w:rPr><w:t xml:space="preserve"> ${escapeXml(subDesc)}</w:t></w:r>` : ""}</w:p>`
         );
       }
     }
@@ -385,9 +392,10 @@ function buildCronogramaOoxml(activities: ActivityFormData[], overrides: import(
     dataRows.push(`<w:tr>${actNameCell}${emptyMonthCells}</w:tr>`);
 
     // Subactivity rows
-    const subs = act.subActivities || [];
-    for (let subIdx = 0; subIdx < subs.length; subIdx++) {
-      const subText = subs[subIdx] || `Subatividade ${actIdx + 1}.${subIdx + 1}`;
+    const cronSubs = act.subActivities || [];
+    for (let subIdx = 0; subIdx < cronSubs.length; subIdx++) {
+      const cronSub = cronSubs[subIdx];
+      const subText = (typeof cronSub === "object" ? cronSub.name : cronSub) || `Subatividade ${actIdx + 1}.${subIdx + 1}`;
       const subNameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}</w:tcPr><w:p><w:pPr><w:ind w:left="360"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t xml:space="preserve">${actIdx + 1}.${subIdx + 1} ${escapeXml(subText)}</w:t></w:r></w:p></w:tc>`;
 
       const monthCells = Array.from({ length: 12 }, (_, m) => {
