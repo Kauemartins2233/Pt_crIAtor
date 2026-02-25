@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "@/lib/prisma";
-import { AI_SECTION_PROMPTS } from "@/lib/constants";
+import { AI_SECTION_PROMPTS, AI_FIELD_PROMPTS } from "@/lib/constants";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -116,12 +116,14 @@ export async function POST(req: NextRequest) {
     // 2. Load examples for this section
     const examplesText = await loadExamples(section);
 
-    // 3. Build prompt
-    const sectionPrompt = AI_SECTION_PROMPTS[section] || `Seção ${section}: Gere conteúdo relevante para esta seção do plano de trabalho.`;
+    // 3. Build prompt — prefer field-specific prompt over generic section prompt
+    const sectionPrompt = (fieldName && AI_FIELD_PROMPTS[fieldName])
+      || AI_SECTION_PROMPTS[section]
+      || `Seção ${section}: Gere conteúdo relevante para esta seção do plano de trabalho.`;
 
     const systemPrompt = `Você é um assistente especializado na elaboração de Planos de Trabalho de Pesquisa, Desenvolvimento e Inovação (PD&I) no contexto da Lei de Informática brasileira (Lei 8.248/91).
 
-Sua tarefa é gerar sugestões de texto para uma seção específica do plano de trabalho, baseando-se nos materiais de contexto fornecidos pelo usuário e em exemplos de planos anteriores.
+Sua tarefa é gerar sugestões de texto para um campo específico do plano de trabalho, baseando-se nos materiais de contexto fornecidos pelo usuário e em exemplos de planos anteriores.
 
 REGRAS:
 - Escreva em português brasileiro formal e técnico
@@ -129,9 +131,9 @@ REGRAS:
 - Baseie-se fortemente nos materiais de contexto fornecidos
 - Se houver exemplos, use como referência de estilo e profundidade
 - Gere texto pronto para uso, sem marcadores como "[inserir aqui]"
-- Não inclua títulos de seção — apenas o conteúdo
+- Não inclua títulos de seção ou subtítulos — apenas o conteúdo do campo solicitado
 - Seja detalhado e completo, mas conciso
-- IMPORTANTE: NÃO use formatação Markdown. Não use asteriscos (*) para negrito ou itálico, não use cerquilhas (#) para títulos, não use hífens (-) para listas. Escreva texto corrido puro, usando apenas quebras de linha para separar parágrafos.`;
+- IMPORTANTE: NÃO use formatação Markdown. Não use asteriscos (*) para negrito ou itálico, não use cerquilhas (#) para títulos, não use hífens (-) para listas, não use "o" como marcador de tópico. Escreva texto corrido puro em parágrafos, usando apenas quebras de linha para separar parágrafos.`;
 
     let userPrompt = `${sectionPrompt}\n\n`;
 

@@ -3,13 +3,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 import {
-  Sparkles,
   Expand,
   RefreshCw,
   MessageSquare,
   Loader2,
-  Check,
-  X,
 } from "lucide-react";
 import { usePlanStore } from "@/lib/store";
 import { aiTextToHtml } from "@/lib/utils";
@@ -24,7 +21,6 @@ type AiAction = "expand" | "rewrite" | "custom";
 
 export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) {
   const [loading, setLoading] = useState(false);
-  const [suggestion, setSuggestion] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customInstruction, setCustomInstruction] = useState("");
@@ -57,7 +53,6 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
 
   const closeMenu = useCallback(() => {
     setMenuPos(null);
-    setSuggestion(null);
     setError(null);
     setShowCustomInput(false);
     setCustomInstruction("");
@@ -87,7 +82,6 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       e.preventDefault();
       const text = editor.state.doc.textBetween(from, to, " ");
       setSelectedText(text);
-      setSuggestion(null);
       setError(null);
       setShowCustomInput(false);
       setCustomInstruction("");
@@ -108,7 +102,9 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
     if (loading || !selectedText) return;
     setLoading(true);
     setError(null);
-    setSuggestion(null);
+
+    // Save selection range before async call
+    const { from, to } = editor.state.selection;
 
     try {
       const res = await fetch("/api/ai/suggest", {
@@ -134,21 +130,15 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       if (!res.ok) {
         setError(data.error || "Erro ao gerar sugestão.");
       } else {
-        setSuggestion(data.suggestion);
+        // Insert directly — user can Ctrl+Z to undo
+        editor.chain().focus().deleteRange({ from, to }).insertContent(aiTextToHtml(data.suggestion)).run();
+        closeMenu();
       }
     } catch {
       setError("Erro de conexão. Tente novamente.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAccept = () => {
-    if (!suggestion) return;
-    // Replace the selected text with the suggestion
-    const { from, to } = editor.state.selection;
-    editor.chain().focus().deleteRange({ from, to }).insertContent(aiTextToHtml(suggestion)).run();
-    closeMenu();
   };
 
   const handleCustomSubmit = () => {
@@ -187,44 +177,8 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
         </div>
       )}
 
-      {/* Suggestion result */}
-      {suggestion && !loading && (
-        <div>
-          <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-2">
-            <Sparkles size={14} className="text-purple-600" />
-            <span className="text-sm font-medium text-purple-700">Sugestão da IA</span>
-            <button
-              onClick={closeMenu}
-              className="ml-auto rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            >
-              <X size={14} />
-            </button>
-          </div>
-          <div className="max-h-[250px] overflow-y-auto px-4 py-3">
-            <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
-              {suggestion}
-            </div>
-          </div>
-          <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-2">
-            <button
-              onClick={handleAccept}
-              className="flex items-center gap-1.5 rounded-md bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700 transition-colors"
-            >
-              <Check size={12} />
-              Aplicar
-            </button>
-            <button
-              onClick={closeMenu}
-              className="text-xs text-gray-400 hover:text-gray-600"
-            >
-              Descartar
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Action menu (initial state) */}
-      {!loading && !suggestion && !error && !showCustomInput && (
+      {!loading && !error && !showCustomInput && (
         <div className="py-1">
           <div className="px-3 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wide">
             IA — Texto selecionado
@@ -255,7 +209,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       )}
 
       {/* Custom instruction input */}
-      {showCustomInput && !loading && !suggestion && !error && (
+      {showCustomInput && !loading && !error && (
         <div className="p-3">
           <label className="mb-1.5 block text-xs font-medium text-gray-500">
             O que deseja fazer com o texto?
@@ -281,7 +235,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
               disabled={!customInstruction.trim()}
               className="flex items-center gap-1.5 rounded-md bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700 transition-colors disabled:opacity-50"
             >
-              <Sparkles size={12} />
+              <MessageSquare size={12} />
               Enviar
             </button>
             <button

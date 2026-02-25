@@ -120,7 +120,7 @@ export const WIZARD_SECTIONS = [
 // ---------------------------------------------------------------------------
 export const AI_SECTION_PROMPTS: Record<number, string> = {
   4: `Seção "Motivação": Escreva a motivação e justificativa do projeto de P&D. Explique o contexto tecnológico, a relevância do problema, por que o projeto é necessário e quais benefícios trará. Use linguagem técnica e formal.`,
-  5: `Seção "Objetivos Gerais e Específicos": Escreva os objetivos gerais (macro) e específicos (detalhados e mensuráveis) do projeto. Os objetivos específicos devem ser claros, alcançáveis e diretamente ligados às atividades do projeto.`,
+  5: `Seção "Objetivos Gerais e Específicos": Escreva os objetivos do projeto.`,
   6: `Seção "Escopo": Defina o escopo do projeto — o que será desenvolvido, os limites do trabalho, entregas esperadas e o que NÃO faz parte do escopo.`,
   7: `Seção "Estratégias": Descreva as estratégias metodológicas e técnicas que serão utilizadas para alcançar os objetivos do projeto. Inclua ferramentas, frameworks, abordagens e metodologias.`,
   8: `Seção "Plano de Ação": Sugira atividades detalhadas para o projeto com nome, descrição e justificativa. Cada atividade deve ser clara e contribuir para os objetivos.`,
@@ -129,4 +129,10 @@ export const AI_SECTION_PROMPTS: Record<number, string> = {
   14: `Seção "Desafios Científicos e Tecnológicos": Identifique os principais desafios técnicos e científicos do projeto, explicando a complexidade e incerteza envolvidas.`,
   15: `Seção "Solução Proposta": Descreva a solução técnica proposta para superar os desafios identificados. Detalhe a arquitetura, tecnologias e abordagens.`,
   17: `Seção "Informações Complementares": Adicione informações complementares relevantes ao projeto que não se encaixam nas seções anteriores.`,
+};
+
+// Field-specific prompts that override section prompts when the fieldName matches
+export const AI_FIELD_PROMPTS: Record<string, string> = {
+  objetivosGerais: `Campo "Objetivo Geral": Escreva APENAS o objetivo geral (macro) do projeto de P&D. Deve ser um texto corrido em um ou dois parágrafos descrevendo o propósito principal do projeto. NÃO inclua objetivos específicos, tópicos, listas ou itens numerados. Foque apenas na visão macro do que o projeto pretende alcançar.`,
+  objetivosEspecificos: `Campo "Objetivos Específicos": Escreva APENAS os objetivos específicos do projeto de P&D. Cada objetivo específico deve ser detalhado, mensurável e diretamente ligado às atividades do projeto. NÃO inclua o objetivo geral. FORMATO OBRIGATÓRIO: gere cada objetivo como um item de lista, um por linha, começando cada linha com "- " (hífen e espaço). Exemplo de formato:\n- Primeiro objetivo específico detalhado aqui.\n- Segundo objetivo específico detalhado aqui.`,
 };
