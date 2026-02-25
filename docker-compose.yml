@@ -1,0 +1,38 @@
+services:
+  pt-creator:
+    build:
+      context: ./graest-app
+      dockerfile: Dockerfile
+    container_name: pt-creator
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/pt-creator.db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - pt-creator-data:/app/data
+      - pt-creator-uploads:/app/public/uploads
+      - pt-creator-materials:/app/public/materials
+
+  webhook:
+    build:
+      context: ./webhook
+      dockerfile: Dockerfile
+    container_name: pt-creator-webhook
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app/repo
+      - ./webhook/hooks.json:/etc/webhook/hooks.json
+    working_dir: /app/repo
+
+volumes:
+  pt-creator-data:
+  pt-creator-uploads:
+  pt-creator-materials:
