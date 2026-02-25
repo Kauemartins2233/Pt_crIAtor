@@ -59,10 +59,10 @@ export function Step01Identificacao() {
 
       <Input
         id="coordinatorFoxconn"
-        label="Coordenador Foxconn"
+        label="Coordenador do Projeto na Empresa"
         value={formData.coordinatorFoxconn}
         onChange={(e) => updateField("coordinatorFoxconn", e.target.value)}
-        placeholder="Nome do coordenador Foxconn"
+        placeholder="Nome do coordenador na empresa"
       />
 
       {/* Total Value - BRL formatted */}

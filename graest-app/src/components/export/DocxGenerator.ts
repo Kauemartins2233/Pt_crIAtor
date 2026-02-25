@@ -229,7 +229,8 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
   // 1. Read template
   const templatePath = path.join(process.cwd(), "public", "template.docx");
   const templateContent = fs.readFileSync(templatePath, "binary");
-  const zip = new PizZip(templateContent);
+  const originalZip = new PizZip(templateContent); // keep pristine copy
+  const zip = new PizZip(templateContent);          // this one gets modified by docxtemplater
 
   // 2. Create docxtemplater instance
   const doc = new Docxtemplater(zip, {
@@ -242,6 +243,9 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     // Header
     partnerName: plan.partnerName || "Empresa Parceira",
     foundationName: plan.foundationName || "Fundação de Apoio",
+    // Logo placeholders — replaced with actual images in post-processing
+    partnerLogo: plan.partnerLogo ? "##PARTNER_LOGO##" : (plan.partnerName || ""),
+    foundationLogo: plan.foundationLogo ? "##FOUNDATION_LOGO##" : (plan.foundationName || ""),
 
     // Section 1: Identification (simple fields)
     projectName: plan.projectName || " ",
@@ -339,6 +343,155 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
   // 4. Render
   doc.render(data);
 
-  // 5. Generate output
+  // 5. Post-process: restore section breaks that raw OOXML tags may have removed
+  restoreSectionBreaks(originalZip, doc.getZip());
+
+  // 6. Post-process: inject dynamic logos into header
+  injectHeaderImages(doc.getZip(), plan);
+
+  // 7. Generate output
   return doc.getZip().generate({ type: "nodebuffer" }) as Buffer;
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: restore section breaks lost during raw OOXML substitution
+// ---------------------------------------------------------------------------
+
+function restoreSectionBreaks(originalZip: PizZip, outputZip: PizZip): void {
+  const origXml = originalZip.file("word/document.xml")?.asText();
+  const outXml = outputZip.file("word/document.xml")?.asText();
+  if (!origXml || !outXml) return;
+
+  // Extract all inline sectPr from original (those inside <w:pPr>, not the final body sectPr)
+  const origSectPrs = origXml.match(
+    /<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g
+  );
+  const outSectPrs = outXml.match(
+    /<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g
+  );
+
+  if (!origSectPrs || !outSectPrs) return;
+
+  // If the output has fewer sectPr than the original, some were lost
+  if (outSectPrs.length >= origSectPrs.length) return;
+
+  // Find which sectPrs are missing (compare by pgSz to identify them)
+  const origPortraitSectPr = origSectPrs.find(
+    (s) => s.includes('w:h="16840"') && s.includes('w:w="11900"') && s.includes("rId")
+  );
+
+  if (!origPortraitSectPr) return;
+
+  // The missing sectPr needs to be re-inserted before the landscape section.
+  // Find the landscape sectPr in the output and insert the portrait one before its paragraph.
+  const landscapeSectPrIdx = outXml.indexOf('w:orient="landscape"');
+  if (landscapeSectPrIdx === -1) return;
+
+  // Find the <w:p that contains the landscape sectPr
+  const landscapeParaStart = outXml.lastIndexOf("<w:p ", landscapeSectPrIdx);
+  if (landscapeParaStart === -1) return;
+
+  // Insert a new paragraph with the missing sectPr right before the landscape paragraph
+  const restoredPara = `<w:p><w:pPr>${origPortraitSectPr}</w:pPr></w:p>`;
+  const fixedXml =
+    outXml.substring(0, landscapeParaStart) +
+    restoredPara +
+    outXml.substring(landscapeParaStart);
+
+  outputZip.file("word/document.xml", fixedXml);
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: inject dynamic logos into the document header
+// ---------------------------------------------------------------------------
+
+function base64ToBuffer(dataUri: string): { buffer: Buffer; ext: string } {
+  const match = dataUri.match(/^data:image\/(png|jpeg|jpg|gif|bmp);base64,(.+)$/);
+  if (match) {
+    return { buffer: Buffer.from(match[2], "base64"), ext: match[1] === "jpg" ? "jpeg" : match[1] };
+  }
+  return { buffer: Buffer.from(dataUri, "base64"), ext: "png" };
+}
+
+function buildImageDrawingXml(rId: string, widthEmu: number, heightEmu: number, name: string): string {
+  return `<w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${widthEmu}" cy="${heightEmu}"/><wp:docPr id="${Math.floor(Math.random() * 100000)}" name="${escapeXml(name)}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="${escapeXml(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${widthEmu}" cy="${heightEmu}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing>`;
+}
+
+/**
+ * Finds ##PARTNER_LOGO## and ##FOUNDATION_LOGO## markers in header1.xml
+ * (placed by docxtemplater) and replaces the <w:r> containing them with
+ * inline image drawing XML. Preserves the rest of the header layout from
+ * the user's template (including the static UEA logo).
+ */
+function injectHeaderImages(outputZip: PizZip, plan: PlanFormData): void {
+  const hasPartnerLogo = !!plan.partnerLogo;
+  const hasFoundationLogo = !!plan.foundationLogo;
+  if (!hasPartnerLogo && !hasFoundationLogo) return;
+
+  let headerXml = outputZip.file("word/header1.xml")?.asText();
+  if (!headerXml) return;
+
+  // Existing header rels (template may already have image rels for UEA logo)
+  const existingRels = outputZip.file("word/_rels/header1.xml.rels")?.asText() || "";
+  const newRels: string[] = [];
+  const imgContentTypes: string[] = [];
+
+  // Logo size: ~1.8cm height (EMU: 1cm = 360000)
+  const logoH = 648000;
+  const logoW = 648000;
+
+  // Simple approach: just replace the marker text with an image run.
+  // The template already has the correct table layout — we only swap the text content.
+  const processLogo = (
+    marker: string,
+    rId: string,
+    logoData: string,
+    imgName: string
+  ) => {
+    if (!headerXml!.includes(marker)) return;
+    const { buffer, ext } = base64ToBuffer(logoData);
+    const filename = `${imgName}.${ext}`;
+    outputZip.file(`word/media/${filename}`, buffer);
+    newRels.push(
+      `<Relationship Id="${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${filename}"/>`
+    );
+    imgContentTypes.push(ext);
+    const imgDrawing = buildImageDrawingXml(rId, logoW, logoH, imgName);
+    // Simply replace the marker text with the image drawing XML
+    headerXml = headerXml!.replace(marker, `</w:t></w:r><w:r>${imgDrawing}</w:r><w:r><w:t>`);
+  };
+
+  if (hasPartnerLogo) {
+    processLogo("##PARTNER_LOGO##", "rIdPartnerLogo", plan.partnerLogo, "partnerLogo");
+  }
+  if (hasFoundationLogo) {
+    processLogo("##FOUNDATION_LOGO##", "rIdFoundationLogo", plan.foundationLogo, "foundationLogo");
+  }
+
+  outputZip.file("word/header1.xml", headerXml);
+
+  // Update or create header1.xml.rels (merge with existing if template already has rels)
+  if (newRels.length > 0) {
+    let relsXml: string;
+    if (existingRels && existingRels.includes("<Relationships")) {
+      // Append new rels to existing
+      relsXml = existingRels.replace("</Relationships>", newRels.join("") + "</Relationships>");
+    } else {
+      relsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${newRels.join("")}</Relationships>`;
+    }
+    outputZip.file("word/_rels/header1.xml.rels", relsXml);
+  }
+
+  // Ensure [Content_Types].xml includes image types
+  const contentTypesFile = outputZip.file("[Content_Types].xml");
+  if (contentTypesFile) {
+    let ct = contentTypesFile.asText();
+    for (const ext of imgContentTypes) {
+      const mime = ext === "png" ? "image/png" : ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+      if (!ct.includes(`Extension="${ext}"`)) {
+        ct = ct.replace("</Types>", `<Default Extension="${ext}" ContentType="${mime}"/></Types>`);
+      }
+    }
+    outputZip.file("[Content_Types].xml", ct);
+  }
 }
