@@ -135,6 +135,20 @@ export const AI_SECTION_PROMPTS: Record<number, string> = {
 export const AI_FIELD_PROMPTS: Record<string, string> = {
   objetivosGerais: `Campo "Objetivo Geral": Escreva APENAS o objetivo geral (macro) do projeto de P&D. Deve ser um texto corrido em um ou dois parágrafos descrevendo o propósito principal do projeto. NÃO inclua objetivos específicos, tópicos, listas ou itens numerados. Foque apenas na visão macro do que o projeto pretende alcançar.`,
   objetivosEspecificos: `Campo "Objetivos Específicos": Escreva APENAS os objetivos específicos do projeto de P&D. Comece com um parágrafo introdutório contextualizando os objetivos específicos e sua relação com o projeto. Em seguida, liste cada objetivo específico como um item, um por linha, começando cada linha com "- " (hífen e espaço). Cada objetivo deve ser detalhado, mensurável e diretamente ligado às atividades do projeto. NÃO inclua o objetivo geral.`,
+  eapSubActivities: `Campo "Subatividades da EAP": Gere uma lista de subatividades para uma atividade macro de um projeto de P&D.
+
+REGRAS:
+- Gere entre 3 e 6 subatividades
+- Cada subatividade deve ser uma frase curta e objetiva (entre 4 e 10 palavras)
+- NÃO numere as subatividades
+- Escreva cada subatividade em uma linha separada
+- As subatividades devem ser etapas concretas e executáveis da atividade macro
+- NÃO inclua descrições ou detalhamentos — apenas os nomes das subatividades
+- Baseie-se no nome e descrição da atividade macro e nos objetivos do projeto
+- Use verbos no infinitivo (ex: "Desenvolver", "Implementar", "Validar", "Projetar")
+
+FORMATO: Retorne APENAS os nomes das subatividades, um por linha, sem marcadores, números ou prefixos.`,
+
   objetivosEspecificosModulos: `Campo "Objetivos Específicos" (abordagem por módulos): Escreva os objetivos específicos do projeto de P&D organizados por MÓDULOS do sistema/solução. NÃO inclua o objetivo geral.
 
 FORMATO OBRIGATÓRIO:
@@ -155,4 +169,52 @@ Parágrafo introdutório aqui explicando a organização modular do projeto...
 - Módulo de Processamento e Análise:
 - Aplicar algoritmos de aprendizado de máquina para análise dos dados.
 - Gerar relatórios automatizados com métricas de desempenho.`,
+
+  activityDescription: `Campo "Descrição da Atividade": Escreva a descrição de uma atividade macro de um projeto de P&D.
+
+REGRAS:
+- Escreva 2 a 4 frases que detalhem o que a atividade envolve
+- Contextualize com o projeto e seus objetivos
+- Mencione as principais entregas e tarefas abrangidas
+- Use linguagem técnica e formal
+- NÃO use formatação Markdown
+- Retorne APENAS o texto da descrição, sem títulos ou prefixos`,
+
+  subActivityDescription: `Campo "Descrição da Subatividade": Escreva a descrição de UMA subatividade específica de um projeto de P&D.
+
+REGRAS:
+- Escreva 1 a 2 frases curtas descrevendo o que será feito nesta subatividade
+- Seja específico e objetivo
+- Contextualize com a atividade macro à qual pertence
+- Use linguagem técnica e formal
+- NÃO use formatação Markdown
+- Retorne APENAS o texto da descrição, sem títulos ou prefixos`,
+
+  activityJustification: `Campo "Justificativa da Atividade": Escreva a justificativa de por que uma atividade macro é necessária em um projeto de P&D.
+
+REGRAS:
+- Escreva 2 a 3 frases conectando a atividade aos objetivos do projeto
+- Explique por que esta atividade é indispensável para o sucesso do projeto
+- Relacione com os resultados esperados e a metodologia do projeto
+- Use linguagem técnica e formal
+- NÃO use formatação Markdown
+- Retorne APENAS o texto da justificativa, sem títulos ou prefixos`,
+
+  activityDates: `Campo "Datas das Atividades": Distribua datas de início e fim para as atividades macro de um projeto de P&D.
+
+REGRAS:
+- Distribua as atividades ao longo do período de execução do projeto
+- Atividades podem se sobrepor parcialmente (execução paralela é comum em P&D)
+- A primeira atividade (Planejamento/Gestão) geralmente abrange todo o período
+- Atividades de pesquisa/desenvolvimento ocupam a maior parte do período
+- Atividades de testes/validação começam após o desenvolvimento
+- A última atividade (Integração/Homologação) termina próximo ao fim do projeto
+- Respeite RIGOROSAMENTE as datas de início e fim do projeto fornecidas
+
+FORMATO OBRIGATÓRIO: Retorne APENAS linhas no formato abaixo, sem texto adicional:
+1: YYYY-MM-DD, YYYY-MM-DD
+2: YYYY-MM-DD, YYYY-MM-DD
+3: YYYY-MM-DD, YYYY-MM-DD
+4: YYYY-MM-DD, YYYY-MM-DD
+5: YYYY-MM-DD, YYYY-MM-DD`,
 };

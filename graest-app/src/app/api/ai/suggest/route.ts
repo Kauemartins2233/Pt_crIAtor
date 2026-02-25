@@ -149,6 +149,9 @@ REGRAS:
       if (projectContext.projectName) userPrompt += `- Nome: ${projectContext.projectName}\n`;
       if (projectContext.partnerName) userPrompt += `- Empresa: ${projectContext.partnerName}\n`;
       if (projectContext.projectNickname) userPrompt += `- Apelido: ${projectContext.projectNickname}\n`;
+      if (projectContext.motivacao) userPrompt += `- Motivação: ${projectContext.motivacao}\n`;
+      if (projectContext.objetivosGerais) userPrompt += `- Objetivos Gerais: ${projectContext.objetivosGerais}\n`;
+      if (projectContext.objetivosEspecificos) userPrompt += `- Objetivos Específicos: ${projectContext.objetivosEspecificos}\n`;
       userPrompt += `\n`;
     }
 

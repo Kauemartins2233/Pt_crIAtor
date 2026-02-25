@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { EapNode } from "./EapNode";
 import type { ActivityFormData } from "@/types/plan";
 
@@ -12,6 +12,8 @@ interface EapTreeDiagramProps {
   onRenameSubActivity?: (actIndex: number, subIndex: number, name: string) => void;
   onAddSubActivity?: (actIndex: number) => void;
   onRemoveSubActivity?: (actIndex: number, subIndex: number) => void;
+  onActivityContextMenu?: (actIndex: number, event: React.MouseEvent) => void;
+  generatingActIndex?: number | null;
 }
 
 export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
@@ -23,6 +25,8 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
       onRenameSubActivity,
       onAddSubActivity,
       onRemoveSubActivity,
+      onActivityContextMenu,
+      generatingActIndex,
     },
     ref
   ) {
@@ -73,11 +77,29 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
                 <div className="w-0.5 h-6 bg-gray-400" />
 
                 {/* Activity node */}
-                <EapNode
-                  label={activity.name}
-                  number={`${actIdx + 1}`}
-                  level="activity"
-                />
+                <div
+                  onContextMenu={(e) => {
+                    if (editable && onActivityContextMenu) {
+                      e.preventDefault();
+                      onActivityContextMenu(actIdx, e);
+                    }
+                  }}
+                  className={editable ? "cursor-context-menu" : ""}
+                >
+                  <EapNode
+                    label={activity.name}
+                    number={`${actIdx + 1}`}
+                    level="activity"
+                  />
+                </div>
+
+                {/* AI generating indicator */}
+                {generatingActIndex === actIdx && (
+                  <div className="mt-1 flex items-center justify-center gap-1 text-xs text-purple-500">
+                    <Loader2 size={12} className="animate-spin" />
+                    <span>IA gerando...</span>
+                  </div>
+                )}
 
                 {/* Vertical connector from activity to sub-activities */}
                 {subs.length > 0 && (
