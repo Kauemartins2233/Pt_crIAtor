@@ -10,6 +10,8 @@ modeloPT.docx
 # Claude config
 .claude/
 
-# Deploy
+# Deploy (server-only files)
 deploy.log
+deploy.sh
 .env
+webhook/hooks.json
