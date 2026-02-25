@@ -1,0 +1,11 @@
+# Word temp files
+~$*
+~WRL*
+*.tmp
+
+# Original template (not needed in repo)
+modeloPT.docx
+"Plano de Trabalho - Projeto Lity v2.3.docx"
+
+# Claude config
+.claude/

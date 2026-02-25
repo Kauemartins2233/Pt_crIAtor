@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Plan {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   @default("draft") // draft | completed
+
+  // Cabeçalho: Logos e nomes das instituições
+  partnerName      String?  // Nome da empresa parceira (ex: Salcomp)
+  partnerLogo      String?  // Base64 da imagem do logo da empresa parceira
+  foundationName   String?  // Nome da fundação de apoio (ex: FADECT)
+  foundationLogo   String?  // Base64 da imagem do logo da fundação
+
+  // Seção 1: Identificação
+  projectName            String?
+  projectNickname        String?
+  coordinatorInstitution String?
+  coordinatorFoxconn     String?
+  totalValue             Decimal?
+  totalValueWritten      String?
+  executionStartDate     DateTime?
+  executionEndDate       DateTime?
+  validityStartDate      DateTime?
+  validityEndDate        DateTime?
+
+  // Seção 2: Tipo de Projeto (array JSON)
+  projectTypes String? // JSON string: ["SW_DEV", "PRODUCT_DEV", ...]
+
+  // Seção 3: Tipo de Atividade PD&I (array JSON)
+  activityTypes String? // JSON string: ["BASIC_RESEARCH", ...]
+
+  // Seções 4-7: Texto rico (Tiptap JSON)
+  motivacao            String?
+  objetivosGerais      String?
+  objetivosEspecificos String?
+  escopo               String?
+  estrategias          String?
+
+  // Seção 10: Indicadores (JSON object)
+  indicators String?
+
+  // Seções 11, 12, 14, 15, 17: Texto rico
+  inovadoras     String?
+  resultados     String?
+  trlMrlLevel    Int?
+  desafios       String?
+  solucao        String?
+  complementares String?
+
+  // Seção 13: Cronograma overrides
+  cronogramaOverrides String?
+
+  // Metadado de progresso
+  completedSections String?
+
+  // Relações
+  activities    Activity[]
+  professionals Professional[]
+}
+
+model Activity {
+  id            String  @id @default(cuid())
+  planId        String
+  plan          Plan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  orderIndex    Int
+  name          String
+  description   String?
+  justification String?
+  startDate     String?
+  endDate       String?
+  activeMonths  String? // JSON string: [1, 2, 3, 5, 6]
+}
+
+model Professional {
+  id                 String  @id @default(cuid())
+  planId             String
+  plan               Plan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  orderIndex         Int
+  name               String
+  education          String?
+  degree             String?
+  miniCv             String?
+  activityAssignment String?
+  hiringType         String?
+  directIndirect     String?
+}
+
+model Snippet {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  targetSection Int
+  content       String   // Tiptap JSON as string
+  images        String?  // JSON array of URLs/paths
+}
