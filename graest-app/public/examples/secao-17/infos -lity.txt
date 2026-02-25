@@ -1,0 +1,25 @@
+A Universidade do Estado do Amazonas - UEA, instituição pública de ensino superior responsável pela execução deste projeto, foi criada em fevereiro de 2001 por meio da Lei Estadual nº 2.637/2001 e tem como objetivo promover a educação, desenvolvendo o conhecimento científico, particularmente sobre a Amazônia, conjuntamente com os valores éticos capazes de integrar o homem a sociedade e de aprimorar a qualidade dos recursos humanos existentes na região, e sua missão institucional e ser um instrumento de formação profissional e de acesso ao ensino superior.
+Esta unidade da UEA dispõe de um quadro de professores com sólida formação acadêmica e com larga experiência nas atividades de ensino, pesquisa e extensão, atuantes no mercado e com trabalhos relevantes desenvolvidos para diversas empresas situadas no Polo Industrial de Manaus – PIM
+
+LIMITES DO ESCOPO: Neste projeto será desenvolvida uma solução tecnológica composta por um aplicativo mobile multiplataforma (Android e iOS) e integração via API para gerenciamento de dispositivos Bluetooth, compatível com a linha Lity Consumer e outros fabricantes.
+
+PREMISSAS:
+•	A empresa deverá fornecer protocolo de comunicação BT e WIfi dos dispositivos (Headphone e Ring);
+•	A empresa deverá fornecer o RING e o Headphone para o desenvolvimento do projeto;
+•	As aplicações são cliente-servidor e necessitam de um serviço em nuvem para armazenar dados dos usuários;
+
+PRODUTOS FINAIS:
+
+RISCOS:
+Risco	Ação	Responsável
+Descontinuidade de versão de 
+software utilizados nos projetos	Trabalhar com versão estáveis 
+e resistentes de sistemas 
+operacionais	UEA
+Incompatibilidade de softwares 
+e sistemas utilizados no projeto	Na fase inicial do projeto deve
+se fazer ampla pesquisa de 
+todos os softwares, hardwares e 
+sistemas que serão utilizados 
+para verificar sua 
+compatibilidade.	UEA

@@ -1,0 +1,72 @@
+3.1 Objetivo Principal
+
+O objetivo geral deste projeto é o desenvolvimento de um protótipo composto por hardware, software embarcado e interfaces de visualização. O sistema terá a capacidade de aquisição e processamento de dados em tempo real sobre o status das operações e paradas, permitindo identificar o andamento das atividades, interrupções e falhas de equipamentos e processos nos postos de trabalho, integrando estes dados com o sistema de MES (Manufacturing Execution System) da empresa cliente, dentro dos princípios da Indústria 4.0. O projeto utilizará tecnologias avançadas de automação, comunicação e IoT, possibilitando a coleta e análise de dados em tempo real para otimizar a produção. Além disso, contará com alertas automatizados para situações críticas, possibilitando uma resposta rápida e eficiente, alinhada com as práticas de manufatura inteligente e otimização de processos característicos da Indústria 4.0.
+3.2 Objetivos Específicos
+Desenvolver um protótipo de sistema de monitoramento de paradas para uma linha industrial requer delimitar as atividades do projeto e garantir que o protótipo atenda aos requisitos básicos de monitoramento, precisão e usabilidade. Abaixo estão os módulos no qual o projeto está submetido em conjunto com seus objetivos específicos:
+
+•	Módulo de Autenticação e Autorização;
+o	Garantir acesso seguro ao sistema, implementando autenticação por login e senha com criptografia de dados.
+o	Oferecer controle de acesso baseado em funções, permitindo a definição de permissões específicas para operadores, gestores e administradores.
+o	Monitorar tentativas de acesso não autorizadas e registrar logs para auditoria.
+
+•	Módulo de Geração de relatórios;
+o	Automatizar a criação de relatórios históricos e em tempo real, abrangendo indicadores como eficiência operacional, tempos de parada e produtividade.
+o	Permitir exportação de relatórios em formatos como PDF e CSV para análise externa.
+o	Facilitar a personalização de relatórios, ajustando períodos, métricas e agrupamentos de dados conforme as necessidades dos usuários.
+
+•	Módulo de Gerenciamento de Dados;
+o	Armazenar e organizar dados coletados em um banco de dados relacional com integridade e consistência garantidas.
+o	Implementar mecanismos para filtragem e agregação de dados, permitindo análises detalhadas e segmentadas.
+o	Garantir backup automático e recuperação de dados para evitar perdas em casos de falhas.
+
+•	Módulo de Operação e Manutenção de Equipamentos;
+o	Monitorar o status operacional dos equipamentos, como condições de funcionamento, paradas e falhas.
+o	Fornecer métricas de manutenção, incluindo tempo médio entre falhas (MTBF) e tempo médio de reparo (MTTR).
+o	Facilitar o planejamento de manutenções preditivas e preventivas, minimizando o tempo de inatividade.
+
+•	Módulo de Produção e Ciclo de Trabalho;
+o	Acompanhar o ciclo de produção em tempo real, desde o início até a finalização de cada etapa.
+o	Monitorar indicadores como taxa de utilização de equipamentos, tempo de ciclo e produtividade por máquina ou setor.
+o	Detectar gargalos operacionais e fornecer dados para otimização do fluxo de trabalho.
+
+•	Módulo de Alertas;
+o	Detectar e notificar imediatamente falhas, paradas e outros eventos críticos na linha de produção.
+o	Configurar alertas por níveis de criticidade, garantindo que eventos mais graves tenham prioridade de resposta.
+o	Oferecer um histórico de alertas para análise posterior e melhoria contínua do sistema.
+
+•	Módulo de Visualização;
+o	Fornecer dashboards interativos para exibição de dados operacionais e indicadores chave de desempenho.
+o	Garantir a responsividade da interface para uso em desktops, tablets e smartphones.
+o	Permitir a personalização dos elementos visuais, como gráficos e tabelas, de acordo com as preferências dos usuários.
+
+•	Módulo de Aquisição de Dados;
+o	Capturar dados de sensores e dispositivos industriais em tempo real, garantindo precisão e confiabilidade.
+o	Processar e filtrar dados brutos para eliminar ruídos e inconsistências antes do armazenamento.
+o	Assegurar integração com protocolos de comunicação industrial, como Modbus e Ethernet/IP, para compatibilidade com diferentes dispositivos.
+
+
+Além desses módulos, também vale se destacar outras frentes abordadas no projeto, como pode ser visto abaixo: 
+
+•	Desenvolvimento do Back-End e Front-End
+o	Utilizar Django para o desenvolvimento do back-end, garantindo uma estrutura robusta para a manipulação e armazenamento dos dados;
+o	Implementar o back-end em Django para gerenciar os dados recebidos das sinaleiras e dos sensores;
+o	Criar APIs RESTful para facilitar a comunicação entre o back-end e o front-end;
+o	Implementar um banco de dados relacional, como PostgreSQL ou MySQL, para armazenar os registros de status das operações;
+o	Criar uma interface gráfica em HTML, CSS e JavaScript para visualização em tempo real dos dados coletados; 
+o	Utilizar frameworks como React ou Vue.js para proporcionar uma experiência de usuário dinâmica e responsiva;
+o	Desenvolver dashboards com gráficos, status em tempo real e alertas automáticos;
+o	Permitir que acesso status das operações remotamente por meio de interfaces front-end intuitivas;
+o	Integração ao sistema padrão da empresa.
+
+•	Desenvolvimento de Hardware e Aquisição de Dados
+o	Criar um circuito eletrônico que capte sinais das sinaleiras das máquinas para identificar o status das operações (em andamento, parado, em falha);
+o	Desenvolver interfaces de comunicação que conectem sensores e atuadores aos controladores programáveis (CLPs) ou microcontroladores;
+o	Assegurar comunicação eficiente usando protocolos como Modbus, Profibus ou Ethernet/IP;
+o	Integrar os dados recebidos através de API ao back-end desenvolvido em Django.
+
+•	Coletar Dados Operacionais para Validar o Hardware
+o	Realizar a coleta contínua de dados dos equipamentos da linha de produção para validar a eficácia do protótipo desenvolvido;
+o	Utilizar esses dados para refinar as funcionalidades do sistema supervisório.
+
+•	Publicação Científica e Tecnológica
+o	Elaboração e publicação de artigos científicos e tecnológicos que compartilhem as inovações e resultados alcançados durante o desenvolvimento do projeto

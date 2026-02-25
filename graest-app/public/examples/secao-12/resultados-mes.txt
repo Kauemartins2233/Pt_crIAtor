@@ -1,0 +1,50 @@
+Os resultados esperados no desenvolvimento de um sistema de monitoramento de uma linha industrial variam conforme a perspectiva dos profissionais envolvidos. Para operadores, gestores e técnicos de produção, o foco está em eficiência operacional, precisão das informações e usabilidade do sistema. Já para a área acadêmica e de engenharia, os resultados esperados estão relacionados à eficiência do hardware, à robustez da comunicação e à qualidade da implementação técnica. Abaixo estão os resultados esperados sob essas duas perspectivas:
+
+Na Perspectiva dos Operadores e Gestores Industriais
+1. Monitoramento Contínuo e em Tempo Real
+•	Resultado Esperado: O sistema deve fornecer informações precisas e contínuas sobre o status das operações, identificando condições de funcionamento, paradas programadas e falhas inesperadas em tempo real.
+•	Indicador de Sucesso: Dados atualizados em intervalos curtos (segundos) exibidos em dashboards de fácil interpretação, permitindo rápidas intervenções.
+	
+2. Emissão de Alertas Automáticos
+•	Resultado Esperado: O sistema deve emitir alertas automáticos para paradas, falhas ou gargalos na linha de produção, permitindo ações corretivas rápidas.
+•	Indicador de Sucesso: Alertas recebidos via e-mail, notificações push ou avisos sonoros/visuais no sistema, com baixa taxa de falsos positivos.
+
+3. Geração de Relatórios de Desempenho
+•	Resultado Esperado: O sistema deve gerar relatórios automáticos que detalhem a eficiência da linha, os tempos de parada e os principais problemas detectados.
+•	Indicador de Sucesso: Relatórios personalizados em formatos como PDF e CSV, disponíveis para análise diária, semanal ou mensal.
+
+4. Interface Gráfica Intuitiva e Personalizável
+•	Resultado Esperado: A interface deve ser intuitiva, permitindo fácil visualização do status das operações e personalização dos dados exibidos.
+•	Indicador de Sucesso: Dashboards desenvolvidos com React ou React Native, com filtros por máquina, setor e período.
+
+5. Redução do Tempo de Inatividade
+•	Resultado Esperado: A capacidade de monitorar e identificar problemas rapidamente deve reduzir significativamente os tempos de parada não planejada.
+•	Indicador de Sucesso: Redução mensurável no tempo total de inatividade da linha de produção após a implementação do sistema.
+
+Na Perspectiva da Área Acadêmica e de Engenharia
+1. Precisão e Robustez do Hardware
+•	Resultado Esperado: O hardware deve capturar sinais dos sensores e sinaleiras de forma precisa e resistente às interferências típicas do ambiente industrial.
+•	Indicador de Sucesso: Alta relação sinal-ruído e resistência a variações ambientais, como vibração, umidade e temperatura.
+
+2. Eficiência dos Protocolos de Comunicação
+•	Resultado Esperado: O sistema deve implementar protocolos industriais como Modbus eEthernet/IP para garantir comunicação rápida e confiável.
+•	Indicador de Sucesso: Transmissão contínua e com baixa latência, sem perda de dados ou falhas de conexão.
+
+3. Escalabilidade e Flexibilidade do Sistema
+•	Resultado Esperado: A arquitetura deve ser modular, permitindo a adição de novos sensores e máquinas sem grandes alterações no sistema.
+•	Indicador de Sucesso: Expansão fácil com novos dispositivos e integração rápida com sistemas existentes.
+
+4. Armazenamento e Processamento Eficientes
+•	Resultado Esperado: O sistema deve armazenar grandes volumes de dados em bancos de dados como PostgreSQL ou MySQL, garantindo acesso rápido e eficiente.
+•	Indicador de Sucesso: Consultas rápidas e recuperação eficiente de dados históricos para análises e geração de relatórios.
+
+5. Desenvolvimento de Software com Código Limpo e Modular
+•	Resultado Esperado: O código desenvolvido em Django e React deve ser modular e de fácil manutenção, permitindo futuras atualizações e expansões.
+•	Indicador de Sucesso: Capacidade de adicionar novas funcionalidades ou corrigir problemas sem grandes reescritas de código.
+
+6. Custo-Efetividade da Solução
+•	Resultado Esperado: O sistema deve ser desenvolvido com componentes de baixo custo, mantendo alta qualidade e desempenho.
+•	Indicador de Sucesso: O custo total de implementação deve ser significativamente menor que soluções comerciais disponíveis no mercado.
+7. Publicações Científicas
+•	Resultado Esperado: Publicação de artigos científicos e tecnológicos que compartilhem as inovações e resultados alcançados durante o desenvolvimento do projeto. desenvolvido.
+

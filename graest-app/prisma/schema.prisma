@@ -64,6 +64,7 @@ model Plan {
   // Relações
   activities    Activity[]
   professionals Professional[]
+  materials     Material[]
 }
 
 model Activity {
@@ -77,6 +78,7 @@ model Activity {
   startDate     String?
   endDate       String?
   activeMonths  String? // JSON string: [1, 2, 3, 5, 6]
+  subActivities String? // JSON string: ["sub1", "sub2"]
 }
 
 model Professional {
@@ -91,6 +93,18 @@ model Professional {
   activityAssignment String?
   hiringType         String?
   directIndirect     String?
+}
+
+model Material {
+  id          String   @id @default(cuid())
+  planId      String
+  plan        Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  type        String   // "file" | "text"
+  filename    String?
+  filePath    String?
+  mimeType    String?
+  textContent String?
+  createdAt   DateTime @default(now())
 }
 
 model Snippet {

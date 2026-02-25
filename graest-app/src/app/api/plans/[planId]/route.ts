@@ -25,7 +25,10 @@ function parseJsonFields(plan: any) {
       ...a,
       activeMonths: a.activeMonths && typeof a.activeMonths === 'string'
         ? JSON.parse(a.activeMonths)
-        : a.activeMonths,
+        : (a.activeMonths ?? []),
+      subActivities: a.subActivities && typeof a.subActivities === 'string'
+        ? JSON.parse(a.subActivities)
+        : (a.subActivities ?? [""]),
     }));
   }
   return parsed;
@@ -93,6 +96,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                   startDate?: string;
                   endDate?: string;
                   activeMonths?: number[];
+                  subActivities?: string[];
                 },
                 index: number
               ) => ({
@@ -106,6 +110,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                 activeMonths: a.activeMonths != null && typeof a.activeMonths !== 'string'
                   ? JSON.stringify(a.activeMonths)
                   : (a.activeMonths ?? null),
+                subActivities: a.subActivities != null && typeof a.subActivities !== 'string'
+                  ? JSON.stringify(a.subActivities)
+                  : (a.subActivities ?? null),
               })
             ),
           });

@@ -3,6 +3,7 @@
 import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
+import { ExampleViewer } from "@/components/editor/ExampleViewer";
 import { TRL_LEVELS } from "@/lib/constants";
 import type { JSONContent } from "@tiptap/react";
 
@@ -26,11 +27,16 @@ export function Step12Resultados() {
       </h2>
 
       <RichTextEditor
+        section={12}
+        fieldName="resultados"
         content={formData.resultados}
         onChange={(content) => updateField("resultados", content)}
         placeholder="Descreva os resultados esperados do projeto..."
       />
-      <SnippetPicker sectionNumber={12} onInsert={handleSnippetInsert("resultados")} />
+      <div className="flex items-center gap-2">
+        <SnippetPicker sectionNumber={12} onInsert={handleSnippetInsert("resultados")} />
+        <ExampleViewer sectionNumber={12} />
+      </div>
 
       {/* TRL Level Selector */}
       <div className="space-y-3">

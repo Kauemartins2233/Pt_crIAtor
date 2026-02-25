@@ -3,6 +3,7 @@
 import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
+import { ExampleViewer } from "@/components/editor/ExampleViewer";
 import type { JSONContent } from "@tiptap/react";
 
 export function Step05Objetivos() {
@@ -24,19 +25,38 @@ export function Step05Objetivos() {
         5. Objetivos Gerais e Específicos
       </h2>
 
-      <RichTextEditor
-        content={formData.objetivosGerais}
-        onChange={(content) => updateField("objetivosGerais", content)}
-        placeholder="Descreva os objetivos gerais do projeto..."
-      />
-      <SnippetPicker sectionNumber={5} onInsert={handleSnippetInsert("objetivosGerais")} />
+      <div className="space-y-2">
+        <h3 className="text-sm font-semibold text-gray-700">5.1 Objetivo Geral</h3>
+        <p className="text-sm text-gray-500">
+          Descreva o objetivo principal (macro) do projeto.
+        </p>
+        <RichTextEditor
+          section={5}
+          fieldName="objetivosGerais"
+          content={formData.objetivosGerais}
+          onChange={(content) => updateField("objetivosGerais", content)}
+          placeholder="Descreva os objetivos gerais do projeto..."
+        />
+        <SnippetPicker sectionNumber={5} onInsert={handleSnippetInsert("objetivosGerais")} />
+      </div>
 
-      <RichTextEditor
-        content={formData.objetivosEspecificos}
-        onChange={(content) => updateField("objetivosEspecificos", content)}
-        placeholder="Descreva os objetivos específicos do projeto..."
-      />
-      <SnippetPicker sectionNumber={5} onInsert={handleSnippetInsert("objetivosEspecificos")} />
+      <div className="space-y-2">
+        <h3 className="text-sm font-semibold text-gray-700">5.2 Objetivos Específicos</h3>
+        <p className="text-sm text-gray-500">
+          Liste os objetivos detalhados e mensuráveis, ligados às atividades do projeto.
+        </p>
+        <RichTextEditor
+          section={5}
+          fieldName="objetivosEspecificos"
+          content={formData.objetivosEspecificos}
+          onChange={(content) => updateField("objetivosEspecificos", content)}
+          placeholder="Descreva os objetivos específicos do projeto..."
+        />
+        <div className="flex items-center gap-2">
+          <SnippetPicker sectionNumber={5} onInsert={handleSnippetInsert("objetivosEspecificos")} />
+          <ExampleViewer sectionNumber={5} />
+        </div>
+      </div>
     </div>
   );
 }

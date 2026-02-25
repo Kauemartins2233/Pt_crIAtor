@@ -1,0 +1,25 @@
+A Indústria 4.0, também chamada de Quarta Revolução Industrial, refere-se à transformação da indústria tradicional por meio de tecnologias avançadas, como Internet das Coisas (IoT), Big Data, inteligência artificial (IA), e automação inteligente. Uma das áreas mais significativas dentro da Indústria 4.0 é o monitoramento de fábricas, que permite acompanhar e otimizar o desempenho das operações industriais em tempo real (fábrica online). O desenvolvimento deste projeto apresenta diversas características inovadoras que o diferenciam de soluções tradicionais, proporcionando maior eficiência, acessibilidade e inteligência para o monitoramento de linhas de produção. É possível observar abaixo as principais inovações:
+
+Monitoramento em Tempo Real com Comunicação Eficiente
+O sistema permite a aquisição e transmissão contínua de dados em tempo real por meio de protocolos industriais como Modbus e Ethernet/IP. Isso garante informações sempre atualizadas e decisões rápidas, reduzindo o tempo de resposta às falhas. A Internet das Coisas (IoT) fará a conexão de dispositivos físicos à internet para coletar, compartilhar e agir sobre dados. O objetivo é automatizar processos, monitorar condições e melhorar a eficiência na coleta de dados.
+
+
+Integração com Tecnologias Web e Móveis
+Utilizando Django no back-end e React ou React Native no front-end, o sistema oferece uma interface moderna e intuitiva para monitoramento via web ou aplicativo móvel. Essa flexibilidade permite que operadores e gestores acompanhem o status das operações de qualquer lugar, facilitando a mobilidade e a gestão remota. A integração de IoT com tecnologias web e móveis é fundamental para criar sistemas conectados, que podem ser controlados e monitorados remotamente. Isso permite que usuários interajam com dispositivos IoT por meio de aplicativos móveis, interfaces web e APIs. Abaixo está uma visão detalhada de como essa integração funciona e como será implementada:
+1.	Dispositivos IoT (sensores/atuadores): Coletam dados e enviam para um servidor.
+2.	Gateway: Um dispositivo intermediário que conecta os sensores à internet, quando necessário.
+3.	Nuvem: Armazena e processa os dados enviados pelos dispositivos.
+4.	APIs (Interfaces de Programação de Aplicativos): Permitem que sistemas web e móveis acessem os dados na nuvem ou enviem comandos aos dispositivos.
+5.	Aplicativos Web/Móveis: Apresentam interfaces para o usuário controlar dispositivos ou visualizar dados.
+
+Baixo Custo e Fácil Implementação
+A utilização de microcontroladores e CLPs acessíveis, combinada com tecnologias open-source, torna o sistema mais econômico em comparação com soluções proprietárias. Isso possibilita a implementação em indústrias de pequeno e médio porte sem demandar grandes investimentos. Um sistema de IoT de baixo custo para automação industrial e implementação da Indústria 4.0 é possível com a escolha estratégica de componentes e soluções open-source. O objetivo é minimizar os custos iniciais enquanto se mantém a eficiência e funcionalidade. Aqui listamos alguns dos componentes:
+a)	Escolha de Hardware Econômico tais como microcontroladores: ESP8266, ESP32, Raspberry Pi 5.0, Atuadores Simples;
+b)	Plataformas IoT de Código Aberto: Node-RED, ThingsBoard, OpenHAB ou Home Assistant;
+c)	Protocolos de Comunicação: MQTT, HTTP/HTTPS.
+
+Expansão Modular e Escalabilidade
+O projeto é projetado de forma modular, permitindo a fácil adição de novas máquinas e sensores à medida que a linha de produção cresce. Essa escalabilidade garante que o sistema acompanhe a evolução da fábrica sem grandes modificações na infraestrutura existente.
+
+Publicação de Artigos Científicos
+Além das inovações tecnológicas, o projeto também se destaca pelo seu potencial acadêmico. Pretende-se publicar artigos científicos que detalham as metodologias e resultados obtidos durante o desenvolvimento, compartilhando as descobertas e contribuindo para o avanço do conhecimento na área de automação industrial e monitoramento de processos. Essa iniciativa visa fomentar a disseminação de práticas inovadoras e promover o reconhecimento científico do projeto, além de colaborar para a evolução contínua das soluções de Indústria 4.0.

@@ -1,0 +1,7 @@
+1. Protocolos de Comunicação: Será feita uma ampla pesquisa nos meses iniciais do projeto, a respeito das máquinas presentes na linha-piloto, onde serão identificadas a existência ou não de protocolos de comunicação, para desta forma desenvolver a integração com o sistema proposto neste projeto. Além disso, em caso de postos manuais de operação, serão utilizados outros métodos através da tecnologia disponível para anotar as informações coletadas de cada posto.
+
+2. Organização e Estimar volume de dados: Assim como todo projeto que possui registro em tempo real de dados de processo, será feita uma estimativa do volume de dados para determinado tempo de operação da linha. Desta forma, a empresa terá uma estimativa válida da quantidade de memória é necessária para alocação de dados deste sistema, evitando o bloqueamento da aplicação por falta de espaço de memória nos servidores internos ou externos.
+
+3. Utilização de sensores precisos: Para problemas de medição na contagem dos produtos fabricados, e a meta de cada posto, serão utilizados sensores precisos com uma taxa de erro predeterminada para utilização nos cálculos dos índices relevantes, evitando desta forma informações inválidas.
+
+4. Utilização de um sistema intranet: Para evitar que o sistema seja a porta de entrada para ataques à segurança cibernética da empresa, será utilizado um sistema intranet que exclui qualquer utilização de recursos externos, tornando assim a aplicação segura dentro dos padrões fornecidos para a rede utilizada na empresa em questão.

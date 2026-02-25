@@ -3,7 +3,8 @@
 import { cn } from "@/lib/utils";
 import { WIZARD_SECTIONS } from "@/lib/constants";
 import { usePlanStore } from "@/lib/store";
-import { Check } from "lucide-react";
+import { Check, Paperclip } from "lucide-react";
+import Link from "next/link";
 
 export function WizardSidebar() {
   const { currentStep, setStep, completedSections } = usePlanStore();
@@ -11,6 +12,15 @@ export function WizardSidebar() {
   return (
     <aside className="w-72 shrink-0 border-r border-gray-200 bg-white">
       <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto p-4">
+        {/* Materials link */}
+        <Link
+          href={`/plans/${usePlanStore.getState().planId}/materials`}
+          className="mb-4 flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-3 py-2.5 text-sm font-medium text-purple-700 hover:bg-purple-100 transition-colors"
+        >
+          <Paperclip size={16} />
+          Materiais de Contexto
+        </Link>
+
         <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Seções do Plano
         </h2>

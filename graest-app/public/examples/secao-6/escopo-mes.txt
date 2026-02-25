@@ -1,0 +1,256 @@
+Propõe-se o desenvolvimento de um sistema inteligente de monitoramento para identificar e gerenciar paradas na linha Açaí da fábrica, alinhado aos princípios da Indústria 4.0. A solução será composta por um back-end robusto desenvolvido em Django, um front-end dinâmico implementado com React e uma integração eficiente com hardware, utilizando CLPs e microcontroladores para coleta dos dados. O sistema proporcionará dashboards interativos para monitoramento remoto, análise detalhada de desempenho e emissão de alertas automáticos, otimizando a gestão operacional e as estratégias de manutenção das operações.
+ 
+Figura 2 - Diagrama dos Módulos do Sistema.
+
+Este sistema inteligente de monitoramento é dividido em 8 módulos principais, os quais são:
+•	Módulo de Autenticação e Autorização;
+•	Módulo de Geração de relatórios;
+•	Módulo de Gerenciamento de Dados;
+•	Módulo de Operação e Manutenção de Equipamentos;
+•	Módulo de Produção e Ciclo de Trabalho;
+•	Módulo de Alertas;
+•	Módulo de Visualização;
+•	Módulo de Aquisição de Dados;
+Dentre eles, o Módulo de operação e manutenção de equipamentos e o Módulo de produção e ciclo de trabalho são diretamente relacionados aos dados que serão coletados, e a forma como serão processados para serem enviados para o módulo de apresentação, isso indica que o sistema será flexível para integração de novos módulos.
+
+Desenvolvimento de Back-End
+Para o desenvolvimento de um sistema seguro e escalável, esta etapa do projeto está relacionada aos módulos gerais do Back-end, e suas funcionalidades estão apresentadas abaixo:
+
+1.	Módulo Autenticação e Autorização:
+•	Funcionalidades: Implementar login e controle de acesso para proteger os dados e funcionalidades. Implementar a divisão entre grupos de permissões, os quais podem ter acesso a diferentes informações, e diferentes permissões de edição e acesso.
+
+2.	Módulo de Geração de Relatórios
+•	Funcionalidades:  Compilar dados históricos e gerar relatórios em formatos como PDF e CSV, o que será gerado para cada uma das formas de visualização do aplicativo, permitindo que o os dados do sistema possam ser exportados para outras plataformas, e até mesmo apresentada 
+
+3.	Módulo de Gerenciamento de dados:
+•	Funcionalidades:
+o	Gerenciamento de Dados: Armazenar dados recebidos dos sensores e sinaleiras em um banco de dados relacional (PostgreSQL ou MySQL), garantindo integridade e consistência. Criação de APIs RESTful: Fornecer endpoints para comunicação entre o front-end e o back-end, facilitando a troca de dados com microcontroladores e CLPs:
+o	Processamento de Dados em Tempo Real: Analisar dados recebidos em tempo real, detectar falhas ou paradas e gerar alertas automáticos.
+o	Gestão de Configurações do Sistema: Permitir configurar parâmetros de monitoramento e personalizar o sistema conforme a necessidade da linha de produção.
+o	Armazenamento Seguro: Implementar backups automáticos para proteger os dados.
+o	Integração com MES: Sincronizar dados coletados com o Manufacturing Execution System para otimização de processos e decisões estratégicas.
+o	Validação dos Dados: Garantir que os dados recebidos sejam precisos e filtrados para evitar ruídos ou inconsistências.
+
+Desenvolvimento do Front-End
+4.	Módulo de Visualização:
+•	Funcionalidades: Exibir dados atualizados da linha de produção, como status das máquinas (em andamento, parado, em falha) em dashboards interativos, desenvolvidos para proporcionar uma interface amigável que facilite a navegação e o entendimento dos dados por operadores e gestores. Esses dashboards também apresentarão gráficos de desempenho e relatórios históricos de forma clara e interativa, incluindo tempos de inatividade e métricas de produtividade. Para garantir maior eficiência, o sistema exibirá alertas visuais em tempo real, destacando falhas ou paradas críticas por meio de cores, ícones e notificações, permitindo respostas rápidas.
+
+5.	Módulo de Alertas:
+•	Funcionalidades: O módulo de visualização de alertas no front-end é projetado para garantir que operadores e gestores tenham acesso rápido e claro a informações críticas sobre a linha de produção. Ele exibirá alertas em tempo real relacionados a falhas, paradas inesperadas e outras condições operacionais que demandem atenção imediata. Os alertas serão apresentados de forma visualmente intuitiva, utilizando cores padronizadas (como vermelho para falhas críticas e amarelo para avisos), ícones representativos e notificações contextuais.
+
+6.	Módulo de Operação e Manutenção de Equipamentos:
+•	Funcionalidades: Os dados coletados em tempo real sobre os equipamentos fornecem insights essenciais para otimizar sua operação e reduzir custos relacionados à manutenção. Suas funcionalidades são a visualização dos seguintes dados: 
+o	Status do equipamento: Ex.: PARADO, PRODUZINDO, EM MANUTENÇÃO, entre outros. 
+o	OEE (Overall Equipment Effectiveness): Métrica que combina disponibilidade, desempenho e qualidade. 
+o	Tempo de funcionamento e inatividade dos equipamentos. 
+o	Frequência e tipo de manutenção realizada (preventiva/corretiva).
+
+7.	Módulo de Produção e Ciclo de trabalho: 
+•	Funcionalidades: dados relacionados ao ciclo de produção e à utilização de equipamentos é essencial para maximizar a produtividade e reduzir desperdícios. As principais funcionalidades deste módulo são a apresentação dos seguintes dados:
+o	Taxa de utilização dos equipamentos.
+o	Tempo de ciclo de produção.
+o	Quantidade de produtos fabricados.
+o	Dados sobre paradas de máquina e manutenções corretivas/preventivas.
+
+Assim como no módulo anterior, estes dados permitem obter indicadores Relevantes, que serão também apresentados no dashboard e poderão ser exportados em relatório:
+o	Tempo de Setup das Máquinas: Reflete a eficiência nas mudanças de configuração, reduzindo atrasos.
+o	Produtividade: Medido pelo número de unidades produzidas por hora.
+o	Tempo de Inatividade Não Planejada: Monitoramento e antecipação de falhas evitam interrupções inesperadas.
+o	Redução de Perdas e Retrabalhos: Demonstra a melhoria na qualidade e eficiência do processo produtivo.
+
+Desenvolvimento do Hardware e IoT
+8.	Módulo de Aquisição de Dados 
+•	Funcionalidade:
+o	Aquisição de Dados em Tempo Real: Captar sinais das sinaleiras e sensores para identificar o status das máquinas (em andamento, parado, em falha).
+o	Microcontroladores: Utilizar microcontroladores para processar e transmitir os dados dos sensores de forma eficiente.
+o	Controladores Lógicos Programáveis (CLPs): Integrar CLPs para controle preciso e confiável dos dispositivos industriais.
+o	Circuitos Eletrônicos: Desenvolver circuitos eletrônicos robustos para a aquisição e processamento dos sinais das máquinas.
+o	Protocolos de Comunicação: Implementar protocolos industriais como Modbus, Ethernet/IP, ou MQTT para garantir a comunicação entre sensores, microcontroladores e o sistema supervisório.
+o	Interfaces de Comunicação: Criar interfaces que conectem sensores e atuadores aos controladores para coleta e envio de dados.
+o	Robustez Industrial: Garantir que o hardware resista a ambientes industriais adversos com variações de temperatura, umidade, poeira e vibração.
+o	Filtros de Ruído: Aplicar filtros eletrônicos para evitar interferências e garantir precisão na coleta de dados.
+o	Transmissão Contínua de Dados: Assegurar envio constante dos dados para o back-end em tempo real.
+o	Expansibilidade Modular: Desenvolver hardware com possibilidade de adicionar novos sensores e dispositivos facilmente.
+
+Além das inovações tecnológicas e do desenvolvimento de um sistema eficiente e robusto, o projeto também se destaca pelo seu potencial acadêmico e científico. Dentro do escopo do projeto, serão elaborados artigos científicos que detalham as metodologias adotadas, os resultados obtidos e as contribuições tecnológicas para o monitoramento industrial inteligente. Esses artigos serão publicados em periódicos da área de Engenharia e Indústria 4.0, compartilhando as descobertas com a comunidade científica e colaborando para o avanço do conhecimento nesse campo.
+
+4.1 Etapas do Projeto:
+
+Atividade 1 – Planejamento, Coordenação e Gestão do Projeto: Engloba o planejamento estratégico do sistema de monitoramento, definição de marcos importantes, coordenação das equipes de hardware, software e integração, além da gestão eficiente dos recursos necessários para a execução do projeto.
+
+Atividade 2 – Levantamento de Requisitos: Esta atividade envolvem a identificação e documentação das necessidades e expectativas dos stakeholders do projeto. Isso incluirá reuniões e análises de processos para alinhar os objetivos, funcionalidades e restrições do sistema, assegurando que os requisitos sejam claros, completos e alinhados com as necessidades do cliente.
+
+Atividade 3 – Pesquisa Científica e Desenvolvimento: Compreende a fase de pesquisa sobre sistemas de monitoramento industrial existentes, identificação de melhorias e programação do sistema de back-end e front-end para visualização dos dados em tempo real. Também inclui a elaboração de artigos científicos baseados nas pesquisas realizadas e nos desenvolvimentos do sistema. Esses artigos irão abordar a análise dos sistemas de monitoramento industrial existentes, as melhorias identificadas e as metodologias aplicadas no desenvolvimento do back-end e front-end do sistema, com foco na visualização dos dados em tempo real. 
+
+Atividade 4 – Teste, Ajuste, Validação do Hardware e Software Desenvolvidos: Envolve a realização de testes funcionais no hardware de aquisição de dados (microcontroladores e CLPs), testes de software para os componentes back-end e front-end, ajustes nas funcionalidades e validação da precisão do monitoramento da linha industrial.
+
+Atividade 5 – Integração, Treinamento, Implantação e Homologação do Sistema: Inclui a integração completa dos componentes de hardware e software, treinamento dos operadores e gestores na utilização do sistema desenvolvido, documentação detalhada do projeto e entrega da solução de monitoramento para a empresa parceira.
+
+4.2 Estrutura Analítica de Projeto (EAP):
+A Estrutura Analítica do Projeto (EAP) será utilizada no desenvolvimento do sistema de monitoramento para linhas industriais, dividindo o trabalho em atividades gerenciáveis. As atividades específicas serão delineadas da seguinte forma visto na imagem abaixo.
+ 
+Figura 3 - Estrutura Analítica do Projeto.
+
+A fase inicial do projeto compreende atividades administrativas essenciais, como a contratação de recursos, elaboração do plano de trabalho, definição dos marcos de desenvolvimento, formação das equipes e gestão contínua dos recursos e prazos.
+
+Na segunda fase, ocorrerá o levantamento de requisitos, pesquisa de soluções existentes e desenvolvimento integral do sistema, incluindo os principais módulos:
+
+Aquisição de Dados em Tempo Real: Captura de dados dos sensores, microcontroladores e CLPs para monitorar o status das máquinas (em andamento, parado, em falha).
+Integração com o MES: Comunicação com o Manufacturing Execution System para sincronização dos dados e otimização da tomada de decisões.
+Interface Gráfica Intuitiva: Dashboards desenvolvidos com React para visualização em tempo real dos dados coletados.
+Implementação de Protocolos Industriais: Uso de Modbus, Ethernet/IP ou MQTT para comunicação eficiente e segura com os dispositivos industriais.
+
+Essa etapa visa assegurar não apenas a implementação técnica dos módulos, mas também uma interação intuitiva para os usuários finais. Posteriormente, iniciaremos a fase de validação do projeto, onde o sistema será submetido a uma série de testes rigorosos para garantir sua funcionalidade e desempenho:
+
+•	Teste de Funcionalidade: Verificar se o sistema monitorará corretamente o status das máquinas.
+•	Teste de Robustez: Avaliar o comportamento do sistema em ambientes industriais adversos (vibração, temperatura, umidade).
+•	Teste de Tempo de Resposta: Garantir que os dados são processados e exibidos em tempo real.
+•	Teste de Escalabilidade: Assegurar que o sistema pode gerenciar múltiplos dispositivos simultaneamente.
+•	Teste de Segurança: Verificar a proteção dos dados e a segurança das informações transmitidas.
+•	Teste de Usabilidade: Avaliar se a interface gráfica é intuitiva e fácil de usar.
+•	Teste de Interoperabilidade: Garantir a compatibilidade com diferentes microcontroladores, CLPs e sistemas MES.
+
+Na etapa final, os módulos desenvolvidos serão integrados em uma versão final do sistema. Será oferecido um programa de treinamento para capacitar os operadores na utilização eficiente das funcionalidades. Esse treinamento visa maximizar a eficiência operacional e assegurar que o sistema atenda plenamente às necessidades da linha de produção. Essa abordagem garante uma solução robusta, eficiente e intuitiva, alinhada com os avanços da Indústria 4.0 e as demandas de automação e monitoramento industrial.
+
+4.3 Metodologia:
+
+Este projeto possui características quanto a tamanho, legislação, normas, equipe, dentre outras características, que necessitam tanto de uma abordagem preditiva mais tradicional, quanto outras características que necessitam de abordagens mais ágeis. Assim, o Scrum será utilizado em conjunto ao estabelecido tradicionalmente no PMBOK, principalmente o desenvolvimento do software utilizará os ritos Scrum, enquanto outras partes como a pesquisa médica e o desenvolvimento de hardware terão seu método mais aproximado ao waterfall.
+
+O Scrum é uma metodologia ágil para gerenciamento de projetos que se concentra em entregas iterativas e incrementais. A estrutura do Scrum inclui práticas, cerimônias e reuniões que as equipes realizam com regularidade. As etapas do Scrum que serão utilizadas neste projeto serão:
+
+•	Sprint: É o período definido para o trabalho, geralmente entre uma e quatro semanas. Durante o Sprint, a equipe de desenvolvimento se concentra em entregar o que foi planejado. Para este projeto, ficou definido que cada ciclo terá a duração de quatro semanas, com entregas ocorrendo conforme a ordem de prioridade estabelecida no cronograma de atividades da equipe.
+•	Reunião Diária: São reuniões curtas diárias, geralmente de 15 minutos, nas quais a equipe de desenvolvimento se reúne para discutir o progresso do trabalho e quaisquer impedimentos que possam estar enfrentando. Para este projeto, essas reuniões ocorrerão todos os dias no início do expediente, na primeira hora da manhã, para atualizar o status das atividades e identificar possíveis obstáculos.
+•	Planejamento do Sprint: Após a contratação de toda a equipe de bolsistas, a coordenação do projeto pela UEA realizará uma reunião para planejar o Sprint. Nesta reunião, serão definidos os objetivos, as expectativas, as atividades a serem realizadas, as tarefas, as prioridades e os responsáveis por cada tarefa. Após essa reunião, o Cronograma de Atividades Técnicas será atualizado com os nomes dos responsáveis, permitindo que cada um insira o status das suas atividades. O objetivo é refinar todo o planejamento do projeto conforme o cronograma.
+•	Reunião de Kick-Off: Realizada na fase inicial do projeto, tem o objetivo de alinhar todos os detalhes entre os stakeholders envolvidos — cliente, gestor do projeto e membros da equipe. Para este projeto, a reunião de kick-off contará com a participação de toda a equipe da empresa, incluindo a gestão do PD&I, Área da Saúde, Área Tecnológica e os bolsistas do projeto por parte da UEA. Nesta etapa, serão definidos o escopo, as metas, os prazos e os direcionamentos estratégicos.
+•	Revisão do Sprint: Ocorre ao final do Sprint. Para este projeto, espera-se que a Salcomp, por meio de sua gestão técnica, se reúna com toda a equipe de desenvolvimento da UEA para revisar, de forma conjunta, o que foi entregue. Durante esta revisão, a equipe da UEA, representada pelo coordenador, demonstrará e celebrará os resultados do trabalho, verificará se o objetivo do Sprint foi atingido e se o resultado atendeu aos critérios de aceitação. A gestão técnica da Salcomp receberá o produto e realizará a homologação.
+•	Retrospectiva do Sprint: É o evento que finaliza a Sprint ou ciclo de desenvolvimento do produto. Para este projeto, a equipe de desenvolvimento da UEA que participou da revisão do Sprint se reunirá para refletir sobre o ciclo anterior e identificar oportunidades de melhoria. Este será o momento de inspecionar o trabalho realizado, avaliar os pontos mencionados na reunião de revisão e identificar problemas e áreas que podem ser aprimoradas, criando um plano de ação para a próxima Sprint.
+
+4.4 Linguagens de Programação, Ferramentas de Desenvolvimento ou Tecnológicas:
+
+Python – Python é uma linguagem de programação amplamente reconhecida por sua simplicidade, versatilidade e eficiência. Sua sintaxe clara e direta facilita a leitura e escrita do código, o que aumenta a produtividade das equipes de desenvolvimento. Python conta com uma vasta gama de bibliotecas e framework, como o Flask e Django, que permitem o desenvolvimento de sistemas backend robustos, aplicações de inteligência artificial, processamento de imagens e APIs RESTful. Python também é conhecido por sua comunidade ativa, que fornece suporte contínuo e atualizações frequentes. Utilização no Projeto: Python será utilizado no desenvolvimento do backend do aplicativo mobile e em processos de análise de dados. Com o framework Django, será possível criar servidores escaláveis e seguros, gerenciar operações de banco de dados e disponibilizar APIs para integração com dispositivos Bluetooth. Python também será empregado em scripts para automação de processos, manipulação de dados e implementação de funcionalidades específicas, garantindo eficiência no processamento e flexibilidade no desenvolvimento.
+
+GitHub – GitHub é uma plataforma de desenvolvimento colaborativo que utiliza o sistema de controle de versão Git. Ele oferece um ambiente centralizado para armazenar, versionar e gerenciar o código-fonte de projetos, permitindo que equipes trabalhem de forma integrada e organizada. GitHub facilita o rastreamento de mudanças, a revisão de código, a resolução de conflitos e a colaboração assíncrona. Além disso, a plataforma fornece ferramentas para automação, integração contínua e implantação contínua (CI/CD), que ajudam a manter a qualidade e a eficiência do processo de desenvolvimento. Utilização no Projeto: GitHub será utilizado como repositório central para armazenar o código-fonte do aplicativo e dos componentes associados. A equipe de desenvolvimento utilizará GitHub para versionamento de código, gerenciamento de branches, rastreamento de problemas e colaboração em tempo real. Ferramentas como GitHub Actions serão aplicadas para automatizar os processos de build e teste, garantindo a integração contínua e a entrega rápida de novas funcionalidades. A plataforma também facilitará a documentação do projeto e a revisão de código, assegurando a qualidade e a consistência das entregas.
+
+Django – Django é um framework de alto nível para o desenvolvimento de aplicações web em Python. Ele é conhecido por sua segurança, escalabilidade e facilidade de uso. Django permite a criação rápida de aplicações robustas, fornecendo recursos integrados para autenticação, gerenciamento de banco de dados, roteamento de URLs e APIs RESTful. Com Django, é possível desenvolver soluções backend seguras e eficientes, garantindo a integridade dos dados e o desempenho das operações. Utilização no Projeto: Django será utilizado como o backend principal para o aplicativo mobile, gerenciando a lógica de negócios, o armazenamento de dados e a criação de APIs para integração com dispositivos Bluetooth. Django oferecerá uma estrutura segura e escalável para manipular dados de usuários e dispositivos, além de garantir a implementação de funcionalidades como autenticação e controle de acesso. A integração com bibliotecas de Python facilitará o processamento de dados e a análise de informações coletadas, garantindo que o backend ofereça suporte eficiente e confiável ao aplicativo mobile.
+
+Microcontroladores - Os microcontroladores são dispositivos eletrônicos compactos que integram em um único chip uma CPU (Unidade Central de Processamento), memória (RAM e ROM), e interfaces de entrada e saída (I/O). Eles são projetados para executar tarefas específicas em sistemas embarcados, desempenhando um papel crucial em aplicações de automação industrial, dispositivos domésticos, sistemas de controle e projetos eletrônicos em geral.
+
+Os microcontroladores são programáveis e capazes de realizar diversas funções de controle, desde operações simples, como acender LEDs, até processos complexos, como gerenciamento de motores e sensores em tempo real. Eles operam em baixas frequências (normalmente entre 1 MHz e 200 MHz) e consomem pouca energia, o que os torna ideais para aplicações portáteis e de longa duração.
+
+No projeto de um sistema de monitoramento de uma linha industrial, os microcontroladores desempenham um papel fundamental na aquisição e transmissão de dados dos equipamentos em tempo real. Eles são responsáveis por capturar informações dos sensores e sinaleiras das máquinas, como o status de operação (em funcionamento, parada ou falha), temperatura, pressão e velocidade. Esses dados são processados localmente no microcontrolador, o que permite aplicar filtros de ruído e lógicas de controle simples para garantir que apenas informações relevantes e precisas sejam transmitidas ao sistema supervisório.
+
+A comunicação entre os microcontroladores e o servidor pode ser realizada utilizando protocolos como Modbus, Ethernet/IP, I2C ou UART, facilitando a integração com o back-end desenvolvido em Django. Por meio dessa comunicação, os dados coletados são enviados para o servidor, onde são armazenados e disponibilizados para visualização em dashboards em tempo real. A Figura 3, por exemplo, mostra o esquemático de um microcontrolador qualquer.
+
+ 
+Figura 4 - Diagrama de um microcontrolador.
+
+Controlador Lógico-Programável (CLP) - Um CLP (Controlador Lógico Programável) é um dispositivo eletrônico usado para automação e controle de processos industriais. Ele foi desenvolvido para substituir os circuitos de relés eletromecânicos e facilitar o gerenciamento de máquinas e sistemas automatizados. O CLP é projetado para operar em ambientes industriais adversos e possui características como resistência a poeira, umidade, vibração e variações de temperatura, o que garante alta confiabilidade e durabilidade em condições extremas.
+
+Em sua estrutura básica, um CLP é composto por uma CPU (Unidade Central de Processamento), memória e módulos de entrada e saída (I/O). A CPU é responsável por processar as instruções do programa e controlar o funcionamento do sistema. A memória armazena o programa de controle e os dados temporários necessários para a execução das tarefas. Os módulos de entrada permitem que o CLP receba sinais de dispositivos como sensores, botões e chaves de fim de curso, enquanto os módulos de saída permitem o envio de comandos para atuadores, motores, válvulas, sinaleiras e outros dispositivos.
+
+Os CLPs utilizam linguagens de programação específicas, como Ladder, Figura 2, (Linguagem Ladder), Texto Estruturado (ST) e Blocos Funcionais (FBD). A linguagem Ladder, por exemplo, é amplamente usada por se assemelhar aos esquemas de relés elétricos, facilitando o aprendizado e a implementação de lógicas de controle.
+
+Em um sistema de automação industrial, o CLP atua como o cérebro do processo, monitorando os sinais dos sensores em tempo real, processando essas informações e tomando decisões lógicas com base no programa previamente instalado. Quando detecta uma condição específica, como uma peça em determinada posição ou uma temperatura elevada, o CLP pode executar ações automáticas, como acionar um motor, abrir uma válvula ou enviar um alerta visual por meio de sinaleiras.
+
+No contexto de um sistema de monitoramento de uma linha industrial, o CLP é essencial para garantir o monitoramento contínuo e o controle eficiente das operações. Ele coleta dados sobre o status das máquinas, como funcionamento, parada ou falha, e transmite essas informações para o sistema supervisório. Isso permite que os operadores identifiquem rapidamente problemas, tomem decisões informadas e otimizem o processo produtivo.
+
+A principal vantagem dos CLPs é sua flexibilidade e escalabilidade. É possível reprogramá-los para novas tarefas sem grandes modificações no hardware, o que facilita adaptações em processos industriais. Sua robustez, confiabilidade e capacidade de automação tornam os CLPs indispensáveis para qualquer sistema moderno de controle e supervisão industrial.
+
+ 
+Figura 5 - Linguagem Ladder.
+
+Redes Industriais - Os protocolos de comunicação industriais são conjuntos de regras e padrões que permitem a troca eficiente e confiável de informações entre máquinas, sensores, controladores, e sistemas supervisórios em ambientes industriais. Eles desempenham um papel crucial na automação industrial, garantindo que diferentes dispositivos possam se comunicar de forma sincronizada e sem perda de dados. No sistema, garantem a transmissão confiável dos dados capturados pelo hardware, facilitando o monitoramento em tempo real e a análise dos status das operações. Abaixo, têm-se algumas opções que podem ser utilizadas no projeto.
+
+Protocolo Modbus - O Modbus é um protocolo de comunicação de dados amplamente utilizado em sistemas de automação industrial para facilitar a troca eficiente de informações entre dispositivos eletrônicos. Desenvolvido originalmente em 1979 pela Modicon (agora parte da Schneider Electric), o Modbus se consolidou como uma solução open-source, o que significa que seu uso é gratuito e não requer pagamento de taxas de licenciamento, tornando-o acessível para uma ampla gama de aplicações industriais.
+
+O Modbus é projetado para transmitir dados numéricos e discretos entre Controladores Lógicos Programáveis (CLPs), sensores, atuadores e sistemas supervisórios (SCADA). Ele permite a comunicação de dados em formatos como:
+•	Bits discretos: Entradas e saídas digitais (ligado ou desligado).
+•	Palavra de 16 bits: Entradas e saídas analógicas, registros de dados e estados dos dispositivos.
+Os dados são transmitidos em um formato padronizado, o que facilita a interoperabilidade entre dispositivos de diferentes fabricantes. O protocolo Modbus, como mostrado na Figura 5, utiliza uma arquitetura mestre-escravo, na qual um dispositivo mestre envia solicitações e os dispositivos escravos respondem com os dados solicitados.
+
+ 
+Figura 6 - Protocolo Modbus.
+
+Protocolo Ethernet /IP - O Ethernet/IP (Ethernet Industrial Protocol) é um dos protocolos de comunicação industrial mais utilizados atualmente, especialmente em sistemas de automação que requerem alta velocidade, confiabilidade e integração com redes modernas. Desenvolvido pela ODVA (Open DeviceNet Vendors Association), o Ethernet/IP combina a familiaridade das redes Ethernet padrão com os requisitos específicos dos ambientes industriais, permitindo a comunicação eficiente entre dispositivos como CLPs (Controladores Lógicos Programáveis), sensores, atuadores e sistemas supervisórios (SCADA).
+
+O Ethernet/IP utiliza o padrão Ethernet IEEE 802.3 para transmissão de dados e o protocolo TCP/IP como base para comunicação. Ele implementa a CIP (Common Industrial Protocol) para possibilitar a troca estruturada de informações entre dispositivos industriais. A arquitetura do Ethernet/IP permite tanto a comunicação cíclica (em tempo real) quanto a comunicação acíclica (sob demanda), oferecendo flexibilidade para diferentes necessidades.
+
+O Ethernet/IP, Figura 2, é uma solução robusta e eficiente para comunicação em ambientes industriais modernos. Sua alta velocidade, confiabilidade e integração com tecnologias padrão tornam-no ideal para o desenvolvimento de um sistema supervisório, permitindo monitoramento contínuo, tomada de decisões em tempo real e otimização dos processos industriais.
+
+React - O React é uma biblioteca JavaScript desenvolvida pelo Facebook em 2013 para a criação de interfaces de usuário (UI) dinâmicas e eficientes. Ele é amplamente utilizado para o desenvolvimento de aplicações web modernas devido à sua flexibilidade, desempenho e facilidade de manutenção. O React adota uma abordagem baseada em componentes reutilizáveis, permitindo que os desenvolvedores construam interfaces complexas dividindo-as em pequenas partes independentes e reaproveitáveis.
+
+Uma das principais características do React é o Virtual DOM (Document Object Model). Em vez de atualizar o DOM real diretamente, o React cria uma representação virtual dele e aplica apenas as alterações necessárias ao DOM real. Isso torna o processo de renderização mais rápido e eficiente, melhorando o desempenho geral da aplicação, especialmente em interfaces com muitas atualizações dinâmicas.
+
+O React também suporta JSX (JavaScript XML), uma sintaxe que combina JavaScript com HTML, permitindo escrever componentes de forma intuitiva e declarativa. Essa combinação facilita a criação de componentes visuais e a manipulação de dados de forma clara e concisa.
+
+Outro ponto forte do React é sua capacidade de gerenciar o estado da aplicação de forma eficiente. O estado representa os dados dinâmicos da interface, e qualquer alteração nele faz com que os componentes relevantes sejam re-renderizados automaticamente. Para gerenciar estados mais complexos, bibliotecas como Redux, MobX e Context API são frequentemente usadas.
+
+Além disso, o React possui uma vasta comunidade de desenvolvedores e um ecossistema rico em ferramentas e bibliotecas adicionais. Isso inclui soluções para roteamento, como o React Router, e bibliotecas para requisições HTTP, como o Axios e o Fetch API. Ferramentas como Create React App facilitam a configuração inicial do projeto, enquanto React Developer Tools ajudam a depurar e otimizar aplicações.
+
+No contexto de um sistema de monitoramento de uma linha industrial, o React pode ser utilizado para desenvolver o front-end da aplicação web. Ele permite criar dashboards interativos para visualizar o status das operações em tempo real, exibir gráficos, tabelas e alertas dinâmicos. A modularidade dos componentes facilita a criação de interfaces personalizadas para diferentes funções, como visualização de paradas, histórico de falhas e relatórios de desempenho. Além disso, o React pode consumir dados de APIs fornecidas por um back-end em Django, garantindo uma integração fluida e eficiente entre os diferentes componentes do sistema supervisório. Na Figura 6, têm-se um modelo de dashboard desenvolvida em React.
+
+ 
+Figura 7 - Dashboard feita em React.
+4.5 Arquitetura da Solução:
+
+O Sistema Inteligente do projeto LINE STOPPED, que é parte componente deste projeto possuirá uma arquitetura dividida em três camadas: Persistência, Negócios e Apresentação, de tal forma que viabilize o uso do Design Pattern (Padrão de Projeto) Model, View, Controller (MVC), este padrão de projeto facilita o processo de desenvolvimento de um sistema que abrange funcionalidades distintas em função da regra de negócio que é trabalhada, além de, separar as atividades (funcionalidades) dos serviços implementados, de maneira a aproveitar o máximo possível de protótipos de funções em um escopo de requisito definido. Este sistema irá se comunicar com os protocolos de redes industriais
+Essa metodologia permite o desacoplamento entre as ações que serão mapeadas para o sistema, maior aproveitamento de código, facilidade no processo de manutenção, revisão e organização, dessa forma o processo de escalabilidade se torna possível, uma vez que o conceito de Front-End e Back-End é implantando.
+ 
+Figura 8 - Modelo de Arquitetura MVC.
+
+De forma resumida, as responsabilidades são divididas em camadas, cada uma possui privilégios de acesso à dados e resposta a requisições, a Visão acessa o Modelo, o Modelo é determinado a responder com determinadas ações ou funções pertinentes ao requisito implementado, esse procedimento é feito para apresentar informações processadas em uma página ou interface de interação. 
+
+O modelo fica responsável pela regra de negócios com validações e processamento de dados que são servidos ao Controlador ou diretamente à Visão. O Controlador tem como finalidade interagir com a Visão e/ou o Modelo em função do fluxo de informações ou permissões liberadas para determinados Usuários que necessitem executar ações (funções) especificadas em uma Classe.
+
+ 
+Figura 9 - Modelo de Arquitetura em 3 Camadas.
+
+A Figura 8 mostra o modelo de arquitetura em três camadas, que vai de encontro com as responsabilidades que cada mecanismo deve ter: Apresentação, Negócios e Persistência, o Cliente faz uma requisição via POST/GET que são dialetos do PHP, observando a utilização de um Sistema adaptado. 
+
+A Camada de Apresentação tem como finalidade apresentar e organizar a informação por meio de interfaces de interação com manipuladores e engines inteligentes para facilitar o processo de aquisição de dados atendendo aos requisitos da arquitetura MVC.
+
+A Camada de Negócios possui a característica de encapsular e permitir o melhor desempenho em relação a manutenção e abstração de Entidades mapeadas no levantamento de requisitos, estas que darão origem as funcionalidades, além disso, a utilização do Eloquente ORM (ObjectRelational Mapping) nativo no Framework Django, que facilita a manipulação do banco de dados.
+
+A Camada de Persistência tem como finalidade garantir a integridade, confiabilidade e segurança em relação à comunicação direta com a Base de Dados por meio do Sistema de Gerenciamento de Banco de Dados (SGBD) que para o projeto LINE STOPPED será utilizado o MySQL como cliente de manipulação.
+
+Este sistema será integrado com a rede industrial, para monitoramento da linha de produção em pontos de coleta, os quais serão colocados em pontos chaves de rastreamento da produção entre as máquinas. Desta forma é possível identificar a parada de um equipamento ou etapa manual específica. A Figura 10 apresenta uma linha fictícia para exemplificar os pontos de coleta de dados, onde serão contadas as placas de cada produto específico.
+ 
+Figura 10 - Linha de produção ilustrativa para indicação de pontos de coleta.
+
+Através destes pontos de coleta, onde serão implementados dispositivos que utilizam as redes industriais para enviar as informações coletadas, as quais serão enviadas para o sistema do LINE STOPPED para obtenção de dados digitalizados, gerando índices relevantes para as tomadas de decisão e para o MES (Manufacturing Execution System). Um resumo destes dados, e os índices gerados da ideia inicial pode ser observada abaixo.
+
+1. Dados Digitalizados: Operação e Manutenção de Equipamentos
+
+Os dados coletados em tempo real sobre os equipamentos fornecem insights essenciais para otimizar sua operação e reduzir custos relacionados à manutenção. Entre os dados mais relevantes, destacam-se:
+•	Status do equipamento. Ex.: PARADO, PRODUZINDO, EM MANUTENÇÃO, entre outros.
+•	OEE (Overall Equipment Effectiveness): Métrica que combina disponibilidade, desempenho e qualidade.
+•	Tempo de funcionamento e inatividade dos equipamentos.
+•	Frequência e tipo de manutenção realizada (preventiva/corretiva).
+
+Indicadores Relevantes:
+•	Redução do Tempo Médio Entre Falhas (MTBF): Avalia a confiabilidade dos equipamentos.
+•	Aumento do Tempo Médio Entre Manutenções Corretivas: Indica melhorias no desempenho e na manutenção preventiva.
+•	Melhoria na Eficiência Operacional dos Equipamentos: Identifica gargalos e oportunidades para otimização.
+•	Redução no Custo de Manutenção: Mede a eficácia das estratégias de manutenção preditiva e preventiva.
+
+2. Dados Digitalizados: Produção e Ciclo de Trabalho
+No contexto produtivo, monitorar e analisar dados relacionados ao ciclo de produção e à utilização de equipamentos é essencial para maximizar a produtividade e reduzir desperdícios. Os principais dados incluem:
+•	Taxa de utilização dos equipamentos.
+•	Tempo de ciclo de produção.
+•	Quantidade de produtos fabricados.
+•	Dados sobre paradas de máquina e manutenções corretivas/preventivas.
+
+Indicadores Relevantes:
+•	Tempo de Setup das Máquinas: Reflete a eficiência nas mudanças de configuração, reduzindo atrasos.
+•	Produtividade: Medido pelo número de unidades produzidas por hora.
+•	Tempo de Inatividade Não Planejada: Monitoramento e antecipação de falhas evitam interrupções inesperadas.
+•	Redução de Perdas e Retrabalhos: Demonstra a melhoria na qualidade e eficiência do processo produtivo.
+
+4.6 Compatibilidade com a Indústria 4.0
+O sistema proposto será desenvolvido com base nos princípios e tecnologias da Indústria 4.0, garantindo sua compatibilidade com os requisitos modernos de automação e integração industrial. O projeto utilizará protocolos de comunicação industrial amplamente aceitos, como Modbus, Ethernet/IP e MQTT, para assegurar interoperabilidade entre dispositivos heterogêneos, como sensores, atuadores, microcontroladores e CLPs.
+
+Além disso, a solução integrará funcionalidades de IoT (Internet das Coisas) para coleta e transmissão de dados em tempo real, permitindo monitoramento contínuo e análises preditivas. Os dados operacionais serão armazenados e processados de forma estruturada, com suporte a integração com sistemas MES (Manufacturing Execution System), proporcionando um fluxo contínuo de informações entre o chão de fábrica e os sistemas de gestão.
+
+Para garantir uma operação eficiente e alinhada às práticas da Indústria 4.0, o sistema contará com uma arquitetura modular e escalável, facilitando sua adaptação a novos dispositivos e expansões futuras. As interfaces gráficas serão acessíveis remotamente, possibilitando monitoramento e controle a partir de dispositivos móveis, como smartphones e tablets, promovendo maior flexibilidade e conectividade em ambientes industriais.
+
+Essa compatibilidade não apenas otimiza os processos produtivos e reduz custos, mas também assegura que a solução esteja preparada para atender às demandas de fábricas inteligentes, fortalecendo a competitividade e a inovação no setor industrial.

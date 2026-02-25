@@ -77,6 +77,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
           startDate: a.startDate ?? "",
           endDate: a.endDate ?? "",
           activeMonths: (safeParse(a.activeMonths) as number[] | null) ?? [],
+          subActivities: (safeParse((a as any).subActivities) as string[] | null) ?? [""],
         })
       ),
       professionals: plan.professionals.map(

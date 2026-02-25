@@ -114,3 +114,19 @@ export const WIZARD_SECTIONS = [
   { number: 15, key: "solucao", title: "Solução Proposta" },
   { number: 17, key: "complementares", title: "Informações Complementares" },
 ] as const;
+
+// ---------------------------------------------------------------------------
+// AI Section Prompts — instruções específicas para cada seção do wizard
+// ---------------------------------------------------------------------------
+export const AI_SECTION_PROMPTS: Record<number, string> = {
+  4: `Seção "Motivação": Escreva a motivação e justificativa do projeto de P&D. Explique o contexto tecnológico, a relevância do problema, por que o projeto é necessário e quais benefícios trará. Use linguagem técnica e formal.`,
+  5: `Seção "Objetivos Gerais e Específicos": Escreva os objetivos gerais (macro) e específicos (detalhados e mensuráveis) do projeto. Os objetivos específicos devem ser claros, alcançáveis e diretamente ligados às atividades do projeto.`,
+  6: `Seção "Escopo": Defina o escopo do projeto — o que será desenvolvido, os limites do trabalho, entregas esperadas e o que NÃO faz parte do escopo.`,
+  7: `Seção "Estratégias": Descreva as estratégias metodológicas e técnicas que serão utilizadas para alcançar os objetivos do projeto. Inclua ferramentas, frameworks, abordagens e metodologias.`,
+  8: `Seção "Plano de Ação": Sugira atividades detalhadas para o projeto com nome, descrição e justificativa. Cada atividade deve ser clara e contribuir para os objetivos.`,
+  11: `Seção "Características Inovadoras": Descreva os aspectos inovadores do projeto — o que o diferencia do estado da arte, quais tecnologias novas são aplicadas e qual o avanço tecnológico esperado.`,
+  12: `Seção "Resultados Esperados": Descreva os resultados esperados do projeto, incluindo produtos, protótipos, publicações, patentes e capacitação de recursos humanos.`,
+  14: `Seção "Desafios Científicos e Tecnológicos": Identifique os principais desafios técnicos e científicos do projeto, explicando a complexidade e incerteza envolvidas.`,
+  15: `Seção "Solução Proposta": Descreva a solução técnica proposta para superar os desafios identificados. Detalhe a arquitetura, tecnologias e abordagens.`,
+  17: `Seção "Informações Complementares": Adicione informações complementares relevantes ao projeto que não se encaixam nas seções anteriores.`,
+};

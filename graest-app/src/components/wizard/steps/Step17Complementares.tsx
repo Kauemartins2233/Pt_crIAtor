@@ -3,6 +3,7 @@
 import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
+import { ExampleViewer } from "@/components/editor/ExampleViewer";
 import type { JSONContent } from "@tiptap/react";
 
 export function Step17Complementares() {
@@ -28,11 +29,16 @@ export function Step17Complementares() {
       </p>
 
       <RichTextEditor
+        section={17}
+        fieldName="complementares"
         content={formData.complementares}
         onChange={(content) => updateField("complementares", content)}
         placeholder="Informações complementares..."
       />
-      <SnippetPicker sectionNumber={17} onInsert={handleSnippetInsert("complementares")} />
+      <div className="flex items-center gap-2">
+        <SnippetPicker sectionNumber={17} onInsert={handleSnippetInsert("complementares")} />
+        <ExampleViewer sectionNumber={17} />
+      </div>
     </div>
   );
 }

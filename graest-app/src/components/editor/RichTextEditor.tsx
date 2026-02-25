@@ -15,11 +15,17 @@ import {
   Redo,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AiBubbleMenu } from "./AiBubbleMenu";
+import { AiIdlePrompt } from "./AiIdlePrompt";
 
 interface RichTextEditorProps {
   content: JSONContent | null;
   onChange: (content: JSONContent) => void;
   placeholder?: string;
+  /** Section number for AI suggestions */
+  section?: number;
+  /** Field name for AI suggestions */
+  fieldName?: string;
 }
 
 // Upload image file to server, returns URL or null
@@ -40,7 +46,27 @@ function isImageFile(file: File): boolean {
   return file.type.startsWith("image/");
 }
 
-export function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+// Extract plain text from JSONContent for AI context
+function jsonContentToText(content: JSONContent | null): string {
+  if (!content || !content.content) return "";
+  const texts: string[] = [];
+  for (const node of content.content) {
+    if (node.content) {
+      for (const child of node.content) {
+        if (child.text) texts.push(child.text);
+      }
+    }
+  }
+  return texts.join(" ");
+}
+
+export function RichTextEditor({
+  content,
+  onChange,
+  placeholder,
+  section,
+  fieldName,
+}: RichTextEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -56,17 +82,13 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm max-w-none min-h-[200px] p-4 focus:outline-none",
+          "prose prose-sm max-w-none min-h-[200px] p-4 focus:outline-none text-justify",
       },
-      // Handle paste with images
       handlePaste: (_view, event) => {
         const items = event.clipboardData?.files;
         if (!items || items.length === 0) return false;
-
         const imageFile = Array.from(items).find(isImageFile);
         if (!imageFile) return false;
-
-        // Prevent default paste and handle async upload
         event.preventDefault();
         uploadImage(imageFile).then((url) => {
           if (url && editor) {
@@ -75,14 +97,11 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         });
         return true;
       },
-      // Handle drop with images
       handleDrop: (_view, event) => {
         const files = event.dataTransfer?.files;
         if (!files || files.length === 0) return false;
-
         const imageFile = Array.from(files).find(isImageFile);
         if (!imageFile) return false;
-
         event.preventDefault();
         uploadImage(imageFile).then((url) => {
           if (url && editor) {
@@ -94,7 +113,6 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     },
   });
 
-  // Sync external content changes
   useEffect(() => {
     if (editor && content && !editor.isFocused) {
       const currentJSON = JSON.stringify(editor.getJSON());
@@ -105,24 +123,32 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     }
   }, [content, editor]);
 
-  // Handle file input selection (toolbar button)
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !isImageFile(file) || !editor) return;
-
     const url = await uploadImage(file);
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
     }
-    // Reset input so same file can be selected again
     e.target.value = "";
+  }, [editor]);
+
+  const handleAiInsert = useCallback((text: string) => {
+    if (!editor) return;
+    editor.chain().focus().insertContent(text).run();
+  }, [editor]);
+
+  const handleAiReplace = useCallback((text: string) => {
+    if (!editor) return;
+    editor.chain().focus().selectAll().deleteSelection().insertContent(text).run();
   }, [editor]);
 
   if (!editor) return null;
 
+  const showAi = section != null && fieldName;
+
   return (
     <div className="rounded-lg border border-gray-300 bg-white shadow-sm">
-      {/* Hidden file input for toolbar image button */}
       <input
         ref={fileInputRef}
         type="file"
@@ -176,6 +202,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         >
           <ImagePlus size={16} />
         </ToolbarButton>
+
         <div className="mx-1 h-5 w-px bg-gray-200" />
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
@@ -193,8 +220,19 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         </ToolbarButton>
       </div>
 
-      {/* Editor content */}
-      <EditorContent editor={editor} />
+      <div className="relative">
+        <EditorContent editor={editor} />
+
+        {/* AI Idle Prompt — appears after 3s of inactivity */}
+        {showAi && (
+          <AiIdlePrompt editor={editor} section={section} fieldName={fieldName} />
+        )}
+      </div>
+
+      {/* AI Context Menu — appears on right-click with text selected */}
+      {showAi && (
+        <AiBubbleMenu editor={editor} section={section} fieldName={fieldName} />
+      )}
 
       {placeholder && !content && (
         <p className="px-4 pb-2 text-sm text-gray-400">{placeholder}</p>

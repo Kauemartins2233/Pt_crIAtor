@@ -1,0 +1,93 @@
+3.1 Objetivo Principal
+
+Desenvolver uma solução tecnológica composta por um aplicativo mobile multiplataforma (Android e iOS) e integração via API para gerenciamento de dispositivos Bluetooth, compatível com a linha Lity Consumer e outros fabricantes. O sistema permitirá o ajuste personalizado de configurações específicas para dispositivos como fones TWS, headphones com e sem fio, caixas de som Bluetooth, headphones corporativos e smart rings. O software desenvolvido contará com uma interface intuitiva e responsiva, permitindo que os usuários gerenciem configurações em tempo real.
+Além disso, a integração por API possibilitará compatibilidade com dispositivos de terceiros, ampliando o escopo de uso. A solução será projetada em conformidade com os princípios da Indústria 4.0, conectando dispositivos inteligentes, coletando e processando dados em tempo real, e promovendo a interoperabilidade entre diferentes sistemas. O uso de inteligência artificial será uma peça central, permitindo recomendações personalizadas com base no uso e nas preferências do usuário, como ajustes de áudio e configurações pessoais. A IA também será aplicada para monitorar e analisar o desempenho do usuário em tempo real, identificando padrões e promovendo ajustes automáticos para otimizar treinos, melhorar a qualidade do sono e apoiar o alcance de metas.
+No contexto de dispositivos de áudio, a inteligência artificial – IA analisará os padrões de uso do usuário, identificando os estilos de música, modos de equalização e configurações mais frequentes. Com base nesses dados, o sistema poderá sugerir configurações ideais, criar predefinições personalizadas e ajustar automaticamente as frequências de áudio para oferecer a melhor experiência sonora. Além disso, a IA poderá recomendar playlists ou modos específicos, como "Rock", "Filmes" ou "Games", adaptando-se ao contexto e às preferências detectadas.
+A solução incluirá ferramentas de diagnóstico inteligentes que simplificarão a resolução de problemas e manterão o desempenho ideal dos dispositivos conectados. Além disso, mecanismos avançados de segurança e criptografia serão integrados para proteger os dados dos usuários, garantindo privacidade e confiabilidade. Essa abordagem, fundamentada nos conceitos da Indústria 4.0, enfatiza a conectividade, a automação inteligente e o uso eficiente de dados, promovendo uma experiência altamente integrada, adaptável e orientada ao futuro.
+
+3.2 Objetivos Específicos
+
+Desenvolver uma solução tecnológica composta por um sistema mobile multiplataforma (Android e iOS) para gerenciamento de dispositivos Bluetooth.  A tecnologia Bluetooth desempenha um papel fundamental no desenvolvimento e funcionamento de para o IoT. O Bluetooth é uma tecnologia de comunicação sem fio de curto alcance e baixa potência - BLE, o desenvolvimento dessa solução contempla os seguintes módulos integrados que são: 
+	Sistema de configuração de dispositivos – que permitirá ajustes específicos para dispositivos como fones TWS, headphones com e sem fio, caixas de som Bluetooth, headphones corporativos e smart rings, gerenciamento da carga de bateria através de IA;
+	Sistema de integração via API - O sistema de integração via API possibilitará a compatibilidade com dispositivos de outros fabricantes, quando possível. A presença de um algoritmo de IA também permitirá a análise de padrões de uso e preferências dos usuários, otimizando as configurações de áudio e oferecendo recomendações personalizadas para dispositivos conectados. Além disso, a IA será utilizada para monitorar métricas de desempenho em tempo real, como bem-estar e consumo de bateria, sugerindo ajustes automáticos para melhorar a experiência e eficiência dos dispositivos;
+	Sistema de interface de usuário - O sistema de interface de usuário oferecerá uma experiência intuitiva e responsiva para facilitar a navegação e configuração dos dispositivos, podendo ser inserida um IA com linguagem natural para melhor acessibilidade ao aplicativo.
+	Sistema de segurança de dados - O sistema de segurança garantirá a proteção e privacidade dos dados dos usuários por meio de criptografia e boas práticas de segurança;
+	Sistema de notificações personalizáveis - será responsável por fornecer alertas customizáveis sobre status e atualizações dos dispositivos conectados. 
+
+É possível observar os objetivos específicos de cada módulo do projeto sendo listados a seguir:
+
+•	Módulo de Autenticação e Autorização:
+•	Gerenciar o pareamento, configurações e controle dos dispositivos conectados ao aplicativo;
+•	Detecção automática e pareamento de dispositivos;
+•	Configuração de opções específicas, como equalizador, modos de uso (e.g., esportivo, relaxamento) e controle de LED;
+•	Gerenciamento de múltiplos dispositivos simultaneamente;
+•	Monitoramento do status do dispositivo (nível de bateria, conexões ativas etc.).
+
+•	Módulo de Monitoramento de dados:
+•	Coleta de dados de sensores integrados (frequência cardíaca, oxigenação, calorias, passos etc.);
+•	Geração de relatórios gráficos diários, semanais e mensais.
+•	Integração com APIs de aplicativos mais utilizados, como Google Fit, Apple Saúde e Strava.
+•	Alertas para métricas fora do padrão (e.g, meta de passos não atingida).
+
+•	Módulo de Inteligência Artificial:
+•	Análise de padrões nos dados para notificações inteligentes;
+•	Recomendação de configurações de áudio e exercícios baseados no perfil e preferências do usuário;
+•	Feedback em tempo real para otimização de treinos.
+
+•	Módulo de Processamento e Equalização de Áudio:
+•	Permitir que o usuário ajuste manualmente frequências de áudio (graves, médios e agudos) de acordo com suas preferências.
+•	Disponibilizar modos predefinidos de equalização, como Rock, Pop, Jazz, Games e Filmes.
+•	Sincronizar perfis de equalização com diferentes dispositivos Bluetooth, como fones TWS, headphones e caixas de som.
+•	Salvar e aplicar configurações específicas para cada dispositivo conectado.
+
+•	Módulo de Interface do Usuário (UI /UX):
+•	Design adaptativo para diferentes dispositivos e tamanhos de tela.
+•	Painel de controle para gerenciar dispositivos conectados e visualizar dados.
+•	Suporte a múltiplos idiomas e temas personalizáveis.
+•	Personalização de ícones pelo usuário.
+•	Guias interativos para facilitar a navegação.
+
+•	Módulo de Segurança e Privacidade:
+•	Criptografia de dados armazenados e transmitidos.
+•	Autenticação segura (e.g., biometria, autenticação em dois fatores).
+•	 Gerenciamento de permissões de dados com transparência.
+•	Monitoramento e resposta a tentativas de acesso não autorizadas.
+
+•	Módulo de Integração via API:
+•	Conexão com APIs oficiais de dispositivos wearables (e.g., smart rings).
+•	 Integração com plataformas fitness e de saúde.
+•	Sincronização de dados com servidores em nuvem.
+
+•	Módulo de Notificações Personalizadas:
+•	Alertas de baixa bateria ou desconexão de dispositivos.
+•	 Notificações baseadas em metas (e.g., "Você atingiu 10.000 passos hoje!").
+•	Lembretes de treino ou descanso baseados em padrões detectados.
+
+•	Publicação Científica e Tecnológica:
+o	Elaboração e publicação de artigos científicos e tecnológicos que compartilhem as inovações e resultados alcançados durante o desenvolvimento do projeto.
+
+Além desses módulos, também vale especificar objetivos específicos para o Software desenvolvido em si:
+•	Desenvolvimento de Aplicativo Mobile Android/IOS usando linguagens nativas;
+•	Integração de API para dispositivos de outras fabricantes;
+•	Garantir Segurança e proteção de Dados do usuário;
+•	Notificações personalizadas para o usuário;
+•	Fornece suporte multilinguagem para os aplicativos.
+
+Têm-se abaixo objetivos específicos para os tipos de dispositivos incluídos no desenvolvimento do aplicativo:
+
+Objetivos para dispositivos de Áudio da linha Lity:
+•	Gerenciamento de ajustes, bibliotecas e de perfil;
+•	Equalizador detalhado das frequências de áudio;
+•	Criação de modos personalizados de equalização;
+•	Predefinições de modos de equalização: Rock, Pop, Jazz, Games, Filmes;
+•	Configuração RGB dos Leds do fone (se possuir);
+•	Opção de ligar, desligar e alterar modos;
+•	Análise do formato da orelha.
+
+Objetivos para dispositivo Lity Ring:
+•	Gerenciamento de sono, treino e de perfil;
+•	Gerenciamento de dados de: passos, calorias, distância, frequência Cardíaca, oxigenação, temperatura, estresse, sono, controle de esportes, histórico de treinos realizados;
+•	Conexão com Strava, GOOGLE FIT e APPLE SAÚDE.
+
+Objetivos para dispositivos de outras fabricantes:
+Gerenciamento dos dados disponíveis via API quando disponíveis

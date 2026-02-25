@@ -1,0 +1,54 @@
+A Universidade do Estado do Amazonas - UEA, instituição pública de ensino superior responsável pela execução deste projeto, foi criada em fevereiro de 2001 por meio da Lei Estadual nº 2.637/2001 e tem como objetivo promover a educação, desenvolvendo o conhecimento científico, particularmente sobre a Amazônia, conjuntamente com os valores éticos capazes de integrar o homem a sociedade e de aprimorar a qualidade dos recursos humanos existentes na região, e sua missão institucional e ser um instrumento de formação profissional e de acesso ao ensino superior.
+Esta unidade da UEA dispõe de um quadro de professores com sólida formação acadêmica e com larga experiência nas atividades de ensino, pesquisa e extensão, atuantes no mercado e com trabalhos relevantes desenvolvidos para diversas empresas situadas no Polo Industrial de Manaus – PIM.
+
+LIMITES DO ESCOPO:
+Será desenvolvido um sistema de aquisição e processamento de dados em tempo real sobre o status das operações, permitindo identificar o andamento das atividades, interrupções e falhas, integrando estes dados com o sistema de MES (Manufacturing Execution System) da empresa cliente, além de um hardware para aquisição destes dados.
+
+PREMISSAS:
+1. Fornecimento de Infraestrutura de MES (Manufacturing Execution System)
+•	Requisitos:
+o	A infraestrutura MES deve integrar dados coletados pelos sensores e transformá-los em informações úteis para tomada de decisão.
+o	Deve permitir o monitoramento em tempo real, a geração de relatórios históricos e a análise de tendências.
+•	Considerações:
+o	O MES deve ser flexível para se conectar com sistemas legados e ERPs.
+o	Deve incluir módulos de visualização e análise intuitivos para facilitar a interpretação dos dados.
+2. Fornecimento de Conectividade e Infraestrutura de Rede
+•	Requisitos:
+o	A conectividade deve ser robusta e estável, capaz de suportar a transmissão contínua de dados em tempo real.
+o	A rede deve ter baixa latência e alta largura de banda para suportar grandes volumes de dados.
+•	Considerações:
+o	Utilização de redes industriais como Ethernet industrial, Wi-Fi industrial ou protocolos específicos (Profinet, Modbus, etc.).
+o	Implementação de redundância na conectividade para evitar perdas de dados em caso de falhas.
+o	Uso de tecnologias emergentes como 5G para aumentar a velocidade e a confiabilidade da conexão.
+
+3. Fornecimento de Energia Elétrica e Ar Comprimido
+•	Requisitos:
+o	O fornecimento de energia elétrica deve garantir estabilidade e compatibilidade com os equipamentos utilizados, considerando tensões e correntes adequadas (monofásico, trifásico ou específico para máquinas industriais). 
+o	O fornecimento de ar comprimido deve atender aos requisitos operacionais das máquinas e equipamentos, considerando pressão e vazão suficientes para um desempenho contínuo e eficiente. Sistemas de tratamento de ar, como secadores e filtros, são necessários para assegurar a qualidade e evitar danos aos dispositivos.
+•	Considerações:
+o	Implementação de sistemas de proteção contra surtos elétricos e quedas de tensão.
+o	Uso de compressores eficientes e sistema de monitoramento de pressão.
+o	Garantia de fontes de backup (no-breaks e geradores) para evitar interrupções críticas.
+5. Fornecimento de Protocolos de Comunicação com as Máquinas
+•	Requisitos:
+o	Os protocolos de comunicação devem permitir a integração completa das máquinas no sistema de automação e controle, garantindo interoperabilidade e troca eficiente de informações. É necessário suporte a comunicação bidirecional em tempo real para comando, monitoramento e diagnóstico.
+•	Considerações:
+o	Utilização de protocolos industriais amplamente reconhecidos, como Profinet, Modbus, OPC UA ou EtherCAT, adaptados às necessidades específicas do ambiente.
+o	Compatibilidade com a infraestrutura de rede definida, incluindo Ethernet industrial ou tecnologias emergentes, como 5G.
+o	Implementação de mecanismos de segurança, como criptografia e autenticação, para proteger os dados e o sistema contra acessos não autorizados.
+o	Redundância na comunicação para mitigar falhas e manter a operação contínua.
+Essas premissas devem ser alinhadas às necessidades descritas em Conectividade e Infraestrutura de Rede, garantindo um ambiente tecnológico integrado, confiável e preparado para atender as demandas da operação industrial moderna.
+
+RISCOS:
+Risco	Ação	Responsável
+Descontinuidade de versão de 
+software utilizados nos projetos	Trabalhar com versão estáveis 
+e resistentes de sistemas 
+operacionais	UEA
+Incompatibilidade das integrações com MES e protocolos das máquinas na linha de produção. 	Na fase inicial do projeto deve
+se fazer ampla pesquisa de 
+todos os softwares, hardwares e 
+sistemas que serão utilizados 
+para verificar sua 
+compatibilidade.	UEA
+ 

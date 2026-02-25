@@ -218,13 +218,138 @@ function tiptapToOoxml(content: JSONContent | null): string {
 
 import type { ActivityFormData } from "@/types/plan";
 
-function buildCronogramaOoxml(activities: ActivityFormData[]): string {
+// ---------------------------------------------------------------------------
+// Activities section as raw OOXML (replaces template loop for full formatting control)
+// ---------------------------------------------------------------------------
+
+function buildActivitiesOoxml(activities: ActivityFormData[]): string {
   if (activities.length === 0) {
     return `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/></w:rPr><w:t>Nenhuma atividade cadastrada.</w:t></w:r></w:p>`;
   }
 
+  const FONT_NORMAL = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/>`;
+  const FONT_BOLD = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="20"/><w:szCs w:val="20"/>`;
+  const FONT_SMALL = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/>`;
+  const FONT_LABEL = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/>`;
+  const LINE_SPACING = `<w:pPr><w:spacing w:line="276" w:lineRule="auto"/></w:pPr>`;
+
+  const paragraphs: string[] = [];
+
+  for (let i = 0; i < activities.length; i++) {
+    const act = activities[i];
+    const idx = i + 1;
+
+    // Activity title (bold)
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">${idx}. ${escapeXml(act.name || "(sem nome)")}</w:t></w:r></w:p>`
+    );
+
+    // Description (normal)
+    if (act.description) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t xml:space="preserve">Descrição: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(act.description)}</w:t></w:r></w:p>`
+      );
+    }
+
+    // Sub-activities (if any non-empty ones)
+    const subs = (act.subActivities || []).filter((s) => s.trim() !== "");
+    if (subs.length > 0) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t>Subatividades:</w:t></w:r></w:p>`
+      );
+      for (let j = 0; j < subs.length; j++) {
+        paragraphs.push(
+          `<w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:ind w:left="360"/></w:pPr><w:r><w:rPr>${FONT_SMALL}</w:rPr><w:t xml:space="preserve">${idx}.${j + 1} ${escapeXml(subs[j])}</w:t></w:r></w:p>`
+        );
+      }
+    }
+
+    // Justification (normal)
+    if (act.justification) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t xml:space="preserve">Justificativa: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(act.justification)}</w:t></w:r></w:p>`
+      );
+    }
+
+    // Dates
+    const startDate = act.startDate ? formatDateBR(act.startDate) : "\u2014";
+    const endDate = act.endDate ? formatDateBR(act.endDate) : "\u2014";
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t xml:space="preserve">Início: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${startDate}</w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">    </w:t></w:r><w:r><w:rPr>${FONT_LABEL}</w:rPr><w:t xml:space="preserve">Fim: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${endDate}</w:t></w:r></w:p>`
+    );
+
+    // Spacing between activities
+    if (i < activities.length - 1) {
+      paragraphs.push(`<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>`);
+    }
+  }
+
+  return paragraphs.join("");
+}
+
+// ---------------------------------------------------------------------------
+// Pre-process template: replace {#activities}...{/activities} with {@activitiesContent}
+// ---------------------------------------------------------------------------
+
+function replaceActivitiesLoopInTemplate(zip: PizZip): void {
+  const docXml = zip.file("word/document.xml")?.asText();
+  if (!docXml) return;
+
+  const startTag = "{#activities}";
+  const startIdx = docXml.indexOf(startTag);
+  if (startIdx === -1) return; // No loop to replace, maybe already processed
+
+  // Find the <w:p containing the start tag
+  const pStart = Math.max(
+    docXml.lastIndexOf("<w:p ", startIdx),
+    docXml.lastIndexOf("<w:p>", startIdx)
+  );
+  if (pStart === -1) return;
+
+  // Find the close tag {/activities} — may be split across runs
+  let closeIdx = docXml.indexOf("{/activities}", startIdx);
+  if (closeIdx === -1) {
+    // Tag split by proofErr — search for '{/' near 'activities' near '}'
+    let searchPos = startIdx;
+    while (searchPos < docXml.length) {
+      const braceSlash = docXml.indexOf("{/", searchPos);
+      if (braceSlash === -1) break;
+      const nearby = docXml.substring(braceSlash, braceSlash + 500);
+      if (nearby.includes("activities")) {
+        const actIdx = docXml.indexOf("activities", braceSlash);
+        closeIdx = docXml.indexOf("}", actIdx);
+        break;
+      }
+      searchPos = braceSlash + 2;
+    }
+  }
+  if (closeIdx === -1) return;
+
+  const pEnd = docXml.indexOf("</w:p>", closeIdx);
+  if (pEnd === -1) return;
+  const endIdx = pEnd + "</w:p>".length;
+
+  // Replace entire loop with a single raw XML tag
+  const replacement = `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t>{@activitiesContent}</w:t></w:r></w:p>`;
+  const newXml = docXml.substring(0, pStart) + replacement + docXml.substring(endIdx);
+  zip.file("word/document.xml", newXml);
+}
+
+function buildCronogramaOoxml(activities: ActivityFormData[], overrides: import("@/types/plan").CronogramaCell[]): string {
+  if (activities.length === 0) {
+    return `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/></w:rPr><w:t>Nenhuma atividade cadastrada.</w:t></w:r></w:p>`;
+  }
+
+  function isMonthActive(actIdx: number, subIdx: number, month: number): boolean {
+    const override = overrides.find(
+      (c) => c.activityIndex === actIdx && c.subActivityIndex === subIdx && c.month === month
+    );
+    return override?.active ?? false;
+  }
+
   const borderXml = '<w:tcBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tcBorders>';
   const headerShading = '<w:shd w:val="clear" w:color="auto" w:fill="D9E2F3"/>';
+  const activityShading = '<w:shd w:val="clear" w:color="auto" w:fill="E8E8E8"/>';
   const activeShading = '<w:shd w:val="clear" w:color="auto" w:fill="B4C6E7"/>';
 
   const months = Array.from({ length: 12 }, (_, i) => `M${i + 1}`);
@@ -240,22 +365,35 @@ function buildCronogramaOoxml(activities: ActivityFormData[]): string {
 
   const headerRow = `<w:tr>${headerCells}</w:tr>`;
 
-  // Data rows
-  const dataRows = activities
-    .map((act, idx) => {
-      const nameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}</w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t xml:space="preserve">${idx + 1}. ${escapeXml(act.name)}</w:t></w:r></w:p></w:tc>`;
+  // Data rows — activity header + subactivity rows
+  const dataRows: string[] = [];
+  for (let actIdx = 0; actIdx < activities.length; actIdx++) {
+    const act = activities[actIdx];
+
+    // Activity header row (bold, shaded, no checkboxes)
+    const actNameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}${activityShading}</w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t xml:space="preserve">${actIdx + 1}. ${escapeXml(act.name)}</w:t></w:r></w:p></w:tc>`;
+    const emptyMonthCells = Array.from({ length: 12 }, () =>
+      `<w:tc><w:tcPr>${borderXml}${activityShading}</w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t> </w:t></w:r></w:p></w:tc>`
+    ).join("");
+    dataRows.push(`<w:tr>${actNameCell}${emptyMonthCells}</w:tr>`);
+
+    // Subactivity rows
+    const subs = act.subActivities || [];
+    for (let subIdx = 0; subIdx < subs.length; subIdx++) {
+      const subText = subs[subIdx] || `Subatividade ${actIdx + 1}.${subIdx + 1}`;
+      const subNameCell = `<w:tc><w:tcPr><w:tcW w:w="2500" w:type="pct"/>${borderXml}</w:tcPr><w:p><w:pPr><w:ind w:left="360"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t xml:space="preserve">${actIdx + 1}.${subIdx + 1} ${escapeXml(subText)}</w:t></w:r></w:p></w:tc>`;
 
       const monthCells = Array.from({ length: 12 }, (_, m) => {
-        const active = act.activeMonths?.includes(m + 1) ?? false;
+        const active = isMonthActive(actIdx, subIdx, m + 1);
         const shading = active ? activeShading : "";
-        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>${active ? "X" : " "}</w:t></w:r></w:p></w:tc>`;
+        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t>${active ? "X" : " "}</w:t></w:r></w:p></w:tc>`;
       }).join("");
 
-      return `<w:tr>${nameCell}${monthCells}</w:tr>`;
-    })
-    .join("");
+      dataRows.push(`<w:tr>${subNameCell}${monthCells}</w:tr>`);
+    }
+  }
 
-  return `<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tblBorders></w:tblPr>${headerRow}${dataRows}</w:tbl>`;
+  return `<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/></w:tblBorders></w:tblPr>${headerRow}${dataRows.join("")}</w:tbl>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -272,6 +410,9 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
   const templateContent = fs.readFileSync(templatePath, "binary");
   const originalZip = new PizZip(templateContent); // keep pristine copy
   const zip = new PizZip(templateContent);          // this one gets modified by docxtemplater
+
+  // 1b. Pre-process: replace {#activities}...{/activities} loop with raw OOXML tag
+  replaceActivitiesLoopInTemplate(zip);
 
   // 2. Create docxtemplater instance
   const doc = new Docxtemplater(zip, {
@@ -322,15 +463,8 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     escopo: tiptapToOoxml(plan.escopo as JSONContent | null),
     estrategias: tiptapToOoxml(plan.estrategias as JSONContent | null),
 
-    // Section 8: Activities (loop)
-    activities: plan.activities.map((a, i) => ({
-      index: i + 1,
-      name: a.name || " ",
-      description: a.description || " ",
-      justification: a.justification || " ",
-      startDate: a.startDate || "\u2014",
-      endDate: a.endDate || "\u2014",
-    })),
+    // Section 8: Activities (raw OOXML — full formatting control)
+    activitiesContent: buildActivitiesOoxml(plan.activities),
 
     // Section 9: Professionals (loop)
     professionals: plan.professionals.map((p, i) => ({
@@ -373,7 +507,7 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     ),
 
     // Section 13: Cronograma (raw OOXML table)
-    cronogramaTable: buildCronogramaOoxml(plan.activities),
+    cronogramaTable: buildCronogramaOoxml(plan.activities, plan.cronogramaOverrides || []),
 
     // Sections 14-15, 17: Rich text
     desafios: tiptapToOoxml(plan.desafios as JSONContent | null),

@@ -37,16 +37,19 @@ function apiResponseToFormData(plan: any): PlanFormData {
     objetivosEspecificos: plan.objetivosEspecificos ?? null,
     escopo: plan.escopo ?? null,
     estrategias: plan.estrategias ?? null,
-    activities: (plan.activities ?? []).map((a: any) => ({
-      id: a.id,
-      orderIndex: a.orderIndex,
-      name: a.name ?? "",
-      description: a.description ?? "",
-      justification: a.justification ?? "",
-      startDate: a.startDate ?? "",
-      endDate: a.endDate ?? "",
-      activeMonths: a.activeMonths ?? [],
-    })),
+    activities: (plan.activities && plan.activities.length > 0)
+      ? plan.activities.map((a: any) => ({
+          id: a.id,
+          orderIndex: a.orderIndex,
+          name: a.name ?? "",
+          description: a.description ?? "",
+          justification: a.justification ?? "",
+          startDate: a.startDate ?? "",
+          endDate: a.endDate ?? "",
+          activeMonths: a.activeMonths ?? [],
+          subActivities: a.subActivities ?? [""],
+        }))
+      : defaultPlanFormData.activities,
     professionals: (plan.professionals ?? []).map((p: any) => ({
       id: p.id,
       orderIndex: p.orderIndex,
@@ -98,13 +101,14 @@ function formDataToApiPayload(data: PlanFormData): Record<string, any> {
     objetivosEspecificos: data.objetivosEspecificos,
     escopo: data.escopo,
     estrategias: data.estrategias,
-    activities: data.activities.map((a, i) => ({
+    activities: data.activities.map((a) => ({
       name: a.name,
       description: a.description || undefined,
       justification: a.justification || undefined,
       startDate: a.startDate || undefined,
       endDate: a.endDate || undefined,
       activeMonths: a.activeMonths.length > 0 ? a.activeMonths : undefined,
+      subActivities: a.subActivities ?? [""],
     })),
     professionals: data.professionals.map((p) => ({
       name: p.name,
@@ -162,6 +166,10 @@ export default function PlanEditorPage({
         const data = apiResponseToFormData(plan);
         const completedSections = plan.completedSections ?? [];
         loadPlan(planId, data, completedSections);
+        // If plan has no activities in DB but we loaded defaults, mark dirty to trigger auto-save
+        if (!plan.activities || plan.activities.length === 0) {
+          usePlanStore.getState().updateField("activities", data.activities);
+        }
       } catch (err) {
         console.error("Error loading plan:", err);
         setError("Erro ao carregar o plano.");

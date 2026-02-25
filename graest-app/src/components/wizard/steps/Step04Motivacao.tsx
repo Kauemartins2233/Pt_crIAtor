@@ -3,6 +3,7 @@
 import { usePlanStore } from "@/lib/store";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { SnippetPicker } from "@/components/editor/SnippetPicker";
+import { ExampleViewer } from "@/components/editor/ExampleViewer";
 import type { JSONContent } from "@tiptap/react";
 
 export function Step04Motivacao() {
@@ -26,11 +27,16 @@ export function Step04Motivacao() {
       </p>
 
       <RichTextEditor
+        section={4}
+        fieldName="motivacao"
         content={formData.motivacao}
         onChange={(content) => updateField("motivacao", content)}
         placeholder="Descreva a motivação do projeto..."
       />
-      <SnippetPicker sectionNumber={4} onInsert={handleSnippetInsert("motivacao")} />
+      <div className="flex items-center gap-2">
+        <SnippetPicker sectionNumber={4} onInsert={handleSnippetInsert("motivacao")} />
+        <ExampleViewer sectionNumber={4} />
+      </div>
     </div>
   );
 }

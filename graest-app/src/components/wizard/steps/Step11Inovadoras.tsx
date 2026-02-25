@@ -28,6 +28,8 @@ export function Step11Inovadoras() {
       </p>
 
       <RichTextEditor
+        section={11}
+        fieldName="inovadoras"
         content={formData.inovadoras}
         onChange={(content) => updateField("inovadoras", content)}
         placeholder="Descreva as características inovadoras..."

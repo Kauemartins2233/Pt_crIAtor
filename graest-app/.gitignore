@@ -27,5 +27,6 @@ prisma/*.db-journal
 .vscode/
 .idea/
 
-# uploaded images
+# uploaded images and materials
 public/uploads/
+public/materials/

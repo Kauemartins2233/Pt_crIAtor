@@ -9,6 +9,7 @@ export interface ActivityFormData {
   startDate: string;
   endDate: string;
   activeMonths: number[];
+  subActivities: string[];
 }
 
 export interface ProfessionalFormData {
@@ -29,6 +30,7 @@ export interface IndicatorData {
 
 export interface CronogramaCell {
   activityIndex: number;
+  subActivityIndex?: number;
   month: number;
   active: boolean;
 }
@@ -108,7 +110,13 @@ export const defaultPlanFormData: PlanFormData = {
   objetivosEspecificos: null,
   escopo: null,
   estrategias: null,
-  activities: [],
+  activities: [
+    { orderIndex: 0, name: "Planejamento, Coordenação e Gestão do Projeto", description: "Esta atividade compreende a estruturação estratégica, administrativa e técnica do projeto, garantindo sua execução conforme escopo aprovado, prazos estabelecidos e orçamento previsto. Abrange as etapas de inicialização, organização da equipe, gestão de riscos, controle financeiro e monitoramento contínuo da evolução técnica.", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+    { orderIndex: 1, name: "Levantamento de Requisitos", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+    { orderIndex: 2, name: "Pesquisa Científica e Desenvolvimento", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+    { orderIndex: 3, name: "Testes, Ajuste e Validação do Software", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+    { orderIndex: 4, name: "Integração, Treinamento, Implementação e Homologação do projeto", description: "", justification: "", startDate: "", endDate: "", activeMonths: [], subActivities: [""] },
+  ],
   professionals: [],
   indicators: {},
   inovadoras: null,
