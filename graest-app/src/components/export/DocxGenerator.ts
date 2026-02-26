@@ -374,10 +374,12 @@ function buildProfessionalsOoxml(professionals: PlanFormData["professionals"]): 
     const p = professionals[i];
     const idx = i + 1;
 
-    // Title line: "Profissional 01: Função no Projeto" (bold)
-    const roleText = p.roleInProject ? `: ${p.roleInProject}` : "";
+    // Title line: "Profissional 01:" bold + "Função" normal
+    const roleRun = p.roleInProject
+      ? `<w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve"> ${escapeXml(p.roleInProject)}</w:t></w:r>`
+      : "";
     paragraphs.push(
-      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Profissional ${String(idx).padStart(2, "0")}${escapeXml(roleText)}</w:t></w:r></w:p>`
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Profissional ${String(idx).padStart(2, "0")}:</w:t></w:r>${roleRun}</w:p>`
     );
 
     // Nome (bold label + normal value)
