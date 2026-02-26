@@ -51,17 +51,17 @@ export function WizardShell() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)]">
+    <div className="flex h-[calc(100vh-3.5rem)]">
       <WizardSidebar />
-      <div className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex flex-1 flex-col min-w-0">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <div className="mx-auto max-w-4xl">
             <StepRenderer />
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="sticky bottom-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 px-8 py-3">
+        <div className="shrink-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 px-8 py-3">
           <div className="mx-auto flex max-w-4xl items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
