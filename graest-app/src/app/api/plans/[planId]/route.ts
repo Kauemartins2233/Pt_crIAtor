@@ -135,10 +135,12 @@ export async function PUT(request: NextRequest, context: RouteContext) {
             data: professionals.map(
               (
                 p: {
+                  staffMemberId?: string;
                   name: string;
                   education?: string;
                   degree?: string;
                   miniCv?: string;
+                  roleInProject?: string;
                   activityAssignment?: string;
                   hiringType?: string;
                   directIndirect?: string;
@@ -146,11 +148,13 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                 index: number
               ) => ({
                 planId,
+                staffMemberId: p.staffMemberId ?? null,
                 orderIndex: index,
                 name: p.name,
                 education: p.education ?? null,
                 degree: p.degree ?? null,
                 miniCv: p.miniCv ?? null,
+                roleInProject: p.roleInProject ?? null,
                 activityAssignment: p.activityAssignment ?? null,
                 hiringType: p.hiringType ?? null,
                 directIndirect: p.directIndirect ?? null,

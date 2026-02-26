@@ -7,6 +7,7 @@ import {
   Plus,
   FileText,
   Puzzle,
+  Users,
   ClipboardList,
   FilePen,
   CheckCircle2,
@@ -178,7 +179,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Quick links */}
-        <div className="grid gap-4 sm:grid-cols-2 animate-fade-in-up-delay-3">
+        <div className="grid gap-4 sm:grid-cols-3 animate-fade-in-up-delay-3">
           <Link href="/plans">
             <Card className="card-hover-primary group cursor-pointer">
               <div className="flex items-center justify-between">
@@ -190,6 +191,24 @@ export default function DashboardPage() {
                     <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Planos de Trabalho</p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Ver e gerenciar todos os planos
+                    </p>
+                  </div>
+                </div>
+                <ArrowUpRight size={16} className="text-gray-400 dark:text-gray-500 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
+            </Card>
+          </Link>
+          <Link href="/staff">
+            <Card className="card-hover-primary group cursor-pointer">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="icon-box-primary">
+                    <Users size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recursos Humanos</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Cadastrar profissionais da equipe
                     </p>
                   </div>
                 </div>

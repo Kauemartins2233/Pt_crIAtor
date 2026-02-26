@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FileText, Puzzle, LayoutDashboard, Moon, Sun } from "lucide-react";
+import { FileText, Puzzle, Users, LayoutDashboard, Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export function Header() {
@@ -24,6 +24,7 @@ export function Header() {
         <nav className="flex items-center gap-1">
           <NavLink href="/" icon={<LayoutDashboard size={18} />} label="Dashboard" />
           <NavLink href="/plans" icon={<FileText size={18} />} label="Planos" />
+          <NavLink href="/staff" icon={<Users size={18} />} label="Equipe" />
           <NavLink href="/snippets" icon={<Puzzle size={18} />} label="Snippets" />
           <div className="ml-2 h-5 w-px bg-gray-200 dark:bg-gray-700" />
           <button

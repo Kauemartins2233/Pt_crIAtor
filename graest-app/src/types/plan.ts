@@ -32,13 +32,25 @@ export interface ActivityFormData {
   subActivities: SubActivity[];
 }
 
+export interface StaffMember {
+  id: string;
+  name: string;
+  education: string;
+  degree: string;
+  miniCv: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ProfessionalFormData {
   id?: string;
+  staffMemberId?: string;
   orderIndex: number;
   name: string;
   education: string;
   degree: string;
   miniCv: string;
+  roleInProject: string;
   activityAssignment: string;
   hiringType: string;
   directIndirect: string;

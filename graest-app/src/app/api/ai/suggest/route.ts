@@ -53,7 +53,7 @@ async function readFileAsText(filePath: string, mimeType: string): Promise<strin
   return "";
 }
 
-async function loadExamples(section: number): Promise<string> {
+async function loadExamples(section: number | string): Promise<string> {
   const examplesDir = path.join(process.cwd(), "public", "examples", `secao-${section}`);
   if (!fs.existsSync(examplesDir)) return "";
 
@@ -127,8 +127,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Load examples for this section
-    const examplesText = await loadExamples(section);
+    // 2. Load examples for this section (use secao-rh for HR fields)
+    const hrFields = ["activityAssignment", "roleInProject"];
+    const examplesText = hrFields.includes(fieldName)
+      ? await loadExamples("rh")
+      : await loadExamples(section);
 
     // 2b. Load snippet names for scope section
     let snippetNames: string[] = [];
@@ -175,7 +178,19 @@ REGRAS:
       if (projectContext.motivacao) userPrompt += `- Motivação: ${projectContext.motivacao}\n`;
       if (projectContext.objetivosGerais) userPrompt += `- Objetivos Gerais: ${projectContext.objetivosGerais}\n`;
       if (projectContext.objetivosEspecificos) userPrompt += `- Objetivos Específicos: ${projectContext.objetivosEspecificos}\n`;
+      if (projectContext.escopo) userPrompt += `- Escopo: ${projectContext.escopo}\n`;
       userPrompt += `\n`;
+
+      // Professional context for activityAssignment field
+      if (projectContext.professional) {
+        const prof = projectContext.professional;
+        userPrompt += `DADOS DO PROFISSIONAL:\n`;
+        if (prof.name) userPrompt += `- Nome: ${prof.name}\n`;
+        if (prof.education) userPrompt += `- Formação: ${prof.education}\n`;
+        if (prof.degree) userPrompt += `- Titulação: ${prof.degree}\n`;
+        if (prof.miniCv) userPrompt += `- Mini CV: ${prof.miniCv}\n`;
+        userPrompt += `\n`;
+      }
     }
 
     // Add EAP/activities data for scope section

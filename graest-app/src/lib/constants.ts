@@ -66,6 +66,7 @@ export const INDICATORS = [
 export const HIRING_TYPES = [
   { value: "CLT", label: "CLT" },
   { value: "PJ", label: "PJ" },
+  { value: "SCHOLARSHIP", label: "Bolsa Pesquisa" },
   { value: "INTERCHANGE", label: "Intercâmbio" },
   { value: "OTHER", label: "Outro" },
 ] as const;
@@ -242,6 +243,31 @@ Parágrafo introdutório aqui explicando a organização modular do projeto...
 - Módulo de Processamento e Análise:
 - Aplicar algoritmos de aprendizado de máquina para análise dos dados.
 - Gerar relatórios automatizados com métricas de desempenho.`,
+
+  roleInProject: `Campo "Função no Projeto" (Recursos Humanos): Sugira um cargo/função adequado para o profissional dentro de um projeto de P&D.
+
+REGRAS:
+- Retorne APENAS o nome da função/cargo, sem explicações adicionais
+- Exemplos de funções: "Aluno Pesquisador - Desenvolvedor Full Stack", "Aluno Pesquisador - Analista de Dados", "Aluno Pesquisador - Analista de Processos", "Pesquisador - Coordenador Técnico", "Pesquisador - Engenheiro de Software", "Aluno Pesquisador - Designer UX/UI"
+- Baseie-se na formação, titulação e experiência (Mini CV) do profissional
+- Considere os objetivos e escopo do projeto para sugerir uma função relevante
+- Use termos técnicos apropriados em português brasileiro
+- O formato típico é "Tipo - Especialização" (ex: "Aluno Pesquisador - Desenvolvedor Back End")
+- Se o profissional tiver mestrado/doutorado, considere "Pesquisador" ao invés de "Aluno Pesquisador"
+- Retorne APENAS o texto da função, sem aspas, prefixos ou explicações`,
+
+  activityAssignment: `Campo "Atribuição na Atividade" (Recursos Humanos): Escreva a atribuição de um profissional dentro de um projeto de P&D.
+
+REGRAS:
+- Escreva um parágrafo corrido descrevendo detalhadamente o que o profissional fará no projeto
+- Baseie-se na formação, titulação e experiência (Mini CV) do profissional para contextualizar suas atribuições
+- Relacione as atribuições com as atividades e objetivos do projeto
+- Mencione responsabilidades técnicas específicas, entregas esperadas e contribuições
+- Use linguagem técnica e formal, em português brasileiro
+- O texto deve ter entre 4 e 8 frases, detalhando diferentes aspectos da atuação
+- NÃO use formatação Markdown (sem asteriscos, hífens, cerquilhas)
+- NÃO use listas ou bullet points — escreva em texto corrido
+- Retorne APENAS o texto da atribuição, sem títulos ou prefixos`,
 
   activityDescription: `Campo "Descrição da Atividade": Escreva a descrição de uma atividade macro de um projeto de P&D.
 

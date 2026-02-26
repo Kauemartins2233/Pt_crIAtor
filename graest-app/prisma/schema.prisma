@@ -86,14 +86,26 @@ model Professional {
   id                 String  @id @default(cuid())
   planId             String
   plan               Plan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  staffMemberId      String?
   orderIndex         Int
   name               String
   education          String?
   degree             String?
   miniCv             String?
+  roleInProject      String?
   activityAssignment String?
   hiringType         String?
   directIndirect     String?
+}
+
+model StaffMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  education String?
+  degree    String?
+  miniCv    String?
 }
 
 model Material {

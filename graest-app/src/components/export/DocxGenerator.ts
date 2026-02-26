@@ -356,6 +356,79 @@ function buildActivitiesOoxml(activities: ActivityFormData[]): string {
 }
 
 // ---------------------------------------------------------------------------
+// Build raw OOXML for professionals (Section 9)
+// ---------------------------------------------------------------------------
+
+function buildProfessionalsOoxml(professionals: PlanFormData["professionals"]): string {
+  if (professionals.length === 0) {
+    return `<w:p><w:r><w:rPr>${DEFAULT_FONT}<w:i/></w:rPr><w:t>Nenhum profissional cadastrado.</w:t></w:r></w:p>`;
+  }
+
+  const FONT_NORMAL = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/>`;
+  const FONT_BOLD = `<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:b/><w:sz w:val="20"/><w:szCs w:val="20"/>`;
+  const LINE_SPACING = `<w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr>`;
+
+  const paragraphs: string[] = [];
+
+  for (let i = 0; i < professionals.length; i++) {
+    const p = professionals[i];
+    const idx = i + 1;
+
+    // Title line: "Profissional 01: Função no Projeto" (bold)
+    const roleText = p.roleInProject ? `: ${p.roleInProject}` : "";
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Profissional ${String(idx).padStart(2, "0")}${escapeXml(roleText)}</w:t></w:r></w:p>`
+    );
+
+    // Nome (bold label + normal value)
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Nome: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(p.name || " ")}</w:t></w:r></w:p>`
+    );
+
+    // Formação + Grau on same line
+    const educationText = [p.education, p.degree ? `Grau: ${p.degree}` : ""].filter(Boolean).join(" \u2014 ");
+    if (educationText) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Formação: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(educationText)}</w:t></w:r></w:p>`
+      );
+    }
+
+    // Mini CV
+    if (p.miniCv) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Mini currículo: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(p.miniCv)}</w:t></w:r></w:p>`
+      );
+    }
+
+    // Atividades a realizar
+    if (p.activityAssignment) {
+      paragraphs.push(
+        `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Atividades a realizar: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(p.activityAssignment)}</w:t></w:r></w:p>`
+      );
+    }
+
+    // Tipo contratação + Direto/Indireto
+    const hiringLabel = lookupLabel(HIRING_TYPES as unknown as { value: string; label: string }[], p.hiringType);
+    const directLabel = lookupLabel(DIRECT_INDIRECT as unknown as { value: string; label: string }[], p.directIndirect);
+
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Tipo contratação: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(hiringLabel)}</w:t></w:r></w:p>`
+    );
+
+    paragraphs.push(
+      `<w:p>${LINE_SPACING}<w:r><w:rPr>${FONT_BOLD}</w:rPr><w:t xml:space="preserve">Direto/Indireto: </w:t></w:r><w:r><w:rPr>${FONT_NORMAL}</w:rPr><w:t xml:space="preserve">${escapeXml(directLabel)}</w:t></w:r></w:p>`
+    );
+
+    // Spacing between professionals
+    if (i < professionals.length - 1) {
+      paragraphs.push(`<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>`);
+    }
+  }
+
+  return paragraphs.join("");
+}
+
+// ---------------------------------------------------------------------------
 // Pre-process template: replace {#activities}...{/activities} with {@activitiesContent}
 // ---------------------------------------------------------------------------
 
@@ -399,6 +472,50 @@ function replaceActivitiesLoopInTemplate(zip: PizZip): void {
 
   // Replace entire loop with a single raw XML tag
   const replacement = `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t>{@activitiesContent}</w:t></w:r></w:p>`;
+  const newXml = docXml.substring(0, pStart) + replacement + docXml.substring(endIdx);
+  zip.file("word/document.xml", newXml);
+}
+
+// ---------------------------------------------------------------------------
+// Pre-process template: replace {#professionals}...{/professionals} with {@professionalsContent}
+// ---------------------------------------------------------------------------
+
+function replaceProfessionalsLoopInTemplate(zip: PizZip): void {
+  const docXml = zip.file("word/document.xml")?.asText();
+  if (!docXml) return;
+
+  const startTag = "{#professionals}";
+  const startIdx = docXml.indexOf(startTag);
+  if (startIdx === -1) return;
+
+  const pStart = Math.max(
+    docXml.lastIndexOf("<w:p ", startIdx),
+    docXml.lastIndexOf("<w:p>", startIdx)
+  );
+  if (pStart === -1) return;
+
+  let closeIdx = docXml.indexOf("{/professionals}", startIdx);
+  if (closeIdx === -1) {
+    let searchPos = startIdx;
+    while (searchPos < docXml.length) {
+      const braceSlash = docXml.indexOf("{/", searchPos);
+      if (braceSlash === -1) break;
+      const nearby = docXml.substring(braceSlash, braceSlash + 500);
+      if (nearby.includes("professionals")) {
+        const profIdx = docXml.indexOf("professionals", braceSlash);
+        closeIdx = docXml.indexOf("}", profIdx);
+        break;
+      }
+      searchPos = braceSlash + 2;
+    }
+  }
+  if (closeIdx === -1) return;
+
+  const pEnd = docXml.indexOf("</w:p>", closeIdx);
+  if (pEnd === -1) return;
+  const endIdx = pEnd + "</w:p>".length;
+
+  const replacement = `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t>{@professionalsContent}</w:t></w:r></w:p>`;
   const newXml = docXml.substring(0, pStart) + replacement + docXml.substring(endIdx);
   zip.file("word/document.xml", newXml);
 }
@@ -482,6 +599,7 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
 
   // 1b. Pre-process: replace {#activities}...{/activities} loop with raw OOXML tag
   replaceActivitiesLoopInTemplate(zip);
+  replaceProfessionalsLoopInTemplate(zip);
 
   // 2. Create docxtemplater instance
   const doc = new Docxtemplater(zip, {
@@ -535,23 +653,8 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     // Section 8: Activities (raw OOXML — full formatting control)
     activitiesContent: buildActivitiesOoxml(plan.activities),
 
-    // Section 9: Professionals (loop)
-    professionals: plan.professionals.map((p, i) => ({
-      index: i + 1,
-      name: p.name || " ",
-      education: p.education || " ",
-      degree: p.degree || " ",
-      miniCv: p.miniCv || " ",
-      activityAssignment: p.activityAssignment || " ",
-      hiringType: lookupLabel(
-        HIRING_TYPES as unknown as { value: string; label: string }[],
-        p.hiringType
-      ),
-      directIndirect: lookupLabel(
-        DIRECT_INDIRECT as unknown as { value: string; label: string }[],
-        p.directIndirect
-      ),
-    })),
+    // Section 9: Professionals (raw OOXML — full formatting control)
+    professionalsContent: buildProfessionalsOoxml(plan.professionals),
 
     // Section 10: Indicators
     ...Object.fromEntries(

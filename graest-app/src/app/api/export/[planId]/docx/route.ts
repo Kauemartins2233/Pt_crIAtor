@@ -95,6 +95,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
           education: p.education ?? "",
           degree: p.degree ?? "",
           miniCv: p.miniCv ?? "",
+          roleInProject: p.roleInProject ?? "",
           activityAssignment: p.activityAssignment ?? "",
           hiringType: p.hiringType ?? "",
           directIndirect: p.directIndirect ?? "",
