@@ -648,7 +648,7 @@ function buildCronogramaOoxml(activities: ActivityFormData[], overrides: import(
       const monthCells = Array.from({ length: 12 }, (_, m) => {
         const active = isMonthActive(actIdx, subIdx, m + 1);
         const shading = active ? activeShading : "";
-        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t>${active ? "X" : " "}</w:t></w:r></w:p></w:tc>`;
+        return `<w:tc><w:tcPr>${borderXml}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr><w:t> </w:t></w:r></w:p></w:tc>`;
       }).join("");
 
       dataRows.push(`<w:tr>${subNameCell}${monthCells}</w:tr>`);
