@@ -147,6 +147,7 @@ export function Step09RecursosHumanos() {
       staffMemberId: member.id,
       orderIndex: professionals.length,
       name: member.name,
+      category: member.category || "",
       education: member.education || "",
       degree: member.degree || "",
       miniCv: member.miniCv || "",
@@ -245,6 +246,7 @@ export function Step09RecursosHumanos() {
               {availableStaff.map((member) => (
                 <option key={member.id} value={member.id}>
                   {member.name}
+                  {member.category === "professor" ? " (Professor)" : member.category === "aluno" ? " (Aluno)" : ""}
                   {member.degree ? ` — ${member.degree}` : ""}
                 </option>
               ))}
@@ -289,9 +291,20 @@ export function Step09RecursosHumanos() {
                   {index + 1}
                 </span>
                 <div className="min-w-0">
-                  <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
-                    {professional.name || "Sem nome"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                      {professional.name || "Sem nome"}
+                    </p>
+                    {professional.category && (
+                      <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium shrink-0 ${
+                        professional.category === "professor"
+                          ? "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300"
+                          : "bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300"
+                      }`}>
+                        {professional.category === "professor" ? "Professor" : "Aluno"}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                     {professional.degree && <span>{professional.degree}</span>}
                     {professional.education && (

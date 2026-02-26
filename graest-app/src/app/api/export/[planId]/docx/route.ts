@@ -92,6 +92,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
           id: p.id,
           orderIndex: p.orderIndex,
           name: p.name,
+          category: p.category ?? "",
           education: p.education ?? "",
           degree: p.degree ?? "",
           miniCv: p.miniCv ?? "",

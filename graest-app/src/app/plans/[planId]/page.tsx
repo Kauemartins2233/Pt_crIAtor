@@ -63,6 +63,7 @@ function apiResponseToFormData(plan: any): PlanFormData {
       staffMemberId: p.staffMemberId ?? undefined,
       orderIndex: p.orderIndex,
       name: p.name ?? "",
+      category: p.category ?? "",
       education: p.education ?? "",
       degree: p.degree ?? "",
       miniCv: p.miniCv ?? "",
@@ -124,6 +125,7 @@ function formDataToApiPayload(data: PlanFormData): Record<string, any> {
     professionals: data.professionals.map((p) => ({
       staffMemberId: p.staffMemberId || undefined,
       name: p.name,
+      category: p.category || undefined,
       education: p.education || undefined,
       degree: p.degree || undefined,
       miniCv: p.miniCv || undefined,

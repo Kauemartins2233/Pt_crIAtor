@@ -35,6 +35,7 @@ export interface ActivityFormData {
 export interface StaffMember {
   id: string;
   name: string;
+  category: string;
   education: string;
   degree: string;
   miniCv: string;
@@ -47,6 +48,7 @@ export interface ProfessionalFormData {
   staffMemberId?: string;
   orderIndex: number;
   name: string;
+  category: string;
   education: string;
   degree: string;
   miniCv: string;

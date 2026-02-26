@@ -534,6 +534,148 @@ const defaultSnippets = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Staff Members padrão — profissionais cadastrados globalmente
+// ---------------------------------------------------------------------------
+const defaultStaffMembers = [
+  {
+    name: "Marivan Silva Gomes",
+    category: "professor",
+    education: "Engenharia de Controle e Automação",
+    degree: "Mestre",
+    miniCv:
+      "Professor Pesquisador Coordenador Geral. Mestre em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em automação industrial, sistemas embarcados e controle de processos. Atua como coordenador de projetos de PD&I na área de engenharia elétrica e automação.",
+  },
+  {
+    name: "Alan Ferreira Pinheiro Tavares",
+    category: "professor",
+    education: "Engenharia de Controle e Automação",
+    degree: "Doutor",
+    miniCv:
+      "Professor Pesquisador. Doutor em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em visão computacional, inteligência artificial e aprendizado de máquina aplicados à automação industrial. Possui experiência em pesquisa e desenvolvimento de soluções tecnológicas para a indústria.",
+  },
+  {
+    name: "André Dias de Lima Machado",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Mestre",
+    miniCv:
+      "Aluno Pesquisador. Mestre em Engenharia Elétrica. Possui experiência em desenvolvimento de sistemas embarcados, automação industrial e programação de microcontroladores. Atua em projetos de pesquisa voltados para inovação tecnológica na indústria.",
+  },
+  {
+    name: "Kauê Martins de Souza",
+    category: "aluno",
+    education: "Engenharia de Computação",
+    degree: "Mestrando",
+    miniCv:
+      "Aluno Pesquisador. Mestrando em Engenharia Elétrica. Graduado em Engenharia de Computação. Possui experiência em desenvolvimento de software, sistemas web, inteligência artificial e automação. Atua em projetos de PD&I com foco em soluções tecnológicas para a indústria.",
+  },
+  {
+    name: "Arleson Brito da Silva Junior",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduando",
+    miniCv:
+      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em desenvolvimento de sistemas embarcados, programação de microcontroladores e automação industrial. Participa de projetos de pesquisa e desenvolvimento tecnológico.",
+  },
+  {
+    name: "Matheus Pedrosa Dácio",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Pós-graduando",
+    miniCv:
+      "Aluno Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, sistemas de controle e instrumentação. Atua em projetos de pesquisa aplicada à indústria.",
+  },
+  {
+    name: "Marcus Eduardo Nascimento Sena",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduando",
+    miniCv:
+      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em programação, eletrônica e desenvolvimento de protótipos. Participa de projetos de pesquisa voltados para automação e inovação tecnológica.",
+  },
+  {
+    name: "Samuel Teixeira dos Santos",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduando",
+    miniCv:
+      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em desenvolvimento de sistemas embarcados e programação de microcontroladores. Atua em projetos de pesquisa e desenvolvimento na área de automação industrial.",
+  },
+  {
+    name: "Nelson Emiliano Silva",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduando",
+    miniCv:
+      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em eletrônica, programação e desenvolvimento de circuitos. Participa de projetos de pesquisa aplicada em automação e controle de processos industriais.",
+  },
+  {
+    name: "Victor Hugo de Sá Reis",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Pós-graduando",
+    miniCv:
+      "Aluno Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, redes industriais e sistemas supervisórios. Atua em projetos de pesquisa e desenvolvimento tecnológico.",
+  },
+  {
+    name: "Ricardo Bulcão Dias Júnior",
+    category: "professor",
+    education: "Engenharia de Controle e Automação",
+    degree: "Pós-graduando",
+    miniCv:
+      "Professor Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, programação de CLPs e desenvolvimento de sistemas de controle. Atua como pesquisador em projetos de PD&I.",
+  },
+  {
+    name: "Geoliana Matos de Souza",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduanda",
+    miniCv:
+      "Aluna Pesquisadora. Graduanda em Engenharia de Controle e Automação. Possui experiência em programação, desenvolvimento de sistemas e pesquisa aplicada. Participa de projetos de pesquisa e desenvolvimento na área de automação industrial.",
+  },
+  {
+    name: "Paulo Rodrigo Gomes Santana",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Graduando",
+    miniCv:
+      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em eletrônica, programação e prototipagem. Participa de projetos de pesquisa voltados para automação e inovação tecnológica na indústria.",
+  },
+  {
+    name: "Marcos Cesar da Rocha Seruffo",
+    category: "professor",
+    education: "Engenharia de Computação",
+    degree: "Doutor",
+    miniCv:
+      "Professor Pesquisador. Doutor em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em computação aplicada, sistemas distribuídos e tecnologias da informação. Possui ampla experiência em pesquisa e desenvolvimento de soluções tecnológicas.",
+  },
+  {
+    name: "João Evangelista Neto",
+    category: "professor",
+    education: "Engenharia Elétrica",
+    degree: "Pós-doutorando",
+    miniCv:
+      "Professor Doutor Pesquisador. Pós-doutorando em Engenharia Elétrica. Doutor em Engenharia Elétrica. Especialista em processamento de sinais, sistemas de comunicação e eletrônica de potência. Possui vasta experiência em pesquisa acadêmica e projetos de PD&I.",
+  },
+  {
+    name: "Brenda Rodrigues Bezerra",
+    category: "aluno",
+    education: "Engenharia de Controle e Automação",
+    degree: "Pós-graduanda",
+    miniCv:
+      "Aluna Pesquisadora. Pós-graduanda em Engenharia Elétrica. Graduada em Engenharia de Controle e Automação. Possui experiência em automação industrial, instrumentação e controle de processos. Atua em projetos de pesquisa aplicada à indústria.",
+  },
+  {
+    name: "Waldeyde Oderilda Magalhães dos Santos",
+    category: "professor",
+    education: "Engenharia Elétrica",
+    degree: "Doutora",
+    miniCv:
+      "Professora Doutora Pesquisadora. Doutora em Engenharia Elétrica. Especialista em sistemas de energia, eletrônica de potência e eficiência energética. Possui ampla experiência em pesquisa acadêmica e orientação de projetos de PD&I.",
+  },
+];
+
 async function main() {
   console.log("Seeding default data...");
 
@@ -565,6 +707,20 @@ async function main() {
       console.log(`  ✔ Snippet criado: "${snippet.name}"`);
     } else {
       console.log(`  ⏭ Snippet já existe: "${snippet.name}"`);
+    }
+  }
+
+  // Upsert staff members — só cria se não existir um com o mesmo nome
+  for (const member of defaultStaffMembers) {
+    const existing = await prisma.staffMember.findFirst({
+      where: { name: member.name },
+    });
+
+    if (!existing) {
+      await prisma.staffMember.create({ data: member });
+      console.log(`  ✔ Staff member criado: "${member.name}"`);
+    } else {
+      console.log(`  ⏭ Staff member já existe: "${member.name}"`);
     }
   }
 

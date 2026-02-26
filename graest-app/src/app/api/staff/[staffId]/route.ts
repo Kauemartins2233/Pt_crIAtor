@@ -32,12 +32,13 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   try {
     const { staffId } = await context.params;
     const body = await request.json();
-    const { name, education, degree, miniCv } = body;
+    const { name, category, education, degree, miniCv } = body;
 
     const staffMember = await prisma.staffMember.update({
       where: { id: staffId },
       data: {
         ...(name !== undefined && { name: name.trim() }),
+        ...(category !== undefined && { category: category?.trim() || null }),
         ...(education !== undefined && { education: education?.trim() || null }),
         ...(degree !== undefined && { degree: degree?.trim() || null }),
         ...(miniCv !== undefined && { miniCv: miniCv?.trim() || null }),

@@ -24,6 +24,7 @@ export default function StaffPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formName, setFormName] = useState("");
+  const [formCategory, setFormCategory] = useState("");
   const [formEducation, setFormEducation] = useState("");
   const [formDegree, setFormDegree] = useState("");
   const [formMiniCv, setFormMiniCv] = useState("");
@@ -46,6 +47,7 @@ export default function StaffPage() {
     setShowForm(false);
     setEditingId(null);
     setFormName("");
+    setFormCategory("");
     setFormEducation("");
     setFormDegree("");
     setFormMiniCv("");
@@ -59,6 +61,7 @@ export default function StaffPage() {
   const handleEdit = (member: StaffMember) => {
     setEditingId(member.id);
     setFormName(member.name);
+    setFormCategory(member.category || "");
     setFormEducation(member.education || "");
     setFormDegree(member.degree || "");
     setFormMiniCv(member.miniCv || "");
@@ -86,6 +89,7 @@ export default function StaffPage() {
     try {
       const payload = {
         name: formName.trim(),
+        category: formCategory,
         education: formEducation.trim(),
         degree: formDegree.trim(),
         miniCv: formMiniCv.trim(),
@@ -157,6 +161,21 @@ export default function StaffPage() {
                 placeholder="Nome do profissional"
               />
 
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Categoria
+                </label>
+                <select
+                  value={formCategory}
+                  onChange={(e) => setFormCategory(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-surface-800 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400 transition-colors"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="professor">Professor Pesquisador</option>
+                  <option value="aluno">Aluno Pesquisador</option>
+                </select>
+              </div>
+
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Input
                   label="Formação"
@@ -220,9 +239,20 @@ export default function StaffPage() {
               <Card key={member.id} className="py-4">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">
-                      {member.name}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                        {member.name}
+                      </p>
+                      {member.category && (
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                          member.category === "professor"
+                            ? "bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300"
+                            : "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300"
+                        }`}>
+                          {member.category === "professor" ? "Professor Pesquisador" : "Aluno Pesquisador"}
+                        </span>
+                      )}
+                    </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
                       {member.education && (
                         <span>{member.education}</span>

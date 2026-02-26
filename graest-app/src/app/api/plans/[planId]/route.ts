@@ -137,6 +137,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                 p: {
                   staffMemberId?: string;
                   name: string;
+                  category?: string;
                   education?: string;
                   degree?: string;
                   miniCv?: string;
@@ -151,6 +152,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
                 staffMemberId: p.staffMemberId ?? null,
                 orderIndex: index,
                 name: p.name,
+                category: p.category ?? null,
                 education: p.education ?? null,
                 degree: p.degree ?? null,
                 miniCv: p.miniCv ?? null,

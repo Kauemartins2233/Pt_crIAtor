@@ -20,7 +20,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, education, degree, miniCv } = body;
+    const { name, category, education, degree, miniCv } = body;
 
     if (!name?.trim()) {
       return NextResponse.json(
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     const staffMember = await prisma.staffMember.create({
       data: {
         name: name.trim(),
+        category: category?.trim() || null,
         education: education?.trim() || null,
         degree: degree?.trim() || null,
         miniCv: miniCv?.trim() || null,
