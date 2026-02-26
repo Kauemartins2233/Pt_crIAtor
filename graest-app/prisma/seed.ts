@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import * as fs from "fs";
+import * as path from "path";
 
 const prisma = new PrismaClient();
 
@@ -534,6 +536,23 @@ const defaultSnippets = [
 
 async function main() {
   console.log("Seeding default data...");
+
+  // Copy seed images to public/uploads if they don't exist
+  const seedImagesDir = path.join(__dirname, "..", "public", "seed-images");
+  const uploadsDir = path.join(__dirname, "..", "public", "uploads");
+
+  if (fs.existsSync(seedImagesDir)) {
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    for (const file of fs.readdirSync(seedImagesDir)) {
+      const dest = path.join(uploadsDir, file);
+      if (!fs.existsSync(dest)) {
+        fs.copyFileSync(path.join(seedImagesDir, file), dest);
+        console.log(`  📷 Imagem copiada: ${file}`);
+      }
+    }
+  }
 
   // Upsert snippets — só cria se não existir um com o mesmo nome
   for (const snippet of defaultSnippets) {
