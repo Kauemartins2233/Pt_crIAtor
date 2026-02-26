@@ -35,8 +35,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
     return (
       <div
         ref={ref}
-        className="inline-flex flex-col items-center gap-0 p-6"
-        style={{ backgroundColor: "#ffffff" }}
+        className="inline-flex flex-col items-center gap-0 p-6 bg-white dark:bg-surface-800"
       >
         {/* Root node */}
         <EapNode
@@ -46,14 +45,14 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
         />
 
         {/* Vertical connector from root to horizontal bar */}
-        <div className="w-0.5 h-6 bg-gray-400" />
+        <div className="w-0.5 h-6 bg-gray-400 dark:bg-gray-500" />
 
         {/* Horizontal bar spanning all activity columns */}
         <div className="relative flex">
           {/* The horizontal line */}
           {actCount > 1 && (
             <div
-              className="absolute top-0 h-0.5 bg-gray-400"
+              className="absolute top-0 h-0.5 bg-gray-400 dark:bg-gray-500"
               style={{
                 left: `calc(${100 / (actCount * 2)}%)`,
                 right: `calc(${100 / (actCount * 2)}%)`,
@@ -74,7 +73,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
                 style={{ minWidth: "180px" }}
               >
                 {/* Vertical connector from horizontal bar to activity */}
-                <div className="w-0.5 h-6 bg-gray-400" />
+                <div className="w-0.5 h-6 bg-gray-400 dark:bg-gray-500" />
 
                 {/* Activity node */}
                 <div
@@ -103,7 +102,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
 
                 {/* Vertical connector from activity to sub-activities */}
                 {subs.length > 0 && (
-                  <div className="w-0.5 h-4 bg-gray-400" />
+                  <div className="w-0.5 h-4 bg-gray-400 dark:bg-gray-500" />
                 )}
 
                 {/* Sub-activities */}
@@ -111,7 +110,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
                   {subs.map((sub, subIdx) => (
                     <div key={subIdx} className="flex flex-col items-center">
                       {subIdx > 0 && (
-                        <div className="w-0.5 h-1 bg-gray-400" />
+                        <div className="w-0.5 h-1 bg-gray-400 dark:bg-gray-500" />
                       )}
                       <EapNode
                         label={sub.name}

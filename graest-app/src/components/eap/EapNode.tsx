@@ -56,7 +56,7 @@ export function EapNode({
   const levelClasses = {
     root: "bg-primary-600 border-primary-700 text-white font-bold text-sm min-w-[160px] max-w-[200px]",
     activity:
-      "bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200 font-semibold text-xs min-w-[150px] max-w-[180px]",
+      "bg-primary-100 dark:bg-primary-800/60 border-primary-300 dark:border-primary-600 text-primary-800 dark:text-primary-100 font-semibold text-xs min-w-[150px] max-w-[180px]",
     subactivity:
       "bg-white dark:bg-surface-850 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs min-w-[150px] max-w-[180px] group/node",
   };
