@@ -22,13 +22,13 @@ export function Step05Objetivos() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         5. Objetivos Gerais e Específicos
       </h2>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-700">5.1 Objetivo Geral</h3>
-        <p className="text-sm text-gray-500">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">5.1 Objetivo Geral</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Descreva o objetivo principal (macro) do projeto.
         </p>
         <RichTextEditor
@@ -42,8 +42,8 @@ export function Step05Objetivos() {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-700">5.2 Objetivos Específicos</h3>
-        <p className="text-sm text-gray-500">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">5.2 Objetivos Específicos</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Liste os objetivos detalhados e mensuráveis, ligados às atividades do projeto.
         </p>
         <Checkbox

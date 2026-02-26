@@ -365,18 +365,18 @@ export function Step08PlanoAcao() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         8. Plano de Ação
       </h2>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Preencha as 5 atividades macro do projeto com suas subatividades,
         descrições e datas.
       </p>
 
       {/* Info box */}
-      <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
+      <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800/50 dark:bg-blue-950/30">
         <Info size={18} className="text-blue-500 mt-0.5 shrink-0" />
-        <p className="text-sm text-blue-700">
+        <p className="text-sm text-blue-700 dark:text-blue-300">
           <strong>Dica:</strong> Certifique-se de ter criado as subatividades na
           EAP (Seção 6 — Escopo) antes de preencher esta seção. Os nomes das
           atividades e subatividades da EAP são usados aqui.
@@ -405,7 +405,7 @@ export function Step08PlanoAcao() {
             type="button"
             onClick={handleClearAll}
             disabled={generatingAll}
-            className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 dark:border-red-800/50 dark:bg-red-950/30 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 disabled:opacity-50 transition-colors"
           >
             <Trash2 size={14} />
             Limpar dados
@@ -413,7 +413,7 @@ export function Step08PlanoAcao() {
         )}
       </div>
       {!hasAnyActivityName && (
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
           Adicione pelo menos uma atividade com nome para usar a IA.
         </p>
       )}
@@ -424,19 +424,19 @@ export function Step08PlanoAcao() {
         return (
           <div
             key={index}
-            className="rounded-lg border border-gray-200 bg-gray-50 overflow-hidden"
+            className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-800 overflow-hidden"
           >
             {/* Accordion Header */}
             <button
               type="button"
               onClick={() => toggleExpanded(index)}
-              className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
-              <h3 className="text-sm font-semibold text-gray-800">
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                 Atividade {index + 1}: {activity.name || "(sem nome)"}
               </h3>
               <svg
-                className={`w-5 h-5 text-gray-500 transition-transform ${
+                className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${
                   isOpen ? "rotate-180" : ""
                 }`}
                 fill="none"
@@ -454,7 +454,7 @@ export function Step08PlanoAcao() {
 
             {/* Accordion Content */}
             {isOpen && (
-              <div className="px-4 pb-4 space-y-4 border-t border-gray-200">
+              <div className="px-4 pb-4 space-y-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="pt-4">
                   <Input
                     id={`activity-name-${index}`}
@@ -472,7 +472,7 @@ export function Step08PlanoAcao() {
                   <div className="flex items-center gap-2 mb-1">
                     <label
                       htmlFor={`activity-description-${index}`}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       Descrição
                     </label>
@@ -497,13 +497,13 @@ export function Step08PlanoAcao() {
                     }
                     placeholder="Descreva a atividade"
                     rows={3}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-surface-850"
                   />
                 </div>
 
                 {/* Subatividades */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Subatividades
                   </label>
                   {(
@@ -511,10 +511,10 @@ export function Step08PlanoAcao() {
                   ).map((sub, subIndex) => (
                     <div
                       key={subIndex}
-                      className="rounded-md border border-gray-200 bg-white p-3 space-y-2"
+                      className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 p-3 space-y-2"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500 font-mono min-w-[40px] font-semibold">
+                        <span className="text-sm text-gray-500 dark:text-gray-400 font-mono min-w-[40px] font-semibold">
                           {index + 1}.{subIndex + 1}
                         </span>
                         <input
@@ -529,7 +529,7 @@ export function Step08PlanoAcao() {
                             )
                           }
                           placeholder={`Nome da subatividade ${index + 1}.${subIndex + 1}`}
-                          className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-surface-850"
                         />
                         {(activity.subActivities || []).length > 1 && (
                           <button
@@ -537,7 +537,7 @@ export function Step08PlanoAcao() {
                             onClick={() =>
                               handleRemoveSubActivity(index, subIndex)
                             }
-                            className="text-red-400 hover:text-red-600 transition-colors p-1"
+                            className="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1"
                             title="Remover subatividade"
                           >
                             <svg
@@ -570,7 +570,7 @@ export function Step08PlanoAcao() {
                           }
                           placeholder="Descrição da subatividade..."
                           rows={2}
-                          className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-surface-850"
                         />
                         <AiFieldButton
                           fieldName="subActivityDescription"
@@ -603,7 +603,7 @@ export function Step08PlanoAcao() {
                   <div className="flex items-center gap-2 mb-1">
                     <label
                       htmlFor={`activity-justification-${index}`}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       Justificativa
                     </label>
@@ -628,7 +628,7 @@ export function Step08PlanoAcao() {
                     }
                     placeholder="Justifique a atividade"
                     rows={3}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-surface-850"
                   />
                 </div>
 

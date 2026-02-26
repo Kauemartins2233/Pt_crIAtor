@@ -62,19 +62,19 @@ export function SnippetPicker({ sectionNumber, onInsert }: SnippetPickerProps) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-lg rounded-xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+          <div className="mx-4 w-full max-w-lg rounded-xl bg-white dark:bg-surface-850 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Inserir Snippet
                 </h2>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Seção: {sectionTitle}
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <X size={20} />
               </button>
@@ -82,9 +82,9 @@ export function SnippetPicker({ sectionNumber, onInsert }: SnippetPickerProps) {
 
             <div className="max-h-80 overflow-y-auto p-6">
               {loading ? (
-                <p className="text-center text-sm text-gray-500">Carregando...</p>
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400">Carregando...</p>
               ) : snippets.length === 0 ? (
-                <p className="text-center text-sm text-gray-500">
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
                   Nenhum snippet cadastrado para esta seção.
                 </p>
               ) : (
@@ -93,10 +93,10 @@ export function SnippetPicker({ sectionNumber, onInsert }: SnippetPickerProps) {
                     <button
                       key={snippet.id}
                       onClick={() => handleInsert(snippet)}
-                      className="w-full rounded-lg border border-gray-200 p-4 text-left transition-colors hover:border-primary-300 hover:bg-primary-50"
+                      className="w-full rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-left transition-colors hover:border-primary-300 dark:hover:border-primary-700 hover:bg-primary-50 dark:hover:bg-primary-950/30"
                     >
-                      <p className="font-medium text-gray-900">{snippet.name}</p>
-                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{snippet.name}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
                         {extractText(snippet.content).slice(0, 120)}
                         {extractText(snippet.content).length > 120 ? "..." : ""}
                       </p>
@@ -106,7 +106,7 @@ export function SnippetPicker({ sectionNumber, onInsert }: SnippetPickerProps) {
               )}
             </div>
 
-            <div className="border-t border-gray-200 px-6 py-3">
+            <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-3">
               <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>

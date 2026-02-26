@@ -95,7 +95,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
 
                 {/* AI generating indicator */}
                 {generatingActIndex === actIdx && (
-                  <div className="mt-1 flex items-center justify-center gap-1 text-xs text-purple-500">
+                  <div className="mt-1 flex items-center justify-center gap-1 text-xs text-purple-500 dark:text-purple-400">
                     <Loader2 size={12} className="animate-spin" />
                     <span>IA gerando...</span>
                   </div>
@@ -134,7 +134,7 @@ export const EapTreeDiagram = forwardRef<HTMLDivElement, EapTreeDiagramProps>(
                   {editable && (
                     <button
                       onClick={() => onAddSubActivity?.(actIdx)}
-                      className="mt-1 flex items-center gap-1 rounded border border-dashed border-gray-300 px-2 py-1 text-xs text-gray-400 hover:border-primary-400 hover:text-primary-500 transition-colors"
+                      className="mt-1 flex items-center gap-1 rounded border border-dashed border-gray-300 dark:border-gray-600 px-2 py-1 text-xs text-gray-400 dark:text-gray-500 hover:border-primary-400 hover:text-primary-500 transition-colors"
                     >
                       <Plus size={12} />
                       Adicionar

@@ -84,7 +84,7 @@ export function Step12Resultados() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         12. Resultados Esperados
       </h2>
 
@@ -118,10 +118,10 @@ export function Step12Resultados() {
 
       {/* TRL Level Selector */}
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Nível TRL/MRL (opcional)
         </label>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Selecione o nível de maturidade tecnológica esperado ao final do
           projeto.
         </p>
@@ -130,7 +130,7 @@ export function Step12Resultados() {
           {TRL_LEVELS.map((trl) => (
             <label
               key={trl.level}
-              className="flex items-center gap-3 cursor-pointer rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 cursor-pointer rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
             >
               <input
                 type="radio"
@@ -139,7 +139,7 @@ export function Step12Resultados() {
                 onChange={() => updateField("trlMrlLevel", trl.level)}
                 className="h-4 w-4 text-primary-600 focus:ring-primary-500"
               />
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">TRL {trl.level}</span> -{" "}
                 {trl.name}
               </span>

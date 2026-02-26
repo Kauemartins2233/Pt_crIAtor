@@ -17,10 +17,10 @@ export function Checkbox({ label, checked, onChange, className }: CheckboxProps)
           type="checkbox"
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 dark:bg-surface-800"
         />
       </div>
-      <span className="text-sm text-gray-700 group-hover:text-gray-900">
+      <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
         {label}
       </span>
     </label>

@@ -132,31 +132,31 @@ export default function MaterialsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-surface-900">
       {/* Header */}
-      <div className="border-b bg-white px-6 py-4">
+      <div className="border-b border-gray-200 dark:border-gray-700/60 bg-white dark:bg-surface-850 px-6 py-4">
         <div className="mx-auto flex max-w-4xl items-center gap-4">
           <button
             onClick={() => router.push(`/plans/${planId}`)}
-            className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-600 transition-colors"
+            className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
           >
             <ArrowLeft size={16} />
             Voltar ao Plano
           </button>
-          <div className="h-5 w-px bg-gray-300" />
-          <h1 className="text-lg font-semibold text-gray-800">
+          <div className="h-5 w-px bg-gray-300 dark:bg-gray-600" />
+          <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
             Materiais de Contexto
           </h1>
           {planName && (
-            <span className="text-sm text-gray-500">— {planName}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">— {planName}</span>
           )}
         </div>
       </div>
 
       <div className="mx-auto max-w-4xl px-6 py-8">
         {/* Info banner */}
-        <div className="mb-6 rounded-lg border border-primary-200 bg-primary-50 p-4">
-          <p className="text-sm text-primary-800">
+        <div className="mb-6 rounded-lg border border-primary-200 dark:border-primary-800/50 bg-primary-50 dark:bg-primary-950/30 p-4">
+          <p className="text-sm text-primary-800 dark:text-primary-300">
             Deposite aqui todos os materiais que servirão de contexto para a IA
             gerar sugestões nas seções do plano: emails, apresentações, PDFs,
             documentos, anotações, etc.
@@ -167,8 +167,8 @@ export default function MaterialsPage() {
         <div
           className={`mb-6 rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
             dragActive
-              ? "border-primary-500 bg-primary-50"
-              : "border-gray-300 bg-white hover:border-gray-400"
+              ? "border-primary-500 bg-primary-50 dark:bg-primary-950/30"
+              : "border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-850 hover:border-gray-400 dark:hover:border-gray-500"
           }`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -185,30 +185,30 @@ export default function MaterialsPage() {
             className="hidden"
             onChange={handleFileSelect}
           />
-          <Upload className="mx-auto mb-3 text-gray-400" size={40} />
-          <p className="mb-2 text-gray-600">
+          <Upload className="mx-auto mb-3 text-gray-400 dark:text-gray-500" size={40} />
+          <p className="mb-2 text-gray-600 dark:text-gray-400">
             Arraste arquivos aqui ou{" "}
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="font-medium text-primary-600 hover:underline"
+              className="font-medium text-primary-600 dark:text-primary-400 hover:underline"
               disabled={uploading}
             >
               clique para selecionar
             </button>
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             PDF, DOCX, PPTX, TXT, imagens — máximo 10MB cada
           </p>
           {uploading && (
-            <p className="mt-2 text-sm text-primary-600 animate-pulse">
+            <p className="mt-2 text-sm text-primary-600 dark:text-primary-400 animate-pulse">
               Enviando...
             </p>
           )}
         </div>
 
         {/* Text input — always visible */}
-        <div className="mb-6 rounded-lg border border-gray-300 bg-white p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
+        <div className="mb-6 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-850 p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             <MessageSquareText size={16} />
             Adicionar informações em texto
           </h3>
@@ -217,14 +217,14 @@ export default function MaterialsPage() {
             placeholder="Título (ex: Email do cliente, Notas da reunião...)"
             value={textLabel}
             onChange={(e) => setTextLabel(e.target.value)}
-            className="mb-3 w-full rounded border border-gray-200 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none"
+            className="mb-3 w-full rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-surface-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none"
           />
           <textarea
             placeholder="Cole aqui o conteúdo do email, anotações, informações relevantes..."
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
             rows={5}
-            className="mb-3 w-full rounded border border-gray-200 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none resize-y"
+            className="mb-3 w-full rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-surface-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary-500 focus:outline-none resize-y"
           />
           <button
             onClick={addText}
@@ -237,15 +237,15 @@ export default function MaterialsPage() {
         </div>
 
         {/* Materials list */}
-        <h2 className="mb-3 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+        <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
           Materiais enviados ({materials.length})
         </h2>
 
         {loading ? (
-          <p className="text-sm text-gray-400 animate-pulse">Carregando...</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 animate-pulse">Carregando...</p>
         ) : materials.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-            <p className="text-gray-400">Nenhum material adicionado ainda.</p>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 p-8 text-center">
+            <p className="text-gray-400 dark:text-gray-500">Nenhum material adicionado ainda.</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -254,30 +254,30 @@ export default function MaterialsPage() {
               return (
                 <div
                   key={mat.id}
-                  className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-surface-850 px-4 py-3 hover:bg-gray-50 dark:hover:bg-surface-800 transition-colors"
                 >
-                  <Icon size={20} className="shrink-0 text-gray-400" />
+                  <Icon size={20} className="shrink-0 text-gray-400 dark:text-gray-500" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-gray-700">
+                    <p className="truncate text-sm font-medium text-gray-700 dark:text-gray-300">
                       {mat.filename || "Texto"}
                     </p>
                     {mat.type === "text" && mat.textContent && (
-                      <p className="truncate text-xs text-gray-400 mt-0.5">
+                      <p className="truncate text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                         {mat.textContent.slice(0, 120)}...
                       </p>
                     )}
                     {mat.mimeType && (
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                         {mat.mimeType}
                       </p>
                     )}
                   </div>
-                  <span className="shrink-0 text-xs text-gray-400">
+                  <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
                     {new Date(mat.createdAt).toLocaleDateString("pt-BR")}
                   </span>
                   <button
                     onClick={() => deleteMaterial(mat.id)}
-                    className="shrink-0 rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                    className="shrink-0 rounded p-1.5 text-gray-400 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                     title="Remover"
                   >
                     <Trash2 size={16} />

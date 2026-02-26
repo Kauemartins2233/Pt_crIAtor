@@ -22,7 +22,7 @@ export function Step01Identificacao() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         1. Identificação do Projeto
       </h2>
 
@@ -36,7 +36,7 @@ export function Step01Identificacao() {
           onChange={(e) => updateField("projectName", e.target.value)}
           placeholder="Digite o nome do projeto"
         />
-        <p className="mt-1 text-xs text-gray-500 text-right">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-right">
           {formData.projectName.length}/120 caracteres
         </p>
       </div>

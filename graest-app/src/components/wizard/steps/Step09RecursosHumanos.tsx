@@ -50,15 +50,15 @@ export function Step09RecursosHumanos() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         9. Recursos Humanos
       </h2>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Adicione os profissionais envolvidos no projeto.
       </p>
 
       {professionals.length === 0 && (
-        <p className="text-sm text-gray-400 italic">
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic">
           Nenhum profissional adicionado.
         </p>
       )}
@@ -66,10 +66,10 @@ export function Step09RecursosHumanos() {
       {professionals.map((professional, index) => (
         <div
           key={index}
-          className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-4"
+          className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-800 p-4 space-y-4"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-gray-700">
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Profissional {index + 1}
             </h3>
             <Button

@@ -154,12 +154,12 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
   return (
     <div
       ref={menuRef}
-      className="fixed z-[9999] min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-xl"
+      className="fixed z-[9999] min-w-[220px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 shadow-xl"
       style={{ top: menuPos.top, left: menuPos.left }}
     >
       {/* Loading state */}
       {loading && (
-        <div className="flex items-center gap-2 px-4 py-3 text-sm text-purple-600">
+        <div className="flex items-center gap-2 px-4 py-3 text-sm text-purple-600 dark:text-purple-400">
           <Loader2 size={16} className="animate-spin" />
           Gerando sugestão...
         </div>
@@ -168,10 +168,10 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       {/* Error state */}
       {error && !loading && (
         <div className="px-4 py-3">
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           <button
             onClick={closeMenu}
-            className="mt-2 text-xs text-gray-500 hover:text-gray-700"
+            className="mt-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           >
             Fechar
           </button>
@@ -181,27 +181,27 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       {/* Action menu (initial state) */}
       {!loading && !error && !showCustomInput && (
         <div className="py-1">
-          <div className="px-3 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wide">
+          <div className="px-3 py-1.5 text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">
             IA — Texto selecionado
           </div>
           <button
             onClick={() => callAi("rewrite")}
-            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
           >
             <RefreshCw size={15} />
             Reescrever
           </button>
           <button
             onClick={() => callAi("expand")}
-            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
           >
             <Expand size={15} />
             Expandir texto
           </button>
-          <div className="mx-2 my-1 border-t border-gray-100" />
+          <div className="mx-2 my-1 border-t border-gray-100 dark:border-gray-700" />
           <button
             onClick={() => setShowCustomInput(true)}
-            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
           >
             <MessageSquare size={15} />
             Instrução personalizada...
@@ -212,7 +212,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
       {/* Custom instruction input */}
       {showCustomInput && !loading && !error && (
         <div className="p-3">
-          <label className="mb-1.5 block text-xs font-medium text-gray-500">
+          <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">
             O que deseja fazer com o texto?
           </label>
           <input
@@ -228,7 +228,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
               }
             }}
             placeholder="Ex: Torne mais formal, resuma em 2 frases..."
-            className="w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-800 px-3 py-1.5 text-sm text-gray-900 dark:text-gray-100 focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
           />
           <div className="mt-2 flex gap-2">
             <button
@@ -244,7 +244,7 @@ export function AiBubbleMenu({ editor, section, fieldName }: AiBubbleMenuProps) 
                 setShowCustomInput(false);
                 setCustomInstruction("");
               }}
-              className="text-xs text-gray-400 hover:text-gray-600"
+              className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             >
               Voltar
             </button>

@@ -53,7 +53,7 @@ export function WizardShell() {
         </div>
 
         {/* Bottom bar */}
-        <div className="sticky bottom-0 border-t border-gray-200 bg-white px-8 py-3">
+        <div className="sticky bottom-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 px-8 py-3">
           <div className="mx-auto flex max-w-4xl items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -76,14 +76,14 @@ export function WizardShell() {
 
             <div className="flex items-center gap-4">
               {lastSaved && (
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-400 dark:text-gray-500">
                   Salvo {lastSaved.toLocaleTimeString("pt-BR")}
                 </span>
               )}
               {isDirty && (
                 <span className="text-xs text-amber-500">Alterações não salvas</span>
               )}
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {currentStep + 1} / {totalSteps}
               </span>
               <Button

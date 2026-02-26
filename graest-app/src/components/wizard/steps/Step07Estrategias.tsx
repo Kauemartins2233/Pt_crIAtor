@@ -58,8 +58,8 @@ export function Step07Estrategias() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">7. Estratégias</h2>
-      <p className="text-sm text-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">7. Estratégias</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Texto padrão de estratégias de execução. O nome da fundação de apoio e
         da empresa parceira são inseridos automaticamente. Edite se necessário.
       </p>

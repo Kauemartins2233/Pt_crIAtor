@@ -273,7 +273,7 @@ export function EapTreeEditor({ escopoEditor, captureRef }: EapTreeEditorProps) 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-700">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
           Estrutura Analítica do Projeto (EAP)
         </h3>
         <button
@@ -290,13 +290,13 @@ export function EapTreeEditor({ escopoEditor, captureRef }: EapTreeEditorProps) 
         </button>
       </div>
 
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-gray-500 dark:text-gray-400">
         Edite as subatividades clicando duas vezes. Clique com o botão direito
         em uma atividade para gerar subatividades com IA.
       </p>
 
       {/* Scrollable tree container */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850">
         <EapTreeDiagram
           ref={treeRef}
           projectName={projectName}

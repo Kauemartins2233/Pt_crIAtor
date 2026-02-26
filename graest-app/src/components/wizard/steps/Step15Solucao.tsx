@@ -69,10 +69,10 @@ export function Step15Solucao() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         15. Solução Proposta
       </h2>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Descreva as ações propostas para enfrentar os desafios/problemas.
       </p>
 

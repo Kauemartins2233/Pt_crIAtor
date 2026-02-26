@@ -197,7 +197,7 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
         type="button"
         onClick={handleGenerate}
         disabled={loading}
-        className="flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600 shadow-sm transition-all hover:bg-purple-100 hover:shadow-md disabled:opacity-70"
+        className="flex items-center gap-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30 px-3 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 shadow-sm transition-all hover:bg-purple-100 dark:hover:bg-purple-950/50 hover:shadow-md disabled:opacity-70"
       >
         {loading ? (
           <Loader2 size={13} className="animate-spin" />

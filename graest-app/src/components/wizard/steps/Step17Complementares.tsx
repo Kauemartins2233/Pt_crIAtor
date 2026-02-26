@@ -72,10 +72,10 @@ export function Step17Complementares() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         17. Informações Complementares
       </h2>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Informações adicionais que auxiliem no entendimento do projeto.
       </p>
 

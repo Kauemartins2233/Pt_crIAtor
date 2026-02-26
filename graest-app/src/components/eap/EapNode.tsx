@@ -56,9 +56,9 @@ export function EapNode({
   const levelClasses = {
     root: "bg-primary-600 border-primary-700 text-white font-bold text-sm min-w-[160px] max-w-[200px]",
     activity:
-      "bg-primary-100 border-primary-300 text-primary-800 font-semibold text-xs min-w-[150px] max-w-[180px]",
+      "bg-primary-100 dark:bg-primary-900/40 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200 font-semibold text-xs min-w-[150px] max-w-[180px]",
     subactivity:
-      "bg-white border-gray-300 text-gray-700 text-xs min-w-[150px] max-w-[180px] group/node",
+      "bg-white dark:bg-surface-850 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs min-w-[150px] max-w-[180px] group/node",
   };
 
   if (editing) {
@@ -73,7 +73,7 @@ export function EapNode({
             if (e.key === "Enter") commitEdit();
             if (e.key === "Escape") cancelEdit();
           }}
-          className="w-full rounded border border-primary-300 px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary-400"
+          className="w-full rounded border border-primary-300 dark:border-primary-600 px-2 py-1 text-xs text-gray-700 dark:text-gray-200 bg-white dark:bg-surface-800 focus:outline-none focus:ring-1 focus:ring-primary-400"
         />
       </div>
     );
@@ -96,7 +96,7 @@ export function EapNode({
         {level !== "root" && (
           <span className="font-bold mr-1">{number}</span>
         )}
-        {label || <span className="italic text-gray-400">Sem nome</span>}
+        {label || <span className="italic text-gray-400 dark:text-gray-500">Sem nome</span>}
       </span>
 
       {editable && level === "subactivity" && onRemove && (

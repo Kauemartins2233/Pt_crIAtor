@@ -34,10 +34,10 @@ export function Step10Indicadores() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
         10. Indicadores de Resultados
       </h2>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Selecione os indicadores aplicáveis e informe a quantidade esperada.
       </p>
 
@@ -49,7 +49,7 @@ export function Step10Indicadores() {
           return (
             <div
               key={indicator.key}
-              className="flex items-start gap-4 rounded-lg border border-gray-200 bg-gray-50 p-3"
+              className="flex items-start gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-800 p-3"
             >
               <Checkbox
                 label={indicator.label}

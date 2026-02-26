@@ -169,8 +169,8 @@ export function Step06Escopo() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">6. Escopo</h2>
-      <p className="text-sm text-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">6. Escopo</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Descreva COMO o projeto será feito: etapas, módulos, metodologia,
         ferramentas, linguagens.
       </p>

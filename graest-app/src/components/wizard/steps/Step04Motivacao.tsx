@@ -21,8 +21,8 @@ export function Step04Motivacao() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">4. Motivação</h2>
-      <p className="text-sm text-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">4. Motivação</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Justifique a escolha do projeto, sua importância e a razão da execução.
       </p>
 

@@ -229,8 +229,8 @@ export function Step13Cronograma() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">13. Cronograma</h2>
-      <p className="text-sm text-gray-600">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">13. Cronograma</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Marque os meses em que cada atividade/subatividade será executada.
         As datas do Plano de Ação são sincronizadas automaticamente.
       </p>
@@ -239,14 +239,14 @@ export function Step13Cronograma() {
         <button
           type="button"
           onClick={() => updateField("cronogramaOverrides", [])}
-          className="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md border border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-950/30 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
         >
           Desmarcar todos
         </button>
       )}
 
       {activities.length === 0 ? (
-        <p className="text-sm text-gray-400 italic">
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic">
           Nenhuma atividade cadastrada. Adicione atividades na seção 8 (Plano de
           Ação) primeiro.
         </p>
@@ -255,13 +255,13 @@ export function Step13Cronograma() {
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10 bg-white border border-gray-200 px-3 py-2 text-left font-medium text-gray-700 min-w-[250px]">
+                <th className="sticky left-0 z-10 bg-white dark:bg-surface-850 border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300 min-w-[250px]">
                   Atividade
                 </th>
                 {MONTHS.map((month) => (
                   <th
                     key={month}
-                    className="border border-gray-200 px-2 py-2 text-center font-medium text-gray-700 min-w-[50px]"
+                    className="border border-gray-200 dark:border-gray-700 px-2 py-2 text-center font-medium text-gray-700 dark:text-gray-300 min-w-[50px]"
                   >
                     {month}
                   </th>
@@ -272,14 +272,14 @@ export function Step13Cronograma() {
               {rows.map((row) => {
                 if (row.type === "activity") {
                   return (
-                    <tr key={`act-${row.actIndex}`} className="bg-gray-100">
-                      <td className="sticky left-0 z-10 bg-gray-100 border border-gray-200 px-3 py-2 text-gray-800 font-semibold">
+                    <tr key={`act-${row.actIndex}`} className="bg-gray-100 dark:bg-gray-800">
+                      <td className="sticky left-0 z-10 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-800 dark:text-gray-200 font-semibold">
                         {row.actIndex + 1}. {row.name}
                       </td>
                       {MONTHS.map((_, monthIndex) => (
                         <td
                           key={monthIndex}
-                          className="border border-gray-200 px-2 py-2 bg-gray-100"
+                          className="border border-gray-200 dark:border-gray-700 px-2 py-2 bg-gray-100 dark:bg-gray-800"
                         />
                       ))}
                     </tr>
@@ -287,8 +287,8 @@ export function Step13Cronograma() {
                 }
 
                 return (
-                  <tr key={`sub-${row.actIndex}-${row.subIndex}`} className="hover:bg-gray-50">
-                    <td className="sticky left-0 z-10 bg-white border border-gray-200 px-3 py-2 text-gray-600 pl-6 text-xs">
+                  <tr key={`sub-${row.actIndex}-${row.subIndex}`} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td className="sticky left-0 z-10 bg-white dark:bg-surface-850 border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-600 dark:text-gray-400 pl-6 text-xs">
                       {row.label}
                     </td>
                     {MONTHS.map((_, monthIndex) => {
@@ -302,7 +302,7 @@ export function Step13Cronograma() {
                       return (
                         <td
                           key={month}
-                          className="border border-gray-200 px-2 py-2 text-center"
+                          className="border border-gray-200 dark:border-gray-700 px-2 py-2 text-center"
                         >
                           <Checkbox
                             label=""

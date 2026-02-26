@@ -111,8 +111,8 @@ export function AiSuggestButton({
         className={cn(
           "transition-colors",
           isToolbar
-            ? "rounded p-1.5 text-purple-600 hover:bg-purple-50 disabled:opacity-50"
-            : "flex items-center gap-1 rounded-md border border-purple-200 bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 hover:bg-purple-100 disabled:opacity-50"
+            ? "rounded p-1.5 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 disabled:opacity-50"
+            : "flex items-center gap-1 rounded-md border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30 px-2 py-1 text-xs font-medium text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-950/50 disabled:opacity-50"
         )}
       >
         {loading ? (
@@ -127,11 +127,11 @@ export function AiSuggestButton({
       {(suggestion || error) && (
         <div
           ref={popoverRef}
-          className="absolute right-0 top-full z-50 mt-2 w-[480px] max-h-[400px] rounded-lg border border-gray-200 bg-white shadow-xl"
+          className="absolute right-0 top-full z-50 mt-2 w-[480px] max-h-[400px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-850 shadow-xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2">
-            <span className="flex items-center gap-2 text-sm font-medium text-purple-700">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 px-4 py-2">
+            <span className="flex items-center gap-2 text-sm font-medium text-purple-700 dark:text-purple-300">
               <Sparkles size={14} />
               Sugestão da IA
             </span>
@@ -140,7 +140,7 @@ export function AiSuggestButton({
                 setSuggestion(null);
                 setError(null);
               }}
-              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300"
             >
               <X size={14} />
             </button>
@@ -149,9 +149,9 @@ export function AiSuggestButton({
           {/* Content */}
           <div className="max-h-[300px] overflow-y-auto px-4 py-3">
             {error ? (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             ) : (
-              <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
+              <div className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                 {suggestion}
               </div>
             )}
@@ -159,7 +159,7 @@ export function AiSuggestButton({
 
           {/* Actions */}
           {suggestion && (
-            <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-2">
+            <div className="flex items-center gap-2 border-t border-gray-100 dark:border-gray-700 px-4 py-2">
               <button
                 onClick={handleInsert}
                 className="flex items-center gap-1.5 rounded-md bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700 transition-colors"
@@ -170,7 +170,7 @@ export function AiSuggestButton({
               {onReplace && (
                 <button
                   onClick={handleReplace}
-                  className="flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <Replace size={12} />
                   Substituir
@@ -178,7 +178,7 @@ export function AiSuggestButton({
               )}
               <button
                 onClick={() => setSuggestion(null)}
-                className="ml-auto text-xs text-gray-400 hover:text-gray-600"
+                className="ml-auto text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 Descartar
               </button>

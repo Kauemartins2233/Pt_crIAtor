@@ -162,7 +162,7 @@ export default function SnippetsPage() {
       <Header />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Snippets</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Snippets</h1>
           {!showForm && (
             <Button onClick={handleNew}>
               <Plus size={16} />
@@ -197,7 +197,7 @@ export default function SnippetsPage() {
               />
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Conteúdo
                 </label>
                 <RichTextEditor
@@ -226,10 +226,10 @@ export default function SnippetsPage() {
 
         {/* Snippet list grouped by section */}
         {loading ? (
-          <p className="text-sm text-gray-500">Carregando...</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Carregando...</p>
         ) : snippets.length === 0 && !showForm ? (
           <Card>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Nenhum snippet criado ainda. Clique em &quot;Novo Snippet&quot; para
               começar.
             </p>
@@ -238,7 +238,7 @@ export default function SnippetsPage() {
           <div className="space-y-6">
             {sortedSections.map((sectionNum) => (
               <div key={sectionNum}>
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   {getSectionTitle(sectionNum)}
                 </h2>
                 <div className="space-y-2">
@@ -246,10 +246,10 @@ export default function SnippetsPage() {
                     <Card key={snippet.id} className="py-4">
                       <div className="flex items-start justify-between">
                         <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 dark:text-gray-100">
                             {snippet.name}
                           </p>
-                          <p className="mt-1 text-sm text-gray-500">
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {getContentPreview(snippet.content)}
                           </p>
                         </div>
@@ -267,7 +267,7 @@ export default function SnippetsPage() {
                             size="sm"
                             title="Excluir"
                             onClick={() => handleDelete(snippet.id)}
-                            className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                            className="text-red-500 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30 dark:hover:text-red-400"
                           >
                             <Trash2 size={14} />
                           </Button>

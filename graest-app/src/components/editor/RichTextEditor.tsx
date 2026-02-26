@@ -143,7 +143,7 @@ export function RichTextEditor({
   const showAi = section != null && fieldName;
 
   return (
-    <div className="rounded-lg border border-gray-300 bg-white shadow-sm">
+    <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-850 shadow-sm">
       <input
         ref={fileInputRef}
         type="file"
@@ -153,7 +153,7 @@ export function RichTextEditor({
       />
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 p-2">
+      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 dark:border-gray-700 p-2">
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           active={editor.isActive("bold")}
@@ -168,7 +168,7 @@ export function RichTextEditor({
         >
           <Italic size={16} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-gray-200" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           active={editor.isActive("heading", { level: 2 })}
@@ -190,7 +190,7 @@ export function RichTextEditor({
         >
           <ListOrdered size={16} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-gray-200" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
         <ToolbarButton
           onClick={() => fileInputRef.current?.click()}
           title="Inserir imagem"
@@ -198,7 +198,7 @@ export function RichTextEditor({
           <ImagePlus size={16} />
         </ToolbarButton>
 
-        <div className="mx-1 h-5 w-px bg-gray-200" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
@@ -230,7 +230,7 @@ export function RichTextEditor({
       )}
 
       {placeholder && !content && (
-        <p className="px-4 pb-2 text-sm text-gray-400">{placeholder}</p>
+        <p className="px-4 pb-2 text-sm text-gray-400 dark:text-gray-500">{placeholder}</p>
       )}
     </div>
   );
@@ -256,8 +256,8 @@ function ToolbarButton({
       disabled={disabled}
       title={title}
       className={cn(
-        "rounded p-1.5 text-gray-600 transition-colors hover:bg-gray-100 disabled:opacity-30",
-        active && "bg-primary-50 text-primary-600"
+        "rounded p-1.5 text-gray-600 dark:text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30",
+        active && "bg-primary-50 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400"
       )}
     >
       {children}
