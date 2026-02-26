@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Sparkles, Loader2, Calendar } from "lucide-react";
+import { Sparkles, Loader2, Info, Trash2 } from "lucide-react";
 import { usePlanStore } from "@/lib/store";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import type { ActivityFormData } from "@/types/plan";
 import type { JSONContent } from "@tiptap/react";
@@ -105,7 +104,7 @@ function AiFieldButton({
 export function Step08PlanoAcao() {
   const { formData, updateField } = usePlanStore();
   const activities = formData.activities;
-  const [generatingDates, setGeneratingDates] = useState(false);
+  const [generatingAll, setGeneratingAll] = useState(false);
 
   // Track which activities are expanded (all expanded by default)
   const [expanded, setExpanded] = useState<Record<number, boolean>>(
@@ -192,76 +191,177 @@ export function Step08PlanoAcao() {
     return parts.join("\n");
   }
 
-  // Generate dates for ALL activities at once
-  const handleGenerateDates = useCallback(async () => {
-    if (generatingDates) return;
-    setGeneratingDates(true);
-
-    const planId = usePlanStore.getState().planId;
+  // Helper: call AI for a single field and return the suggestion
+  async function callAi(fieldName: string, currentContent: string): Promise<string> {
     const fd = usePlanStore.getState().formData;
+    const planId = usePlanStore.getState().planId;
     const motivacao = jsonContentToText(fd.motivacao);
     const objetivosGerais = jsonContentToText(fd.objetivosGerais);
+    const objetivosEspecificos = jsonContentToText(fd.objetivosEspecificos);
 
-    const activityList = fd.activities
-      .map((a, i) => `${i + 1}. ${a.name}`)
-      .join("\n");
+    const res = await fetch("/api/ai/suggest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        planId,
+        section: 8,
+        fieldName,
+        currentContent,
+        projectContext: {
+          projectName: fd.projectName,
+          projectNickname: fd.projectNickname,
+          partnerName: fd.partnerName,
+          motivacao: motivacao?.slice(0, 1000),
+          objetivosGerais: objetivosGerais?.slice(0, 1000),
+          objetivosEspecificos: objetivosEspecificos?.slice(0, 1000),
+        },
+      }),
+    });
+    if (!res.ok) throw new Error("Erro ao gerar");
+    const data = await res.json();
+    return data.suggestion || "";
+  }
 
-    const currentContent = [
-      `Período de execução do projeto: ${fd.executionStartDate || "(não definido)"} a ${fd.executionEndDate || "(não definido)"}`,
-      `\nAtividades do projeto:\n${activityList}`,
-    ].join("\n");
+  // ---------- GENERATE ALL: descriptions + justifications + sub descriptions + dates ----------
+  const handleGenerateAll = useCallback(async () => {
+    if (generatingAll) return;
+    setGeneratingAll(true);
 
     try {
-      const res = await fetch("/api/ai/suggest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          planId,
-          section: 8,
-          fieldName: "activityDates",
-          currentContent,
-          projectContext: {
-            projectName: fd.projectName,
-            projectNickname: fd.projectNickname,
-            partnerName: fd.partnerName,
-            motivacao: motivacao?.slice(0, 500),
-            objetivosGerais: objetivosGerais?.slice(0, 500),
-          },
-        }),
-      });
+      const fd = usePlanStore.getState().formData;
+      let updated = [...fd.activities.map((a) => ({ ...a, subActivities: [...(a.subActivities || []).map((s) => ({ ...s }))] }))];
 
-      if (!res.ok) throw new Error("Erro ao gerar datas");
-      const data = await res.json();
-      const suggestion: string = data.suggestion || "";
+      // 1) Generate sub-activity descriptions (parallel per activity)
+      for (let i = 0; i < updated.length; i++) {
+        const act = updated[i];
+        if (!act.name.trim()) continue;
 
-      // Parse: "1: YYYY-MM-DD, YYYY-MM-DD" per line
-      const dateRegex = /(\d+)\s*:\s*(\d{4}-\d{2}-\d{2})\s*,\s*(\d{4}-\d{2}-\d{2})/g;
-      const dates: Record<number, { start: string; end: string }> = {};
-      let match;
-      while ((match = dateRegex.exec(suggestion)) !== null) {
-        const idx = parseInt(match[1]) - 1; // 0-indexed
-        dates[idx] = { start: match[2], end: match[3] };
-      }
-
-      if (Object.keys(dates).length > 0) {
-        const updated = fd.activities.map((act, i) => {
-          if (dates[i]) {
-            return {
-              ...act,
-              startDate: dates[i].start,
-              endDate: dates[i].end,
-            };
-          }
-          return act;
+        const subPromises = act.subActivities.map(async (sub, si) => {
+          if (!sub.name.trim() || sub.description.trim()) return; // skip if no name or already filled
+          const text = await callAi(
+            "subActivityDescription",
+            `Atividade macro: ${act.name}\nSubatividade: ${sub.name}`
+          );
+          if (text) updated[i].subActivities[si].description = text;
         });
-        updateField("activities", updated);
+        await Promise.all(subPromises);
       }
+
+      // 2) Generate activity descriptions (parallel)
+      const descPromises = updated.map(async (act, i) => {
+        if (!act.name.trim() || act.description.trim()) return;
+        const subNames = act.subActivities.map((s) => s.name).filter(Boolean);
+        const ctx = [`Atividade macro: ${act.name}`];
+        if (subNames.length > 0) ctx.push(`Subatividades: ${subNames.join(", ")}`);
+        const text = await callAi("activityDescription", ctx.join("\n"));
+        if (text) updated[i].description = text;
+      });
+      await Promise.all(descPromises);
+
+      // 3) Generate justifications (parallel)
+      const justPromises = updated.map(async (act, i) => {
+        if (!act.name.trim() || act.justification.trim()) return;
+        const ctx = [`Atividade macro: ${act.name}`];
+        if (updated[i].description) ctx.push(`Descrição: ${updated[i].description}`);
+        const subNames = act.subActivities.map((s) => s.name).filter(Boolean);
+        if (subNames.length > 0) ctx.push(`Subatividades: ${subNames.join(", ")}`);
+        const text = await callAi("activityJustification", ctx.join("\n"));
+        if (text) updated[i].justification = text;
+      });
+      await Promise.all(justPromises);
+
+      // 4) Generate macro activity dates
+      if (fd.executionStartDate && fd.executionEndDate) {
+        const activityList = updated.map((a, i) => `${i + 1}. ${a.name}`).join("\n");
+        const dateCtx = [
+          `Período de execução do projeto: ${fd.executionStartDate} a ${fd.executionEndDate}`,
+          `\nAtividades do projeto:\n${activityList}`,
+        ].join("\n");
+        const dateSuggestion = await callAi("activityDates", dateCtx);
+
+        const dateRegex = /(\d+)\s*:\s*(\d{4}-\d{2}-\d{2})\s*,\s*(\d{4}-\d{2}-\d{2})/g;
+        let match;
+        while ((match = dateRegex.exec(dateSuggestion)) !== null) {
+          const idx = parseInt(match[1]) - 1;
+          if (idx >= 0 && idx < updated.length) {
+            if (!updated[idx].startDate) updated[idx].startDate = match[2];
+            if (!updated[idx].endDate) updated[idx].endDate = match[3];
+          }
+        }
+
+        // 5) Generate sub-activity dates within each macro activity period
+        const subListLines: string[] = [];
+        for (let i = 0; i < updated.length; i++) {
+          const act = updated[i];
+          if (!act.startDate || !act.endDate) continue;
+          for (let si = 0; si < act.subActivities.length; si++) {
+            const sub = act.subActivities[si];
+            if (sub.name.trim()) {
+              subListLines.push(`${i + 1}.${si + 1}: ${sub.name}`);
+            }
+          }
+        }
+
+        if (subListLines.length > 0) {
+          const actDatesCtx = updated
+            .filter((a) => a.startDate && a.endDate)
+            .map((a, i) => `Atividade ${i + 1} (${a.name}): ${a.startDate} a ${a.endDate}`)
+            .join("\n");
+
+          const subDateCtx = [
+            `Período de execução do projeto: ${fd.executionStartDate} a ${fd.executionEndDate}`,
+            `\nDatas das atividades macro:\n${actDatesCtx}`,
+            `\nSubatividades:\n${subListLines.join("\n")}`,
+          ].join("\n");
+
+          const subDateSuggestion = await callAi("subActivityDates", subDateCtx);
+
+          const subDateRegex = /(\d+)\.(\d+)\s*:\s*(\d{4}-\d{2}-\d{2})\s*,\s*(\d{4}-\d{2}-\d{2})/g;
+          let subMatch;
+          while ((subMatch = subDateRegex.exec(subDateSuggestion)) !== null) {
+            const actIdx = parseInt(subMatch[1]) - 1;
+            const subIdx = parseInt(subMatch[2]) - 1;
+            if (
+              actIdx >= 0 && actIdx < updated.length &&
+              subIdx >= 0 && subIdx < updated[actIdx].subActivities.length
+            ) {
+              updated[actIdx].subActivities[subIdx].startDate = subMatch[3];
+              updated[actIdx].subActivities[subIdx].endDate = subMatch[4];
+            }
+          }
+        }
+      }
+
+      updateField("activities", updated);
     } catch (error) {
-      console.error("AI date generation error:", error);
+      console.error("AI bulk generation error:", error);
     } finally {
-      setGeneratingDates(false);
+      setGeneratingAll(false);
     }
-  }, [generatingDates, updateField]);
+  }, [generatingAll, updateField]);
+
+  function handleClearAll() {
+    const cleared = activities.map((act) => ({
+      ...act,
+      description: "",
+      justification: "",
+      startDate: "",
+      endDate: "",
+      subActivities: (act.subActivities || []).map((sub) => ({
+        ...sub,
+        description: "",
+        startDate: undefined,
+        endDate: undefined,
+      })),
+    }));
+    updateField("activities", cleared);
+  }
+
+  const hasAnyActivityName = activities.some((a) => a.name.trim());
+  const hasAnyFilledData = activities.some(
+    (a) => a.description || a.justification || a.startDate || a.endDate ||
+      (a.subActivities || []).some((s) => s.description)
+  );
 
   return (
     <div className="space-y-4">
@@ -272,6 +372,51 @@ export function Step08PlanoAcao() {
         Preencha as 5 atividades macro do projeto com suas subatividades,
         descrições e datas.
       </p>
+
+      {/* Info box */}
+      <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
+        <Info size={18} className="text-blue-500 mt-0.5 shrink-0" />
+        <p className="text-sm text-blue-700">
+          <strong>Dica:</strong> Certifique-se de ter criado as subatividades na
+          EAP (Seção 6 — Escopo) antes de preencher esta seção. Os nomes das
+          atividades e subatividades da EAP são usados aqui.
+        </p>
+      </div>
+
+      {/* Generate ALL + Clear buttons */}
+      <div className="flex justify-center gap-3">
+        <button
+          type="button"
+          onClick={handleGenerateAll}
+          disabled={generatingAll || !hasAnyActivityName}
+          className="inline-flex items-center gap-2 rounded-lg border border-purple-300 bg-purple-50 px-5 py-2.5 text-sm font-semibold text-purple-700 hover:bg-purple-100 disabled:opacity-50 transition-colors shadow-sm"
+        >
+          {generatingAll ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Sparkles size={16} />
+          )}
+          {generatingAll
+            ? "Gerando descrições, justificativas e datas..."
+            : "Preencher tudo com IA"}
+        </button>
+        {hasAnyFilledData && (
+          <button
+            type="button"
+            onClick={handleClearAll}
+            disabled={generatingAll}
+            className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50 transition-colors"
+          >
+            <Trash2 size={14} />
+            Limpar dados
+          </button>
+        )}
+      </div>
+      {!hasAnyActivityName && (
+        <p className="text-center text-xs text-gray-400">
+          Adicione pelo menos uma atividade com nome para usar a IA.
+        </p>
+      )}
 
       {activities.map((activity, index) => {
         const isOpen = expanded[index] !== false;
@@ -512,35 +657,6 @@ export function Step08PlanoAcao() {
           </div>
         );
       })}
-
-      {/* Generate dates for all activities */}
-      <div className="flex justify-center pt-2">
-        <button
-          type="button"
-          onClick={handleGenerateDates}
-          disabled={
-            generatingDates ||
-            !formData.executionStartDate ||
-            !formData.executionEndDate
-          }
-          className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-100 disabled:opacity-50 transition-colors"
-        >
-          {generatingDates ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <Calendar size={16} />
-          )}
-          {generatingDates
-            ? "Gerando datas..."
-            : "Gerar datas de todas as atividades com IA"}
-        </button>
-      </div>
-      {(!formData.executionStartDate || !formData.executionEndDate) && (
-        <p className="text-center text-xs text-gray-400">
-          Defina as datas de execução do projeto na seção Identificação para
-          gerar datas automaticamente.
-        </p>
-      )}
     </div>
   );
 }

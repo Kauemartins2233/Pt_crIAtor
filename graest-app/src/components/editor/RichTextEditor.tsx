@@ -14,7 +14,7 @@ import {
   Undo,
   Redo,
 } from "lucide-react";
-import { cn, aiTextToHtml } from "@/lib/utils";
+import { cn, aiTextToHtml, jsonContentToText } from "@/lib/utils";
 import { AiBubbleMenu } from "./AiBubbleMenu";
 import { AiIdlePrompt } from "./AiIdlePrompt";
 
@@ -46,20 +46,6 @@ async function uploadImage(file: File): Promise<string | null> {
 
 function isImageFile(file: File): boolean {
   return file.type.startsWith("image/");
-}
-
-// Extract plain text from JSONContent for AI context
-function jsonContentToText(content: JSONContent | null): string {
-  if (!content || !content.content) return "";
-  const texts: string[] = [];
-  for (const node of content.content) {
-    if (node.content) {
-      for (const child of node.content) {
-        if (child.text) texts.push(child.text);
-      }
-    }
-  }
-  return texts.join(" ");
 }
 
 export function RichTextEditor({

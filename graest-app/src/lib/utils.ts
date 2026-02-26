@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { JSONContent } from "@tiptap/react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,43 +47,43 @@ export function aiTextToHtml(text: string): string {
     }
   };
 
-  let paragraphLines: string[] = [];
-
-  const flushParagraph = () => {
-    if (paragraphLines.length > 0) {
-      const content = paragraphLines.join("<br>");
-      if (content.trim()) {
-        result.push(`<p>${content}</p>`);
-      }
-      paragraphLines = [];
-    }
-  };
-
   for (const line of lines) {
     const trimmed = line.trim();
 
     // Bullet list item
     if (trimmed.startsWith("- ")) {
-      flushParagraph();
+      flushList(); // don't flush — accumulate
       listItems.push(trimmed.slice(2));
       continue;
     }
 
-    // Empty line = paragraph break
+    // Empty line = just flush any pending list
     if (trimmed === "") {
       flushList();
-      flushParagraph();
       continue;
     }
 
-    // Regular text line
+    // Regular text line — each line becomes its own paragraph
     flushList();
-    paragraphLines.push(trimmed);
+    result.push(`<p>${trimmed}</p>`);
   }
 
   // Flush remaining
   flushList();
-  flushParagraph();
 
   return result.join("");
+}
+
+/** Extract plain text from Tiptap JSONContent for AI context */
+export function jsonContentToText(content: JSONContent | null): string {
+  if (!content || !content.content) return "";
+  const texts: string[] = [];
+  for (const node of content.content) {
+    if (node.content) {
+      for (const child of node.content) {
+        if (child.text) texts.push(child.text);
+      }
+    }
+  }
+  return texts.join(" ");
 }

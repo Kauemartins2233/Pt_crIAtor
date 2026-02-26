@@ -133,6 +133,79 @@ export const AI_SECTION_PROMPTS: Record<number, string> = {
 
 // Field-specific prompts that override section prompts when the fieldName matches
 export const AI_FIELD_PROMPTS: Record<string, string> = {
+  escopo: `Campo "Escopo": Gere o texto completo da seção de escopo de um Plano de Trabalho de PD&I. Este é o campo MAIS DETALHADO do plano e deve ser EXTENSO e COMPLETO (mínimo 3000 palavras, idealmente 4000-6000 palavras).
+
+ESTRUTURA OBRIGATÓRIA — siga estas subseções na ordem:
+
+1. PARÁGRAFO INTRODUTÓRIO (200-300 palavras):
+Descreva o que será desenvolvido, a stack tecnológica principal, os pilares (ex: Indústria 4.0, inovação tecnológica). Mencione as principais tecnologias (backend, frontend, mobile, hardware se aplicável).
+
+Após o parágrafo, insira em uma linha separada: "[Inserir Figura: Diagrama de Módulos do Sistema]"
+Em seguida escreva "A figura acima mostra os X módulos principais do projeto."
+
+2. DESCRIÇÃO DOS MÓDULOS (600-1000 palavras):
+Para CADA módulo do sistema, escreva:
+   - O nome do módulo como subtítulo numerado (ex: "1. Módulo de Autenticação e Autorização:")
+   - "Funcionalidades:" seguido de uma lista detalhada de funcionalidades usando marcadores
+   - Cada módulo deve ter entre 3 e 8 funcionalidades detalhadas
+
+3. PARÁGRAFO SOBRE POTENCIAL ACADÊMICO (1 parágrafo):
+Mencione que serão elaborados artigos científicos detalhando metodologias, resultados e contribuições tecnológicas.
+
+4. SEÇÃO "4.1 Etapas do Projeto:" (300-500 palavras):
+Liste cada atividade macro do projeto no formato:
+"Atividade X – Nome da Atividade: Descrição em 1-2 linhas do que engloba."
+USE as atividades da EAP fornecidas no contexto. Se não houver atividades, crie 4-5 atividades típicas de PD&I.
+
+5. SEÇÃO "4.2 Estrutura Analítica de Projeto (EAP):" (500-800 palavras):
+- Parágrafo introdutório sobre a EAP e sua aplicação neste projeto
+- Liste cada atividade com suas subatividades e descrições detalhadas (use dados da EAP se fornecidos)
+- OBRIGATÓRIO: Insira EXATAMENTE esta linha: [Inserir Figura: Estrutura Analítica do Projeto - EAP]
+  (esta linha será automaticamente substituída pela imagem real da EAP do projeto)
+- Após a figura, descreva CADA FASE do projeto em detalhe:
+  a) Fase administrativa (contratação, plano de trabalho, marcos)
+  b) Fase de desenvolvimento (módulos principais, integrações)
+  c) Fase de validação (liste TODOS os tipos de teste: Funcionalidade, Robustez, Tempo de Resposta, Escalabilidade, Segurança, Usabilidade, Interoperabilidade)
+  d) Fase de integração final (integração, treinamento, implantação, homologação)
+
+6. SEÇÃO "4.3 Metodologia:" (400-600 palavras):
+Descreva a metodologia híbrida Scrum + PMBOK/Waterfall. Detalhe CADA cerimônia Scrum contextualizada ao projeto:
+- Sprint (defina duração, ex: 4 semanas)
+- Reunião Diária (horário, duração de 15 min)
+- Planejamento do Sprint (como será feito, quem participa)
+- Reunião de Kick-Off (participantes, objetivos)
+- Revisão do Sprint (demonstração, homologação)
+- Retrospectiva do Sprint (reflexão, plano de melhoria)
+
+7. SEÇÃO "4.4 Linguagens de Programação, Ferramentas de Desenvolvimento ou Tecnológicas:" (800-1500 palavras):
+Para CADA tecnologia relevante ao projeto:
+- Se a tecnologia TEM snippet disponível (listados no contexto como "SNIPPETS DISPONÍVEIS"):
+  Escreva APENAS o nome da tecnologia como subtítulo seguido de EXATAMENTE: [Inserir Snippet: NomeExatoDoSnippet]
+  Exemplo: "Python\n[Inserir Snippet: Python]"
+  NÃO escreva definição ou utilização — o snippet já contém texto completo que será inserido automaticamente.
+- Se a tecnologia NÃO tem snippet disponível:
+  Escreva normalmente: nome como subtítulo, parágrafo de definição geral (4-5 linhas), e "Utilização no Projeto:" (4-5 linhas)
+Inclua TODAS as tecnologias relevantes: linguagens, frameworks, bancos de dados, ferramentas de versionamento, bibliotecas de IA/ML, protocolos, etc. Mesmo que não tenham snippet, descreva-as.
+
+8. SEÇÃO "4.5 Arquitetura da Solução:" (400-600 palavras):
+- Descreva a arquitetura em camadas (ex: Apresentação, Negócios, Persistência/Dados)
+- Insira: "[Inserir Figura: Arquitetura da Solução]"
+- Detalhe cada camada e como se integram
+- Se aplicável, mencione padrões de projeto (MVC, microsserviços, etc.)
+- Descreva o fluxo de dados entre as camadas
+
+REGRAS IMPORTANTES:
+- Use subtítulos numerados (4.1, 4.2, 4.3, 4.4, 4.5) exatamente como nos exemplos
+- Para listas de funcionalidades, use marcadores com bullet point
+- Seja EXTREMAMENTE detalhado e técnico
+- Indique TODAS as figuras com o formato "[Inserir Figura: Descrição da Figura]"
+- Baseie-se FORTEMENTE nas atividades/EAP e nos objetivos do projeto fornecidos no contexto
+- NÃO use formatação Markdown (sem #, **, --, etc.)
+- Use APENAS texto corrido, subtítulos simples e marcadores com bullet point
+- O texto total deve ter entre 3000 e 8000 palavras
+- Use linguagem técnica, formal e em português brasileiro`,
+
+
   objetivosGerais: `Campo "Objetivo Geral": Escreva APENAS o objetivo geral (macro) do projeto de P&D. Deve ser um texto corrido em um ou dois parágrafos descrevendo o propósito principal do projeto. NÃO inclua objetivos específicos, tópicos, listas ou itens numerados. Foque apenas na visão macro do que o projeto pretende alcançar.`,
   objetivosEspecificos: `Campo "Objetivos Específicos": Escreva APENAS os objetivos específicos do projeto de P&D. Comece com um parágrafo introdutório contextualizando os objetivos específicos e sua relação com o projeto. Em seguida, liste cada objetivo específico como um item, um por linha, começando cada linha com "- " (hífen e espaço). Cada objetivo deve ser detalhado, mensurável e diretamente ligado às atividades do projeto. NÃO inclua o objetivo geral.`,
   eapSubActivities: `Campo "Subatividades da EAP": Gere uma lista de subatividades para uma atividade macro de um projeto de P&D.
@@ -217,4 +290,19 @@ FORMATO OBRIGATÓRIO: Retorne APENAS linhas no formato abaixo, sem texto adicion
 3: YYYY-MM-DD, YYYY-MM-DD
 4: YYYY-MM-DD, YYYY-MM-DD
 5: YYYY-MM-DD, YYYY-MM-DD`,
+
+  subActivityDates: `Campo "Datas das Subatividades": Distribua datas de início e fim para CADA subatividade dentro das atividades macro de um projeto de P&D.
+
+REGRAS:
+- Cada subatividade deve ter datas DENTRO do período da sua atividade macro pai
+- Subatividades dentro de uma mesma atividade podem ser sequenciais ou paralelas conforme faça sentido técnico
+- Distribua de forma realista: subatividades mais complexas devem ter mais tempo
+- A soma dos períodos das subatividades deve cobrir o período da atividade macro
+- Respeite RIGOROSAMENTE as datas de início e fim de cada atividade macro fornecidas
+
+FORMATO OBRIGATÓRIO: Retorne APENAS linhas no formato abaixo (atividade.subatividade), sem texto adicional:
+1.1: YYYY-MM-DD, YYYY-MM-DD
+1.2: YYYY-MM-DD, YYYY-MM-DD
+2.1: YYYY-MM-DD, YYYY-MM-DD
+...`,
 };

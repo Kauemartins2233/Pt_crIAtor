@@ -45,8 +45,8 @@ function lookupLabel(
 // ---------------------------------------------------------------------------
 const DEFAULT_FONT = '<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/>';
 
-// Paragraph properties: justified text
-const PARA_PROPS = '<w:pPr><w:jc w:val="both"/></w:pPr>';
+// Paragraph properties: justified text with spacing after for visual paragraph separation
+const PARA_PROPS = '<w:pPr><w:spacing w:after="200" w:line="276" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr>';
 
 // Empty paragraph used as a blank line separator between content paragraphs
 const EMPTY_PARA = `<w:p><w:pPr><w:jc w:val="both"/></w:pPr><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
@@ -83,12 +83,53 @@ function nodeToRuns(node: JSONContent): string {
     return `<w:r>${rPr}<w:t xml:space="preserve">${escapeXml(node.text)}</w:t></w:r>`;
   }
   if (node.type === "hardBreak") {
+    // Marker — handled by splitParagraphAtBreaks; fallback to line break
     return `<w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:br/></w:r>`;
   }
   if (node.content) {
     return node.content.map((child) => nodeToRuns(child)).join("");
   }
   return "";
+}
+
+/**
+ * Split a paragraph node's children at hardBreak boundaries into separate
+ * OOXML paragraphs. This ensures proper w:spacing between lines that were
+ * separated by <br> in the editor (single newlines in AI output).
+ */
+function splitParagraphAtBreaks(node: JSONContent, paraProps: string): string[] {
+  const children = node.content ?? [];
+  if (children.length === 0) {
+    return [`<w:p>${paraProps}</w:p>`];
+  }
+
+  // Check if there are any hardBreaks
+  const hasBreaks = children.some((c) => c.type === "hardBreak");
+  if (!hasBreaks) {
+    const runs = children.map((c) => nodeToRuns(c)).join("");
+    return [`<w:p>${paraProps}${runs}</w:p>`];
+  }
+
+  // Split children into groups separated by hardBreak
+  const groups: JSONContent[][] = [];
+  let current: JSONContent[] = [];
+  for (const child of children) {
+    if (child.type === "hardBreak") {
+      groups.push(current);
+      current = [];
+    } else {
+      current.push(child);
+    }
+  }
+  groups.push(current);
+
+  // Each group becomes its own <w:p>
+  return groups
+    .filter((g) => g.length > 0 || groups.length === 1)
+    .map((g) => {
+      const runs = g.map((c) => nodeToRuns(c)).join("");
+      return `<w:p>${paraProps}${runs}</w:p>`;
+    });
 }
 
 // Collected images from rich text fields, injected into the zip in post-processing
@@ -112,8 +153,9 @@ function tiptapToOoxml(content: JSONContent | null): string {
   for (const node of content.content) {
     switch (node.type) {
       case "paragraph": {
-        const runs = nodeToRuns(node);
-        paragraphs.push(`<w:p>${PARA_PROPS}${runs}</w:p>`);
+        // Split at hardBreak nodes so each line becomes its own <w:p> with spacing
+        const paraParts = splitParagraphAtBreaks(node, PARA_PROPS);
+        paragraphs.push(...paraParts);
         break;
       }
 
@@ -128,7 +170,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
               })
               .join("")
           : "";
-        paragraphs.push(`<w:p>${PARA_PROPS}${runs}</w:p>`);
+        paragraphs.push(`<w:p><w:pPr><w:spacing w:before="300" w:after="120" w:line="276" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>${runs}</w:p>`);
         break;
       }
 
@@ -139,7 +181,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
               for (const child of listItem.content) {
                 const runs = nodeToRuns(child);
                 paragraphs.push(
-                  `<w:p>${PARA_PROPS}<w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">\u2022 </w:t></w:r>${runs}</w:p>`
+                  `<w:p><w:pPr><w:spacing w:after="40" w:line="276" w:lineRule="auto"/><w:ind w:left="360" w:hanging="360"/><w:jc w:val="left"/></w:pPr><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">\u2022 </w:t></w:r>${runs}</w:p>`
                 );
               }
             }
@@ -156,7 +198,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
               for (const child of listItem.content) {
                 const runs = nodeToRuns(child);
                 paragraphs.push(
-                  `<w:p>${PARA_PROPS}<w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">${counter}. </w:t></w:r>${runs}</w:p>`
+                  `<w:p><w:pPr><w:spacing w:after="40" w:line="276" w:lineRule="auto"/><w:ind w:left="360" w:hanging="360"/><w:jc w:val="left"/></w:pPr><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve">${counter}. </w:t></w:r>${runs}</w:p>`
                 );
                 counter++;
               }
@@ -171,7 +213,7 @@ function tiptapToOoxml(content: JSONContent | null): string {
           for (const child of node.content) {
             const runs = nodeToRuns(child);
             paragraphs.push(
-              `<w:p><w:pPr><w:ind w:left="720"/><w:jc w:val="both"/></w:pPr>${runs}</w:p>`
+              `<w:p><w:pPr><w:spacing w:after="120" w:line="276" w:lineRule="auto"/><w:ind w:left="720"/><w:jc w:val="both"/></w:pPr>${runs}</w:p>`
             );
           }
         }
@@ -213,10 +255,22 @@ function tiptapToOoxml(content: JSONContent | null): string {
     }
   }
 
-  // Join paragraphs with an empty line between each one
-  return paragraphs.length > 0
-    ? paragraphs.join(EMPTY_PARA)
-    : `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
+  // Insert blank line between text paragraphs for visual separation in Word
+  if (paragraphs.length === 0) {
+    return `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t xml:space="preserve"> </w:t></w:r></w:p>`;
+  }
+
+  const output: string[] = [];
+  for (let i = 0; i < paragraphs.length; i++) {
+    output.push(paragraphs[i]);
+    // Add blank line after regular paragraphs (not after last, not after/before lists or images)
+    const isTextPara = paragraphs[i].includes(PARA_PROPS) && !paragraphs[i].includes("<w:drawing");
+    const nextIsTextPara = i + 1 < paragraphs.length && paragraphs[i + 1].includes(PARA_PROPS) && !paragraphs[i + 1].includes("<w:drawing");
+    if (isTextPara && nextIsTextPara) {
+      output.push(EMPTY_PARA);
+    }
+  }
+  return output.join("");
 }
 
 // ---------------------------------------------------------------------------

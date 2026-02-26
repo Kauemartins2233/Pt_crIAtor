@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { usePlanStore } from "@/lib/store";
-import { aiTextToHtml } from "@/lib/utils";
+import { aiTextToHtml, jsonContentToText } from "@/lib/utils";
 
 interface AiIdlePromptProps {
   editor: Editor;
@@ -38,11 +38,13 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
 
   const startTimer = useCallback(() => {
     clearTimer();
-    // Only start timer if editor is focused
-    if (!editor.isFocused) return;
+    // Only start timer if editor has focus (check both TipTap and DOM)
+    const hasFocus = editor.isFocused || editor.view.dom.contains(document.activeElement);
+    if (!hasFocus) return;
 
     timerRef.current = setTimeout(() => {
-      if (!editor.isFocused) return;
+      const stillFocused = editor.isFocused || editor.view.dom.contains(document.activeElement);
+      if (!stillFocused) return;
 
       // Calculate position at cursor
       const { from, to } = editor.state.selection;
@@ -92,10 +94,14 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
       }
     };
 
-    // Also listen for keydown to reset timer on any key press (not just content changes)
+    // Also listen for keydown and click to reset timer reliably
     const editorDom = editor.view.dom;
     const onKeyDown = () => {
       hidePrompt();
+      startTimer();
+    };
+    const onClick = () => {
+      // Click always means the editor is focused — start timer as fallback
       startTimer();
     };
 
@@ -104,6 +110,7 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
     editor.on("blur", onBlur);
     editor.on("selectionUpdate", onSelectionUpdate);
     editorDom.addEventListener("keydown", onKeyDown);
+    editorDom.addEventListener("click", onClick);
 
     // Start timer if editor is already focused
     if (editor.isFocused) {
@@ -117,6 +124,7 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
       editor.off("blur", onBlur);
       editor.off("selectionUpdate", onSelectionUpdate);
       editorDom.removeEventListener("keydown", onKeyDown);
+      editorDom.removeEventListener("click", onClick);
     };
   }, [editor, hidePrompt, startTimer, clearTimer]);
 
@@ -126,6 +134,29 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
 
     try {
       const currentContent = editor.state.doc.textContent;
+      const motivacaoText = jsonContentToText(formData.motivacao);
+      const objetivosGeraisText = jsonContentToText(formData.objetivosGerais);
+      const objetivosEspText = jsonContentToText(formData.objetivosEspecificos);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const projectContext: Record<string, any> = {
+        projectName: formData.projectName,
+        projectNickname: formData.projectNickname,
+        partnerName: formData.partnerName,
+        motivacao: motivacaoText?.slice(0, 2000),
+        objetivosGerais: objetivosGeraisText?.slice(0, 1000),
+        objetivosEspecificos: objetivosEspText?.slice(0, 1000),
+      };
+
+      // For escopo (section 6), also send activities/EAP data
+      if (section === 6 && formData.activities?.length > 0) {
+        projectContext.activities = formData.activities.map((a) => ({
+          name: a.name,
+          description: a.description,
+          subActivities: a.subActivities?.map((s) => s.name).filter(Boolean) ?? [],
+        }));
+      }
+
       const res = await fetch("/api/ai/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,11 +167,7 @@ export function AiIdlePrompt({ editor, section, fieldName }: AiIdlePromptProps) 
           currentContent,
           action: "generate",
           useModulosApproach: formData.useModulosApproach,
-          projectContext: {
-            projectName: formData.projectName,
-            projectNickname: formData.projectNickname,
-            partnerName: formData.partnerName,
-          },
+          projectContext,
         }),
       });
 

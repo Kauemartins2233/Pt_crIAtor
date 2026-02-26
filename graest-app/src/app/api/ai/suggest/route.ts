@@ -5,6 +5,18 @@ import { AI_SECTION_PROMPTS, AI_FIELD_PROMPTS } from "@/lib/constants";
 import * as fs from "fs";
 import * as path from "path";
 
+// Section-specific limits for example text length (chars)
+const EXAMPLE_CHAR_LIMITS: Record<number, number> = {
+  6: 12000, // Escopo examples are very long (~10-16K chars), keep most of them
+};
+const DEFAULT_EXAMPLE_LIMIT = 3000;
+
+// Section-specific max output tokens
+const MAX_OUTPUT_TOKENS: Record<number, number> = {
+  6: 16384, // Escopo needs very long output
+};
+const DEFAULT_MAX_TOKENS = 4096;
+
 // Dynamically import pdf-parse (CommonJS module)
 async function extractPdfText(buffer: Buffer): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -47,6 +59,7 @@ async function loadExamples(section: number): Promise<string> {
 
   const files = fs.readdirSync(examplesDir).filter((f) => f.endsWith(".pdf") || f.endsWith(".txt"));
   const texts: string[] = [];
+  const charLimit = EXAMPLE_CHAR_LIMITS[section] ?? DEFAULT_EXAMPLE_LIMIT;
 
   for (const file of files.slice(0, 3)) {
     // Limit to 3 examples
@@ -56,7 +69,7 @@ async function loadExamples(section: number): Promise<string> {
         const buffer = fs.readFileSync(filePath);
         const text = await extractPdfText(buffer);
         if (text.trim()) {
-          texts.push(`--- Exemplo (${file}) ---\n${text.slice(0, 3000)}`);
+          texts.push(`--- Exemplo (${file}) ---\n${text.slice(0, charLimit)}`);
         }
       } catch {
         // skip unreadable PDFs
@@ -64,7 +77,7 @@ async function loadExamples(section: number): Promise<string> {
     } else {
       const text = fs.readFileSync(filePath, "utf-8");
       if (text.trim()) {
-        texts.push(`--- Exemplo (${file}) ---\n${text.slice(0, 3000)}`);
+        texts.push(`--- Exemplo (${file}) ---\n${text.slice(0, charLimit)}`);
       }
     }
   }
@@ -117,6 +130,16 @@ export async function POST(req: NextRequest) {
     // 2. Load examples for this section
     const examplesText = await loadExamples(section);
 
+    // 2b. Load snippet names for scope section
+    let snippetNames: string[] = [];
+    if (section === 6) {
+      const snippets = await prisma.snippet.findMany({
+        where: { targetSection: 6 },
+        select: { name: true },
+      });
+      snippetNames = snippets.map((s) => s.name);
+    }
+
     // 3. Build prompt — prefer field-specific prompt over generic section prompt
     // When useModulosApproach is enabled for objetivosEspecificos, use the módulos prompt
     const effectiveFieldName =
@@ -136,10 +159,10 @@ REGRAS:
 - Escreva em português brasileiro formal e técnico
 - Use termos apropriados para P&D e inovação tecnológica
 - Baseie-se fortemente nos materiais de contexto fornecidos
-- Se houver exemplos, use como referência de estilo e profundidade
+- Se houver exemplos, use como referência de estilo e profundidade — gere textos com tamanho e nível de detalhe SIMILAR aos exemplos
 - Gere texto pronto para uso, sem marcadores como "[inserir aqui]"
-- Não inclua títulos de seção ou subtítulos — apenas o conteúdo do campo solicitado
-- Seja detalhado e completo, mas conciso
+- Não inclua títulos de seção ou subtítulos — apenas o conteúdo do campo solicitado (EXCETO para o campo "escopo" que tem estrutura própria com subtítulos 4.1-4.5)
+- Seja detalhado e completo
 - IMPORTANTE: NÃO use formatação Markdown. Não use asteriscos (*) para negrito ou itálico, não use cerquilhas (#) para títulos, não use hífens (-) para listas, não use "o" como marcador de tópico. Escreva texto corrido puro em parágrafos, usando apenas quebras de linha para separar parágrafos.`;
 
     let userPrompt = `${sectionPrompt}\n\n`;
@@ -155,12 +178,32 @@ REGRAS:
       userPrompt += `\n`;
     }
 
+    // Add EAP/activities data for scope section
+    if (projectContext?.activities && section === 6) {
+      userPrompt += `ESTRUTURA DE ATIVIDADES (EAP) DO PROJETO:\n`;
+      for (const act of projectContext.activities) {
+        userPrompt += `\nAtividade: ${act.name}\n`;
+        if (act.description) userPrompt += `  Descrição: ${act.description}\n`;
+        if (act.subActivities?.length > 0) {
+          userPrompt += `  Subatividades: ${act.subActivities.join(", ")}\n`;
+        }
+      }
+      userPrompt += `\nIMPORTANTE: Use estas atividades e subatividades como base para as seções 4.1 (Etapas) e 4.2 (EAP) do escopo.\n\n`;
+    }
+
     if (materialTexts.length > 0) {
       userPrompt += `MATERIAIS DE CONTEXTO DO USUÁRIO:\n${materialTexts.join("\n\n")}\n\n`;
     }
 
     if (examplesText) {
-      userPrompt += `EXEMPLOS DE PLANOS ANTERIORES (use como referência de estilo):\n${examplesText}\n\n`;
+      userPrompt += `EXEMPLOS DE PLANOS ANTERIORES (use como referência de estilo, profundidade e TAMANHO — gere texto com extensão SIMILAR):\n${examplesText}\n\n`;
+    }
+
+    // Add snippet names for scope section
+    if (snippetNames.length > 0 && section === 6) {
+      userPrompt += `SNIPPETS DISPONÍVEIS (textos prontos que serão inseridos automaticamente onde você colocar o marcador):\n`;
+      userPrompt += snippetNames.map((n) => `- ${n}`).join("\n");
+      userPrompt += `\n\nPara tecnologias que possuem snippet acima, na seção 4.4, escreva APENAS o nome como subtítulo e na linha seguinte: [Inserir Snippet: NomeExato]\nExemplo:\nPython\n[Inserir Snippet: Python]\n\nO sistema substituirá automaticamente pelo texto completo do snippet. NÃO escreva definição para tecnologias que têm snippet.\n\n`;
     }
 
     if (currentContent) {
@@ -195,9 +238,15 @@ REGRAS:
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+    const maxOutputTokens = MAX_OUTPUT_TOKENS[section] ?? DEFAULT_MAX_TOKENS;
+
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: userPrompt }] }],
       systemInstruction: systemPrompt,
+      generationConfig: {
+        maxOutputTokens,
+        temperature: 0.7,
+      },
     });
 
     const suggestion = result.response.text();

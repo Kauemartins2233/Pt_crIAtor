@@ -3,6 +3,8 @@ import type { JSONContent } from "@tiptap/react";
 export interface SubActivity {
   name: string;
   description: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 /** Normalize sub-activities from old string[] format or new object[] format */

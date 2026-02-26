@@ -1,33 +1,61 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { ImageDown, Loader2 } from "lucide-react";
 import type { Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/react";
 import { toPng } from "html-to-image";
 import { usePlanStore } from "@/lib/store";
+import { jsonContentToText } from "@/lib/utils";
 import { EapTreeDiagram } from "./EapTreeDiagram";
 import { EapContextMenu } from "./EapContextMenu";
 import type { ActivityFormData } from "@/types/plan";
 
-interface EapTreeEditorProps {
-  escopoEditor: Editor | null;
-}
+/** Replace [Inserir Figura: ...EAP...] placeholder in editor with an image */
+export function replaceEapPlaceholder(editor: Editor, imageUrl: string): boolean {
+  let replaced = false;
+  const doc = editor.state.doc;
 
-function jsonContentToText(content: JSONContent | null): string {
-  if (!content || !content.content) return "";
-  const texts: string[] = [];
-  for (const node of content.content) {
-    if (node.content) {
-      for (const child of node.content) {
-        if (child.text) texts.push(child.text);
+  doc.descendants((node, pos) => {
+    if (replaced) return false;
+    if (node.isText && node.text) {
+      const match = node.text.match(/\[Inserir Figura:.*EAP.*\]/i);
+      if (match) {
+        const resolved = editor.state.doc.resolve(pos);
+        const parentStart = resolved.before(resolved.depth);
+        const parentEnd = resolved.after(resolved.depth);
+
+        editor
+          .chain()
+          .focus()
+          .setTextSelection({ from: parentStart, to: parentEnd })
+          .deleteSelection()
+          .setImage({ src: imageUrl })
+          .run();
+
+        replaced = true;
+        return false;
       }
     }
+    return true;
+  });
+
+  // Fallback: insert at cursor
+  if (!replaced) {
+    editor.chain().focus().setImage({ src: imageUrl }).run();
+    replaced = true;
   }
-  return texts.join(" ");
+
+  return replaced;
 }
 
-export function EapTreeEditor({ escopoEditor }: EapTreeEditorProps) {
+interface EapTreeEditorProps {
+  escopoEditor: Editor | null;
+  /** Ref that parent can use to trigger EAP capture → returns uploaded image URL */
+  captureRef?: React.MutableRefObject<(() => Promise<string | null>) | null>;
+}
+
+export function EapTreeEditor({ escopoEditor, captureRef }: EapTreeEditorProps) {
   const { formData, updateField } = usePlanStore();
   const treeRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
@@ -193,35 +221,47 @@ export function EapTreeEditor({ escopoEditor }: EapTreeEditorProps) {
     [activities, formData, updateActivities]
   );
 
+  /** Capture EAP tree as PNG, upload, and return the URL */
+  const captureEapImage = useCallback(async (): Promise<string | null> => {
+    if (!treeRef.current) return null;
+
+    const dataUrl = await toPng(treeRef.current, {
+      backgroundColor: "#ffffff",
+      pixelRatio: 2,
+    });
+
+    const blob = await (await fetch(dataUrl)).blob();
+    const file = new File([blob], "eap-tree.png", { type: "image/png" });
+
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+
+    if (!res.ok) throw new Error("Upload failed");
+    const { url } = await res.json();
+    return url;
+  }, []);
+
+  // Expose capture function to parent via ref
+  useEffect(() => {
+    if (captureRef) {
+      captureRef.current = captureEapImage;
+    }
+    return () => {
+      if (captureRef) captureRef.current = null;
+    };
+  }, [captureRef, captureEapImage]);
+
   const handleExport = async () => {
     if (!treeRef.current || exporting) return;
     setExporting(true);
 
     try {
-      // Capture tree as PNG
-      const dataUrl = await toPng(treeRef.current, {
-        backgroundColor: "#ffffff",
-        pixelRatio: 2,
-      });
+      const url = await captureEapImage();
 
-      // Convert to File
-      const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], "eap-tree.png", { type: "image/png" });
-
-      // Upload
-      const formDataUpload = new FormData();
-      formDataUpload.append("file", file);
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formDataUpload,
-      });
-
-      if (!res.ok) throw new Error("Upload failed");
-      const { url } = await res.json();
-
-      // Insert into escopo editor
+      // Insert into escopo editor — replace [Inserir Figura: ...EAP...] placeholder if found
       if (escopoEditor && url) {
-        escopoEditor.chain().focus().setImage({ src: url }).run();
+        replaceEapPlaceholder(escopoEditor, url);
       }
     } catch (error) {
       console.error("EAP export error:", error);
