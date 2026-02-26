@@ -709,7 +709,7 @@ async function main() {
     }
   }
 
-  // Upsert staff members — só cria se não existir um com o mesmo nome
+  // Upsert staff members — cria ou atualiza dados
   for (const member of defaultStaffMembers) {
     const existing = await prisma.staffMember.findFirst({
       where: { name: member.name },
@@ -719,7 +719,16 @@ async function main() {
       await prisma.staffMember.create({ data: member });
       console.log(`  ✔ Staff member criado: "${member.name}"`);
     } else {
-      console.log(`  ⏭ Staff member já existe: "${member.name}"`);
+      await prisma.staffMember.update({
+        where: { id: existing.id },
+        data: {
+          category: member.category,
+          education: member.education,
+          degree: member.degree,
+          miniCv: member.miniCv,
+        },
+      });
+      console.log(`  🔄 Staff member atualizado: "${member.name}"`);
     }
   }
 
