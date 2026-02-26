@@ -541,138 +541,137 @@ const defaultStaffMembers = [
   {
     name: "Marivan Silva Gomes",
     category: "professor",
-    education: "Engenharia de Controle e Automação",
-    degree: "Mestre",
-    miniCv:
-      "Professor Pesquisador Coordenador Geral. Mestre em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em automação industrial, sistemas embarcados e controle de processos. Atua como coordenador de projetos de PD&I na área de engenharia elétrica e automação.",
+    education: "Doutorando em Engenharia Elétrica. Mestre em Engenharia de Processos, Bacharel em Engenharia Elétrica pela Universidade Federal do Amazonas.",
+    degree: "Mestre em Engenharia de Processos",
+    miniCv: "",
   },
   {
     name: "Alan Ferreira Pinheiro Tavares",
     category: "professor",
-    education: "Engenharia de Controle e Automação",
+    education: "Doutor em Engenharia Mecânica, com foco em Robótica e ênfase em Visão Computacional e Inteligência Artificial.",
     degree: "Doutor",
     miniCv:
-      "Professor Pesquisador. Doutor em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em visão computacional, inteligência artificial e aprendizado de máquina aplicados à automação industrial. Possui experiência em pesquisa e desenvolvimento de soluções tecnológicas para a indústria.",
+      "Trabalha como professor voluntário da (UEA-EST) Universidade do Estado do Amazonas - Escola Superior de Tecnologia, atuou como consultor técnico científico do (CREATHUS) Instituto de Tecnologia da Amazônia, desenvolvedor na empresa Acta Robotics na área de dispositivos robóticos, navegação autônoma e visão computacional. Finalizou doutorado na Universidade Estadual de Campinas (FEM-UNICAMP) na área de robótica. Atuou como pesquisador convidado na Faculdade de Engenharia Mecânica da Universidade do Porto (FEUP-UP) em parceria com a Startup Connect Robotics. Recebeu título de M.Sc. Licenciado em Engenharia Mecânica pela Universidade de Campinas na área de Segurança Veicular, B.Sc. Licenciado em Engenharia Mecatrônica pela Universidade Estadual do Amazonas (EST-UEA). Tem experiência em robótica móvel, algoritmos de inteligência artificial voltados para imagem, automação industrial, sistemas embarcados, e desenvilvimento web backend. Trabalhou com projetos e consultoria de automação industrial e fabricação industrial para a empresa Samsung através de um acordo com uma Universidade do Estado do Amazonas. Trabalhou como revisor do Congresso Nacional de Engenharia Mecânica (CONEM2016), bem como o Congresso Brasileiro de Engenharia de Manufatura (COBEF2017).",
   },
   {
     name: "André Dias de Lima Machado",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Mestre em Engenharia Elétrica",
     degree: "Mestre",
     miniCv:
-      "Aluno Pesquisador. Mestre em Engenharia Elétrica. Possui experiência em desenvolvimento de sistemas embarcados, automação industrial e programação de microcontroladores. Atua em projetos de pesquisa voltados para inovação tecnológica na indústria.",
+      "Possui graduação em Engenharia Mecatrônica pela Universidade do Estado do Amazonas (2013), Pós-graduação em Desenvolvimento de Jogos Eletrônicos, Mestrado em Engenharia Elétrica. Atualmente é Gerente de Portfólio do Instituto Creathus. Mais de 5 anos de experiência como coordenador de projetos de PD&I nas áreas de Robótica, Mecatrônica e Automação, com ênfase em Robótica móvel e Processamento Digital de Imagens.",
   },
   {
     name: "Kauê Martins de Souza",
     category: "aluno",
-    education: "Engenharia de Computação",
+    education: "Bacharel em Engenharia de Controle e Automação e outras áreas correlatas ao projeto.",
     degree: "Mestrando",
     miniCv:
-      "Aluno Pesquisador. Mestrando em Engenharia Elétrica. Graduado em Engenharia de Computação. Possui experiência em desenvolvimento de software, sistemas web, inteligência artificial e automação. Atua em projetos de PD&I com foco em soluções tecnológicas para a indústria.",
+      "Mestrando no Instituto Tecnológico de Aeronáutica (ITA), na área de Dispositivos Eletrônicos do Programa de pós-graduação em Engenharia Eletrônica e Computação. Graduado em Engenharia de Controle e Automação pela Universidade do Estado do Amazonas (2023). Membro do grupo de pesquisa do Núcleo de Robótica (UEA). Tem experiência na área de Engenharia de Controle e Automação, com ênfase em Computação e Eletrônica, atuando principalmente nas seguintes áreas: Sistemas embarcados, Automação Industrial, Visão Computacional e fabricação Digital.",
   },
   {
     name: "Arleson Brito da Silva Junior",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduando Engenharia da Computação",
     degree: "Graduando",
     miniCv:
-      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em desenvolvimento de sistemas embarcados, programação de microcontroladores e automação industrial. Participa de projetos de pesquisa e desenvolvimento tecnológico.",
+      "Graduando em Engenharia de Computação (5º período - FUCAPI), com foco em desenvolvimento de software web e experiência prática em tecnologias front-end. Especializado na criação de interfaces responsivas utilizando HTML, CSS e JavaScript (React), com domínio de ferramentas como Figma e Websim para prototipação de telas. Utiliza o Visual Studio Code como ambiente principal de desenvolvimento. Habilidades em Python e integração de sistemas, conectando front-end com back-end. Participa de projetos como membro do Grupo de Pesquisa KRAKEN, vinculado à Faculdade FUCAPI, atuando de forma ativa em diversas iniciativas voltadas para pesquisa, automação e robótica. Tendo como responsabilidades a elaboração e publicação de artigos e pesquisas científicas, e no desenvolvimento de front-end.",
   },
   {
     name: "Matheus Pedrosa Dácio",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Bacharel em área correlata",
     degree: "Pós-graduando",
     miniCv:
-      "Aluno Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, sistemas de controle e instrumentação. Atua em projetos de pesquisa aplicada à indústria.",
+      "Bacharel em Engenharia Eletrônica pela Escola Superior de Tecnologia (EST) da Universidade do Estado do Amazonas (UEA). Possui experiência na área de Tecnologia da Informação e Comunicação, com ênfase em Sistemas para Internet, Arquitetura de Software, Sistemas Embarcados, Ciência de Dados, Automação de Processos e Inteligência Artificial.",
   },
   {
     name: "Marcus Eduardo Nascimento Sena",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduando em Engenharia de Software",
     degree: "Graduando",
     miniCv:
-      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em programação, eletrônica e desenvolvimento de protótipos. Participa de projetos de pesquisa voltados para automação e inovação tecnológica.",
+      "Graduando em Engenharia de Software pela FIAP, atualmente no 5º período, possuo sólida experiência em desenvolvimento Android em projetos de P&D com a utilização de Kotlin e Jetpack Compose para aplicações médicas com uso de Inteligência Artificial. Possuo experiência em Back-end com a utilização de Java com Springboot e Python com Django e FastAPI. Quanto a parte de Infraestrutura, possuo experiência com Docker, Docker-Compose, Git, Podman, Jenkins, AWS, Terraform. Além disso, na parte de DB possuo experiência com PostgreSQL, Oracle, MySQL, Sqlite, Hive, Mongo.",
   },
   {
     name: "Samuel Teixeira dos Santos",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduando Engenharia de Software",
     degree: "Graduando",
     miniCv:
-      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em desenvolvimento de sistemas embarcados e programação de microcontroladores. Atua em projetos de pesquisa e desenvolvimento na área de automação industrial.",
+      "Cursando Engenharia de Software pela FUCAPI (5º período), tenho formação com sólida experiência em desenvolvimento de software, com ênfase em backend. Atua em projetos acadêmicos e colaborativos que envolvem desde a criação de APIs até o desenvolvimento de aplicações web. Possui domínio em estruturas de dados com C e prática com paradigmas de orientação a objetos em Java e Python. Com participações em eventos como hackathons, assumindo funções técnicas e contribuindo para o planejamento e a implementação de sistemas backend. Tem conhecimentos em ferramentas modernas como Git, GitHub, Spring Boot, Firebase e Maven, além de experiência com boas práticas de versionamento e organização de projetos. Possuo capacidade de adaptação, resolução de problemas e trabalho em equipe e me destaco como um desenvolvedor comprometido com a entrega de soluções bem arquitetadas.",
   },
   {
     name: "Nelson Emiliano Silva",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduando Engenharia Eletrônica",
     degree: "Graduando",
     miniCv:
-      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em eletrônica, programação e desenvolvimento de circuitos. Participa de projetos de pesquisa aplicada em automação e controle de processos industriais.",
+      "Graduação em andamento em Engenharia Eletrônica pela Universidade do Estado do Amazonas e em Análise e Desenvolvimento de Sistemas pela UNINTER. Participação em projetos de pesquisa voltados à visão computacional e machine learning, projeto voltado a ambientes multi-thread em C. Experiência como estagiário na Moto Honda da Amazônia, com atuação na área de Compras e Novos Modelos, trabalhando em atividades como contratação e negociação com fornecedores, processos logísticos, desenvolvimento de novos fornecedores e implantação de melhorias sistêmicas.",
   },
   {
     name: "Victor Hugo de Sá Reis",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Bacharel em Engenharia da Computação",
     degree: "Pós-graduando",
     miniCv:
-      "Aluno Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, redes industriais e sistemas supervisórios. Atua em projetos de pesquisa e desenvolvimento tecnológico.",
+      "Graduando em Engenharia da computação pelo Uninorte atualmente no 9º, possuo 2 anos atuando na de área inteligência artificial e NLP voltado principalmente para o campo de assistentes virtuais, minha experiência profissional abrange desde a implementação e manutenção de modelos de IA tanto para o mercado dos EUA e da América Latina como um todo, possuo domínios em Python, C, C#, Java, javascript, git, Kotlin e já utilizei ferramentas como TensorFlow, Scikit-Learn, Pandas, github, gitlab, atualmente sei duas línguas sendo português e inglês e tenho habilidades em trabalho colaborativo e comunicação em equipes multidisciplinares.",
   },
   {
     name: "Ricardo Bulcão Dias Júnior",
     category: "professor",
-    education: "Engenharia de Controle e Automação",
+    education: "Direito",
     degree: "Pós-graduando",
     miniCv:
-      "Professor Pesquisador. Pós-graduando em Engenharia Elétrica. Graduado em Engenharia de Controle e Automação. Possui experiência em automação industrial, programação de CLPs e desenvolvimento de sistemas de controle. Atua como pesquisador em projetos de PD&I.",
+      "Realiza Pós-graduação de Gerenciamento de Projetos, possui experiência e forte atuação em análise técnica de projetos, acompanhamento de indicadores e suporte metodológico à coordenação de projetos.",
   },
   {
     name: "Geoliana Matos de Souza",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduanda em Análise e Desenvolvimento de Sistemas",
     degree: "Graduanda",
     miniCv:
-      "Aluna Pesquisadora. Graduanda em Engenharia de Controle e Automação. Possui experiência em programação, desenvolvimento de sistemas e pesquisa aplicada. Participa de projetos de pesquisa e desenvolvimento na área de automação industrial.",
+      "Graduanda em Análise e Desenvolvimento de Sistemas, em fase inicial de formação acadêmica, com atuação voltada para o desenvolvimento de aplicações e integração de soluções tecnológicos. Possui experiência prátca em Python para automação e análise de dados, além de conhecimentos em Vue.js para construção de interfaces web responsivas.",
   },
   {
     name: "Paulo Rodrigo Gomes Santana",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
+    education: "Graduando em Engenharia Controle e Automação",
     degree: "Graduando",
     miniCv:
-      "Aluno Pesquisador. Graduando em Engenharia de Controle e Automação. Possui experiência em eletrônica, programação e prototipagem. Participa de projetos de pesquisa voltados para automação e inovação tecnológica na indústria.",
+      "Graduando em Engenharia Eletrônica pela Universidade Estadual do Amazonas, possui mais de 4 anos de experiência em desenvolvimento mobile, com foco em Android e atuação em iOS e React Native. Especializado em Kotlin e Java, destaca-se na migração de sistemas legados e na implementação de soluções de segurança, como criptografia e integração com RASP. Domina ferramentas como Android SDK, Jetpack, MVVM, Firebase e CI/CD, entregando soluções nativas e multiplataforma de alta qualidade.",
   },
   {
     name: "Marcos Cesar da Rocha Seruffo",
     category: "professor",
-    education: "Engenharia de Computação",
-    degree: "Doutor",
+    education: "Pós-Doutorado em Engenharia Elétrica – A4 capes",
+    degree: "Doutor em Engenharia Elétrica",
     miniCv:
-      "Professor Pesquisador. Doutor em Engenharia Elétrica pela Universidade Federal do Pará (UFPA). Especialista em computação aplicada, sistemas distribuídos e tecnologias da informação. Possui ampla experiência em pesquisa e desenvolvimento de soluções tecnológicas.",
+      "Graduação em Tecnologia em Processamento de Dados pelo Centro Universitário do Estado do Pará (CESUPA - 2004), Especialização em Suporte Técnico de Sistemas Computacionais pela Universidade Federal do Pará (UFPA - 2005), Mestrado em Ciência da Computação (PPGCC - UFPA - 2008) e Doutorado em Engenharia Elétrica, com ênfase em Computação Aplicada (PPGEE - UFPA - 2012). Pós-Doutorado na Pontifícia Universidade Católica do Rio de Janeiro, no Programa de Pós-Graduação em Engenharia Elétrica (PPGEE - PUC-RJ - 2020). Atualmente sou Professor Associado II da Universidade Federal do Pará, estando vinculado ao Programa de Pós-Graduação em Estudos Antrópicos na Amazônia (PPGEAA-Castanhal) e Programa de Pós-graduação em Engenharia Elétrica (PPGEE-ITEC), estando atualmente (2023) como Coordenador da Área de Computação Aplicada do PPGEE e Vice Coordenador do PPGEAA. Desenvolvo atividades de ensino, extensão e pesquisa em áreas interdisciplinares como Ciência de Dados, Mineração de Dados e Processamento de Linguagem Natural. Sou Bolsista Produtividade em Desenvolvimento Tecnológico e Extensão Inovadora - DT - Nível 2 do CNPq.",
   },
   {
     name: "João Evangelista Neto",
     category: "professor",
-    education: "Engenharia Elétrica",
+    education: "Bacharel em Engenharias",
     degree: "Pós-doutorando",
     miniCv:
-      "Professor Doutor Pesquisador. Pós-doutorando em Engenharia Elétrica. Doutor em Engenharia Elétrica. Especialista em processamento de sinais, sistemas de comunicação e eletrônica de potência. Possui vasta experiência em pesquisa acadêmica e projetos de PD&I.",
+      "Pós-doutorando em engenharia de materiais e metalurgia na Poli USP, graduação em Tecnologia Mecânica pelo Instituto de Tecnologia da Amazônia (1987), graduação em Engenharia Mecânica pelo Instituto de Tecnologia da Amazônia (2002), graduação em Engenharia Elétrica pelo Instituto de Tecnologia da Amazônia (2004), graduação em Engenharia Civil pelo Centro Universitário do Norte (2016), graduação em Engenharia Química (2021) UNINASSAU e doutorado em Engenharia Elétrica pela Universidade Federal do Pará (2012). Tem experiência em diversas áreas da Engenharia Elétrica, Mecânica, Civil e Química, com ênfase em Petróleo e Gás, Automação e Engenharia Biomédica.",
   },
   {
     name: "Brenda Rodrigues Bezerra",
     category: "aluno",
-    education: "Engenharia de Controle e Automação",
-    degree: "Pós-graduanda",
+    education: "Design Gráfico",
+    degree: "Pós-graduando",
     miniCv:
-      "Aluna Pesquisadora. Pós-graduanda em Engenharia Elétrica. Graduada em Engenharia de Controle e Automação. Possui experiência em automação industrial, instrumentação e controle de processos. Atua em projetos de pesquisa aplicada à indústria.",
+      "Possui sete anos de experiência com foco em UX/UI, identidade visual e projetos de PD&II. Tem expertise em levantamento de requisitos, criação de interfaces, pesquisa com usuários, wireframing e ampla experiência em prototipagem de sites, sistemas e aplicativos.",
   },
   {
     name: "Waldeyde Oderilda Magalhães dos Santos",
     category: "professor",
-    education: "Engenharia Elétrica",
-    degree: "Doutora",
+    education: "Odontologia",
+    degree: "Doutor",
     miniCv:
-      "Professora Doutora Pesquisadora. Doutora em Engenharia Elétrica. Especialista em sistemas de energia, eletrônica de potência e eficiência energética. Possui ampla experiência em pesquisa acadêmica e orientação de projetos de PD&I.",
+      "Doutorado em Saúde Pública pela Universidade de Ciências Empresariais e Sociais-UCES/B.A.Argentina. Possui graduação em Odontologia pela Universidade Federal do Amazonas (1988), possui MBA em Gestão e Auditoria dos Sistemas de Saúde, especialização em Gestão Hospitalar e Serviços de Saúde. Professora efetiva da Universidade do Estado do Amazonas-UEA, coordenou durante 6 anos o Centro de Pesquisa e Desenvolvimento da Escola de Saúde da UEA. Atua na coordenação de projetos de pesquisa, desenvolvimento e inovação.",
   },
 ];
 
