@@ -117,6 +117,16 @@ export const WIZARD_SECTIONS = [
 ] as const;
 
 // ---------------------------------------------------------------------------
+// Step Tips — dicas informativas exibidas no topo de cada seção
+// ---------------------------------------------------------------------------
+export const STEP_TIPS: Record<number, string[]> = {
+  9: [
+    "O RH s\u00F3 vai aparecer na planilha financeira caso tenha sido inserido aqui no plano de trabalho.",
+    "Defina o valor da hora de cada profissional na p\u00E1gina de equipe.",
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // AI Section Prompts — instruções específicas para cada seção do wizard
 // ---------------------------------------------------------------------------
 export const AI_SECTION_PROMPTS: Record<number, string> = {

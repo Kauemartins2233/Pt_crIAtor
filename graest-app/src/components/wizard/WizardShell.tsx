@@ -1,18 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePlanStore } from "@/lib/store";
 import { WIZARD_SECTIONS } from "@/lib/constants";
 import { WizardSidebar } from "./WizardSidebar";
 import { StepRenderer } from "./StepRenderer";
 import { Button } from "@/components/ui/Button";
-import { Check, ChevronLeft, ChevronRight, Circle, Download } from "lucide-react";
+import { Modal } from "@/components/ui/Modal";
+import { Check, ChevronLeft, ChevronRight, Circle, Download, Lightbulb } from "lucide-react";
 
 export function WizardShell() {
-  const { planId, currentStep, setStep, isDirty, lastSaved, completedSections, markSectionComplete, markSectionIncomplete } = usePlanStore();
+  const { planId, currentStep, setStep, isDirty, lastSaved, completedSections, formData, markSectionComplete, markSectionIncomplete } = usePlanStore();
   const totalSteps = WIZARD_SECTIONS.length;
   const [exporting, setExporting] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showTips, setShowTips] = useState(false);
+
+  // Show tips modal for new plans (no project name set, no sections completed)
+  useEffect(() => {
+    if (!planId) return;
+    const key = `tips-seen-${planId}`;
+    if (localStorage.getItem(key)) return;
+    const isNew = !formData.projectName && completedSections.length === 0;
+    if (isNew) setShowTips(true);
+  }, [planId, formData.projectName, completedSections.length]);
+
+  const dismissTips = () => {
+    setShowTips(false);
+    if (planId) localStorage.setItem(`tips-seen-${planId}`, "1");
+  };
 
   const currentSection = WIZARD_SECTIONS[currentStep];
   const isCompleted = currentSection ? completedSections.includes(currentSection.number) : false;
@@ -126,6 +142,38 @@ export function WizardShell() {
           </div>
         </div>
       </div>
+
+      {/* Tips modal for new plans */}
+      <Modal open={showTips} onClose={dismissTips} title="Dicas para um bom Plano de Trabalho">
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 p-4">
+            <Lightbulb size={20} className="mt-0.5 shrink-0 text-amber-500" />
+            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <li className="flex gap-2">
+                <span className="shrink-0 font-bold text-amber-600 dark:text-amber-400">1.</span>
+                <span><strong>D&ecirc; informa&ccedil;&otilde;es de contexto</strong> para ter uma sa&iacute;da satisfat&oacute;ria pela IA. Acesse &ldquo;Materiais de Contexto&rdquo; na barra lateral.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="shrink-0 font-bold text-amber-600 dark:text-amber-400">2.</span>
+                <span><strong>Leia as informa&ccedil;&otilde;es geradas pela IA</strong> e ajuste o que for necess&aacute;rio.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="shrink-0 font-bold text-amber-600 dark:text-amber-400">3.</span>
+                <span><strong>Evite usar a IA para gerar a EAP</strong> (Estrutura Anal&iacute;tica do Projeto).</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="shrink-0 font-bold text-amber-600 dark:text-amber-400">4.</span>
+                <span><strong>Analise as datas geradas pela IA</strong> para subatividades &mdash; veja se fazem sentido.</span>
+              </li>
+            </ul>
+          </div>
+          <div className="flex justify-end">
+            <Button variant="primary" onClick={dismissTips}>
+              Entendi
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { usePlanStore } from "@/lib/store";
-import { WIZARD_SECTIONS } from "@/lib/constants";
+import { WIZARD_SECTIONS, STEP_TIPS } from "@/lib/constants";
+import { Alert } from "@/components/ui/Alert";
+import { Info } from "lucide-react";
 import { Step00Cabecalho } from "./steps/Step00Cabecalho";
 import { Step01Identificacao } from "./steps/Step01Identificacao";
 import { Step02TipoProjeto } from "./steps/Step02TipoProjeto";
@@ -49,6 +51,8 @@ export function StepRenderer() {
     return <div className="p-8 text-gray-500">Seção não encontrada</div>;
   }
 
+  const tips = STEP_TIPS[section.number];
+
   return (
     <div className="p-8">
       <div className="mb-6">
@@ -59,6 +63,15 @@ export function StepRenderer() {
           {section.title}
         </h1>
       </div>
+      {tips && tips.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {tips.map((tip, i) => (
+            <Alert key={i} variant="info" icon={<Info size={16} />}>
+              {tip}
+            </Alert>
+          ))}
+        </div>
+      )}
       <StepComponent />
     </div>
   );

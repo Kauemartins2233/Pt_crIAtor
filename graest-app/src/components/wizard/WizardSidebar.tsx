@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { WIZARD_SECTIONS } from "@/lib/constants";
 import { usePlanStore } from "@/lib/store";
-import { Check, Paperclip, FileSpreadsheet, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Check, Paperclip, FileSpreadsheet, PanelLeftClose, PanelLeftOpen, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 interface WizardSidebarProps {
@@ -13,6 +14,17 @@ interface WizardSidebarProps {
 
 export function WizardSidebar({ collapsed = false, onToggle }: WizardSidebarProps) {
   const { currentStep, setStep, completedSections } = usePlanStore();
+  const [hasMaterials, setHasMaterials] = useState(true); // default true to avoid flash
+
+  const planId = usePlanStore.getState().planId;
+
+  useEffect(() => {
+    if (!planId) return;
+    fetch(`/api/materials/${planId}`)
+      .then((res) => res.json())
+      .then((data: unknown[]) => setHasMaterials(Array.isArray(data) && data.length > 0))
+      .catch(() => setHasMaterials(true));
+  }, [planId]);
 
   return (
     <aside className={cn(
@@ -27,16 +39,26 @@ export function WizardSidebar({ collapsed = false, onToggle }: WizardSidebarProp
           <>
             {/* Materials link */}
             <Link
-              href={`/plans/${usePlanStore.getState().planId}/materials`}
-              className="mb-4 flex items-center gap-2 rounded-lg border border-accent-200 dark:border-accent-800/50 bg-accent-50 dark:bg-accent-950/30 px-3 py-2.5 text-sm font-medium text-accent-700 dark:text-accent-300 hover:bg-accent-100 dark:hover:bg-accent-950/50 transition-colors"
+              href={`/plans/${planId}/materials`}
+              className={cn(
+                "mb-4 flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
+                hasMaterials
+                  ? "border-accent-200 dark:border-accent-800/50 bg-accent-50 dark:bg-accent-950/30 text-accent-700 dark:text-accent-300 hover:bg-accent-100 dark:hover:bg-accent-950/50"
+                  : "border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/50"
+              )}
             >
               <Paperclip size={16} />
               Materiais de Contexto
+              {!hasMaterials && (
+                <span className="ml-auto flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400">
+                  <AlertTriangle size={14} />
+                </span>
+              )}
             </Link>
 
             {/* Financeiro link */}
             <Link
-              href={`/plans/${usePlanStore.getState().planId}/financeiro`}
+              href={`/plans/${planId}/financeiro`}
               className="mb-4 flex items-center gap-2 rounded-lg border border-green-200 dark:border-green-800/50 bg-green-50 dark:bg-green-950/30 px-3 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-950/50 transition-colors"
             >
               <FileSpreadsheet size={16} />
@@ -52,14 +74,17 @@ export function WizardSidebar({ collapsed = false, onToggle }: WizardSidebarProp
         {collapsed && (
           <div className="flex flex-col items-center gap-1 mb-2">
             <Link
-              href={`/plans/${usePlanStore.getState().planId}/materials`}
+              href={`/plans/${planId}/materials`}
               title="Materiais de Contexto"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-950/30 transition-colors"
+              className="relative flex h-8 w-8 items-center justify-center rounded-lg text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-950/30 transition-colors"
             >
               <Paperclip size={16} />
+              {!hasMaterials && (
+                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 rounded-full bg-amber-400 dark:bg-amber-500 animate-pulse" />
+              )}
             </Link>
             <Link
-              href={`/plans/${usePlanStore.getState().planId}/financeiro`}
+              href={`/plans/${planId}/financeiro`}
               title="Financeiro"
               className="flex h-8 w-8 items-center justify-center rounded-lg text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors"
             >
