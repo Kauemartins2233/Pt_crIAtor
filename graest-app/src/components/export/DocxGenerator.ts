@@ -1373,27 +1373,16 @@ function replaceFinanceiroTagsInTemplate(zip: PizZip): void {
       }
     }
 
-    // Step 3: Inject landscape sectPr into the first paragraph AFTER the tag
+    // Step 3: Insert an empty paragraph with landscape sectPr AFTER the tag paragraph.
+    // This empty paragraph ends the landscape section; the next content (section 19)
+    // starts on a new portrait page.
     const cronTagPos3 = docXml.indexOf("{@TABELA_CRONOGRAMA}");
     if (cronTagPos3 !== -1) {
       const cronPEnd3 = docXml.indexOf("</w:p>", cronTagPos3);
       if (cronPEnd3 !== -1) {
         const afterCronP = cronPEnd3 + "</w:p>".length;
-        const nextPPos = docXml.indexOf("<w:p", afterCronP);
-        if (nextPPos !== -1) {
-          const nextPClose = docXml.indexOf(">", nextPPos);
-          const afterNextPOpen = nextPClose + 1;
-          const hasPPr = docXml.substring(afterNextPOpen, afterNextPOpen + 20).trimStart().startsWith("<w:pPr");
-
-          if (hasPPr) {
-            const pPrClose = docXml.indexOf("</w:pPr>", afterNextPOpen);
-            if (pPrClose !== -1) {
-              docXml = docXml.substring(0, pPrClose) + landscapeSectPr + docXml.substring(pPrClose);
-            }
-          } else {
-            docXml = docXml.substring(0, afterNextPOpen) + `<w:pPr>${landscapeSectPr}</w:pPr>` + docXml.substring(afterNextPOpen);
-          }
-        }
+        const landscapeEndParagraph = `<w:p><w:pPr>${landscapeSectPr}</w:pPr></w:p>`;
+        docXml = docXml.substring(0, afterCronP) + landscapeEndParagraph + docXml.substring(afterCronP);
       }
     }
   }
