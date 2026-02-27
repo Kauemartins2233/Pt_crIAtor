@@ -695,6 +695,10 @@ const FIN_SUBTOTAL_SHADING = '<w:shd w:val="clear" w:color="auto" w:fill="F2F2F2
 const FIN_FONT_SM = '<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="18"/><w:szCs w:val="18"/>';
 const FIN_FONT_SM_BOLD = `${FIN_FONT_SM}<w:b/>`;
 const FIN_FONT_SM_BOLD_WHITE = `${FIN_FONT_SM}<w:b/><w:color w:val="FFFFFF"/>`;
+// Extra-small font for wide tables (cronograma) – 7pt
+const FIN_FONT_XS = '<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana" w:cs="Verdana"/><w:sz w:val="14"/><w:szCs w:val="14"/>';
+const FIN_FONT_XS_BOLD = `${FIN_FONT_XS}<w:b/>`;
+const FIN_FONT_XS_BOLD_WHITE = `${FIN_FONT_XS}<w:b/><w:color w:val="FFFFFF"/>`;
 
 const NAO_SE_APLICA = `<w:p><w:pPr><w:spacing w:after="100"/></w:pPr><w:r><w:rPr>${DEFAULT_FONT}<w:i/></w:rPr><w:t>N\u00E3o se aplica.</w:t></w:r></w:p>`;
 
@@ -712,6 +716,14 @@ function finCell(text: string, shading = "", align = "left", bold = false): stri
   const isHeader = shading === FIN_HEADER_SHADING;
   const font = isHeader ? FIN_FONT_SM_BOLD_WHITE : (bold ? FIN_FONT_SM_BOLD : FIN_FONT_SM);
   return `<w:tc><w:tcPr>${FIN_BORDER}${shading}</w:tcPr><w:p><w:pPr><w:jc w:val="${align}"/></w:pPr><w:r><w:rPr>${font}</w:rPr><w:t xml:space="preserve">${escapeXml(text)}</w:t></w:r></w:p></w:tc>`;
+}
+
+/** Extra-small cell for wide tables (cronograma) – smaller font + tight margins */
+function finCellXs(text: string, shading = "", align = "left", bold = false): string {
+  const isHeader = shading === FIN_HEADER_SHADING;
+  const font = isHeader ? FIN_FONT_XS_BOLD_WHITE : (bold ? FIN_FONT_XS_BOLD : FIN_FONT_XS);
+  const tcMargin = '<w:tcMar><w:left w:w="28" w:type="dxa"/><w:right w:w="28" w:type="dxa"/></w:tcMar>';
+  return `<w:tc><w:tcPr>${FIN_BORDER}${shading}${tcMargin}</w:tcPr><w:p><w:pPr><w:jc w:val="${align}"/><w:spacing w:before="0" w:after="0" w:line="220" w:lineRule="exact"/></w:pPr><w:r><w:rPr>${font}</w:rPr><w:t xml:space="preserve">${escapeXml(text)}</w:t></w:r></w:p></w:tc>`;
 }
 
 function finRow(cells: string): string {
@@ -980,16 +992,17 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
     { key: "outrosDispendios", label: "Outros" },
   ];
 
-  // Header: Category | Valor | % | Mes-1..Mes-N | Total Distrib. | Check
-  const monthHeaders = Array.from({ length: projectMonths }, (_, i) => finCell(`Mes-${i + 1}`, FIN_HEADER_SHADING, "center", true));
+  // Header: Category | Valor | % | Mes-1..Mes-N | Total Distrib.
+  // Use finCellXs (extra-small) for the cronograma so it fits in landscape
+  const c = finCellXs; // alias for brevity
+  const monthHeaders = Array.from({ length: projectMonths }, (_, i) => c(`Mes-${i + 1}`, FIN_HEADER_SHADING, "center", true));
 
   const headerRow = finRow(
-    finCell("DESPESAS DO PROJETO", FIN_HEADER_SHADING, "left", true) +
-    finCell("VALOR (R$)", FIN_HEADER_SHADING, "right", true) +
-    finCell("%", FIN_HEADER_SHADING, "center", true) +
+    c("DESPESAS DO PROJETO", FIN_HEADER_SHADING, "left", true) +
+    c("VALOR (R$)", FIN_HEADER_SHADING, "right", true) +
+    c("%", FIN_HEADER_SHADING, "center", true) +
     monthHeaders.join("") +
-    finCell("Total Distrib.", FIN_HEADER_SHADING, "right", true) +
-    finCell("Check", FIN_HEADER_SHADING, "right", true)
+    c("Total Distrib.", FIN_HEADER_SHADING, "right", true)
   );
 
   // Calculate category totals
@@ -1027,16 +1040,14 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
       const mesData = getMes(i + 1);
       const v = (mesData as unknown as Record<string, number>)[key] || 0;
       distribTotal += v;
-      return finCell(v > 0 ? fmtBrl(v) : "", "", "right");
+      return c(v > 0 ? fmtBrl(v) : "", "", "right");
     });
-    const check = value - distribTotal;
     return finRow(
-      finCell(label) +
-      finCell(fmtBrl(value), "", "right") +
-      finCell(pctOf(value), "", "center") +
+      c(label) +
+      c(fmtBrl(value), "", "right") +
+      c(pctOf(value), "", "center") +
       monthCells.join("") +
-      finCell(fmtBrl(distribTotal), "", "right") +
-      finCell(fmtBrl(check), "", "right")
+      c(fmtBrl(distribTotal), "", "right")
     );
   };
 
@@ -1054,15 +1065,14 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
       const m = getMes(i + 1);
       const v = (m.equipamentos || 0) + (m.laboratorios || 0) + (m.rhDireto || 0) + (m.rhIndireto || 0) + (m.servicosTerceiros || 0) + (m.materialConsumo || 0);
       distribTotal += v;
-      return finCell(v > 0 ? fmtBrl(v) : "", FIN_SUBTOTAL_SHADING, "right", true);
+      return c(v > 0 ? fmtBrl(v) : "", FIN_SUBTOTAL_SHADING, "right", true);
     });
     return finRow(
-      finCell("Total Dispendios (I a V)", FIN_SUBTOTAL_SHADING, "left", true) +
-      finCell(fmtBrl(subtotalIV), FIN_SUBTOTAL_SHADING, "right", true) +
-      finCell(pctOf(subtotalIV), FIN_SUBTOTAL_SHADING, "center", true) +
+      c("Total Dispendios (I a V)", FIN_SUBTOTAL_SHADING, "left", true) +
+      c(fmtBrl(subtotalIV), FIN_SUBTOTAL_SHADING, "right", true) +
+      c(pctOf(subtotalIV), FIN_SUBTOTAL_SHADING, "center", true) +
       monthCells.join("") +
-      finCell(fmtBrl(distribTotal), FIN_SUBTOTAL_SHADING, "right", true) +
-      finCell("", FIN_SUBTOTAL_SHADING)
+      c(fmtBrl(distribTotal), FIN_SUBTOTAL_SHADING, "right", true)
     );
   })();
   rows.push(subtotalIVRow);
@@ -1070,11 +1080,11 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
   // VI categories
   const viTotal = livrosTotal + treinTotal + viagensTotal + issVal + outrosTotal;
   rows.push(finRow(
-    finCell("VI - Outros dispendios", "", "left") +
-    finCell(fmtBrl(viTotal), "", "right") +
-    finCell(pctOf(viTotal), "", "center") +
-    Array.from({ length: projectMonths }, () => finCell("", "")).join("") +
-    finCell("", "") + finCell("", "")
+    c("VI - Outros dispendios", "", "left") +
+    c(fmtBrl(viTotal), "", "right") +
+    c(pctOf(viTotal), "", "center") +
+    Array.from({ length: projectMonths }, () => c("", "")).join("") +
+    c("", "")
   ));
 
   for (const cat of catVI) {
@@ -1082,51 +1092,61 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
   }
   // ISS row
   rows.push(finRow(
-    finCell("ISS") +
-    finCell(fmtBrl(issVal), "", "right") +
-    finCell(fmtPct(fin.config.issPercent || 0), "", "center") +
-    Array.from({ length: projectMonths }, () => finCell("", "")).join("") +
-    finCell("", "") + finCell("", "")
+    c("ISS") +
+    c(fmtBrl(issVal), "", "right") +
+    c(fmtPct(fin.config.issPercent || 0), "", "center") +
+    Array.from({ length: projectMonths }, () => c("", "")).join("") +
+    c("", "")
   ));
 
   // Total I-VI
   const totalIVI = subtotalIV + viTotal;
   rows.push(finRow(
-    finCell("Total Dispendios (I a VI)", FIN_SUBTOTAL_SHADING, "left", true) +
-    finCell(fmtBrl(totalIVI), FIN_SUBTOTAL_SHADING, "right", true) +
-    finCell(pctOf(totalIVI), FIN_SUBTOTAL_SHADING, "center", true) +
-    Array.from({ length: projectMonths }, () => finCell("", FIN_SUBTOTAL_SHADING)).join("") +
-    finCell("", FIN_SUBTOTAL_SHADING) + finCell("", FIN_SUBTOTAL_SHADING)
+    c("Total Dispendios (I a VI)", FIN_SUBTOTAL_SHADING, "left", true) +
+    c(fmtBrl(totalIVI), FIN_SUBTOTAL_SHADING, "right", true) +
+    c(pctOf(totalIVI), FIN_SUBTOTAL_SHADING, "center", true) +
+    Array.from({ length: projectMonths }, () => c("", FIN_SUBTOTAL_SHADING)).join("") +
+    c("", FIN_SUBTOTAL_SHADING)
   ));
 
   // DOA
   rows.push(finRow(
-    finCell("DOA (Despesas operacionais e Administrativas)") +
-    finCell(fmtBrl(doaVal), "", "right") +
-    finCell(fmtPct(fin.config.doaPercent || 0), "", "center") +
-    Array.from({ length: projectMonths }, () => finCell("", "")).join("") +
-    finCell("", "") + finCell("", "")
+    c("DOA (Despesas operacionais e Administrativas)") +
+    c(fmtBrl(doaVal), "", "right") +
+    c(fmtPct(fin.config.doaPercent || 0), "", "center") +
+    Array.from({ length: projectMonths }, () => c("", "")).join("") +
+    c("", "")
   ));
 
   // Reserva
   rows.push(finRow(
-    finCell("Constituicao de Reserva") +
-    finCell(fmtBrl(reservaVal), "", "right") +
-    finCell(fmtPct(fin.config.reservaPercent || 0), "", "center") +
-    Array.from({ length: projectMonths }, () => finCell("", "")).join("") +
-    finCell("", "") + finCell("", "")
+    c("Constituicao de Reserva") +
+    c(fmtBrl(reservaVal), "", "right") +
+    c(fmtPct(fin.config.reservaPercent || 0), "", "center") +
+    Array.from({ length: projectMonths }, () => c("", "")).join("") +
+    c("", "")
   ));
 
   // Total
   rows.push(finRow(
-    finCell("Total", FIN_TOTAL_SHADING, "left", true) +
-    finCell(fmtBrl(grandTotal), FIN_TOTAL_SHADING, "right", true) +
-    finCell("100%", FIN_TOTAL_SHADING, "center", true) +
-    Array.from({ length: projectMonths }, () => finCell("", FIN_TOTAL_SHADING)).join("") +
-    finCell("", FIN_TOTAL_SHADING) + finCell("", FIN_TOTAL_SHADING)
+    c("Total", FIN_TOTAL_SHADING, "left", true) +
+    c(fmtBrl(grandTotal), FIN_TOTAL_SHADING, "right", true) +
+    c("100%", FIN_TOTAL_SHADING, "center", true) +
+    Array.from({ length: projectMonths }, () => c("", FIN_TOTAL_SHADING)).join("") +
+    c("", FIN_TOTAL_SHADING)
   ));
 
-  return `<w:tbl>${TBL_PROPS}${rows.join("")}</w:tbl>`;
+  // Title paragraph on the landscape page (replaceFinanceiroTagsInTemplate removes
+  // the original title from the template and injects section breaks around the tag)
+  const cronTitle: string = [
+    `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="12" w:space="1" w:color="000000"/></w:pBdr>`,
+    `<w:spacing w:after="200"/></w:pPr>`,
+    `<w:r><w:rPr>${DEFAULT_FONT}<w:b/></w:rPr>`,
+    `<w:t>18.${"\u00A0\u00A0\u00A0\u00A0"}CRONOGRAMA DE EXECU\u00C7\u00C3O</w:t>`,
+    `</w:r></w:p>`,
+  ].join("");
+
+  return `${cronTitle}<w:tbl>${TBL_PROPS}${rows.join("")}</w:tbl>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -1274,12 +1294,103 @@ function replaceFinanceiroTagsInTemplate(zip: PizZip): void {
         const pEnd: number = docXml.indexOf("</w:p>", closeIdx);
         if (pStart !== -1 && pEnd !== -1) {
           const endIdx: number = pEnd + "</w:p>".length;
-          const replacement = `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t>{@${tag}}</w:t></w:r></w:p>`;
+          const replacement: string = `<w:p><w:r><w:rPr>${DEFAULT_FONT}</w:rPr><w:t>{@${tag}}</w:t></w:r></w:p>`;
           docXml = docXml.substring(0, pStart) + replacement + docXml.substring(endIdx);
         }
         break;
       }
       searchPos = braceIdx + 1;
+    }
+  }
+
+  // --- Landscape section for the cronograma ---
+  // Strategy:
+  // 1. Remove the title paragraph ("CRONOGRAMA DE EXECU...") from before the tag
+  //    (we re-inject it inside the landscape output in buildCronogramaFinanceiroOoxml)
+  // 2. Insert a portrait section-break paragraph BEFORE the tag paragraph
+  //    → ends the previous portrait section; tag content starts a new landscape page
+  // 3. Insert a landscape sectPr into the first paragraph AFTER the tag
+  //    → ends the landscape section; content after returns to portrait
+
+  const portraitBreak: string = [
+    `<w:p><w:pPr><w:sectPr>`,
+    `<w:headerReference w:type="default" r:id="rId11"/>`,
+    `<w:footerReference w:type="default" r:id="rId12"/>`,
+    `<w:pgSz w:w="11906" w:h="16838"/>`,
+    `<w:pgMar w:top="1843" w:right="1440" w:bottom="1440" w:left="1701" w:header="709" w:footer="709" w:gutter="0"/>`,
+    `</w:sectPr></w:pPr></w:p>`,
+  ].join("");
+
+  const landscapeSectPr: string = [
+    `<w:sectPr>`,
+    `<w:headerReference w:type="default" r:id="rId11"/>`,
+    `<w:footerReference w:type="default" r:id="rId12"/>`,
+    `<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>`,
+    `<w:pgMar w:top="567" w:right="567" w:bottom="567" w:left="567" w:header="284" w:footer="284" w:gutter="0"/>`,
+    `</w:sectPr>`,
+  ].join("");
+
+  const cronTagPos = docXml.indexOf("{@TABELA_CRONOGRAMA}");
+  if (cronTagPos !== -1) {
+    // Step 1: Remove the title paragraph before the tag
+    const cronPStart = Math.max(
+      docXml.lastIndexOf("<w:p ", cronTagPos),
+      docXml.lastIndexOf("<w:p>", cronTagPos)
+    );
+    if (cronPStart > 0) {
+      let searchFrom = cronPStart;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const prevPEnd = docXml.lastIndexOf("</w:p>", searchFrom - 1);
+        if (prevPEnd === -1) break;
+        const prevPEndFull = prevPEnd + "</w:p>".length;
+        const prevPS = Math.max(
+          docXml.lastIndexOf("<w:p ", prevPEnd),
+          docXml.lastIndexOf("<w:p>", prevPEnd)
+        );
+        if (prevPS === -1) break;
+        const content = docXml.substring(prevPS, prevPEndFull).replace(/<[^>]+>/g, "");
+        if (content.includes("CRONOGRAMA DE EXECU")) {
+          docXml = docXml.substring(0, prevPS) + docXml.substring(prevPEndFull);
+          break;
+        }
+        searchFrom = prevPS;
+      }
+    }
+
+    // Step 2: Insert portrait break BEFORE the tag paragraph
+    const cronTagPos2 = docXml.indexOf("{@TABELA_CRONOGRAMA}");
+    if (cronTagPos2 !== -1) {
+      const cronPStart2 = Math.max(
+        docXml.lastIndexOf("<w:p ", cronTagPos2),
+        docXml.lastIndexOf("<w:p>", cronTagPos2)
+      );
+      if (cronPStart2 !== -1) {
+        docXml = docXml.substring(0, cronPStart2) + portraitBreak + docXml.substring(cronPStart2);
+      }
+    }
+
+    // Step 3: Inject landscape sectPr into the first paragraph AFTER the tag
+    const cronTagPos3 = docXml.indexOf("{@TABELA_CRONOGRAMA}");
+    if (cronTagPos3 !== -1) {
+      const cronPEnd3 = docXml.indexOf("</w:p>", cronTagPos3);
+      if (cronPEnd3 !== -1) {
+        const afterCronP = cronPEnd3 + "</w:p>".length;
+        const nextPPos = docXml.indexOf("<w:p", afterCronP);
+        if (nextPPos !== -1) {
+          const nextPClose = docXml.indexOf(">", nextPPos);
+          const afterNextPOpen = nextPClose + 1;
+          const hasPPr = docXml.substring(afterNextPOpen, afterNextPOpen + 20).trimStart().startsWith("<w:pPr");
+
+          if (hasPPr) {
+            const pPrClose = docXml.indexOf("</w:pPr>", afterNextPOpen);
+            if (pPrClose !== -1) {
+              docXml = docXml.substring(0, pPrClose) + landscapeSectPr + docXml.substring(pPrClose);
+            }
+          } else {
+            docXml = docXml.substring(0, afterNextPOpen) + `<w:pPr>${landscapeSectPr}</w:pPr>` + docXml.substring(afterNextPOpen);
+          }
+        }
+      }
     }
   }
 
@@ -1324,6 +1435,98 @@ function replaceFinanceiroTagsInTemplate(zip: PizZip): void {
       }
     }
   }
+
+  // Consolidate split tags: Word often splits {tagName} across multiple <w:r> runs.
+  // Direct replacement approach: map each character position in stripped text back
+  // to the raw XML, then remove the tag characters one by one and insert the
+  // consolidated tag at the first character position.
+  const ALL_TEMPLATE_TAGS = [
+    // Section 1: Identification
+    "projectName", "projectNickname", "coordinatorInstitution", "coordinatorFoxconn",
+    "totalValue", "totalValueWritten", "executionPeriod", "validityPeriod",
+    "partnerName", "foundationName", "partnerLogo", "foundationLogo",
+    // Section 2: Project Type checkboxes
+    "sw_dev_check", "product_dev_check", "process_dev_check",
+    "automation_check", "training_pt_check", "not_defined_pt_check",
+    // Section 3: Activity Type checkboxes
+    "basic_research_check", "applied_research_check", "experimental_dev_check",
+    "tech_innovation_check", "training_at_check", "consulting_check",
+    "not_defined_at_check",
+    // TRL checkboxes
+    ...Array.from({ length: 9 }, (_, i) => `trl${i + 1}_check`),
+    // Indicator checkboxes and quantities
+    ...INDICATORS.map(ind => `${ind.key}_check`),
+    ...INDICATORS.map(ind => `${ind.key}_qty`),
+  ];
+  for (const stag of ALL_TEMPLATE_TAGS) {
+    const fullTag = `{${stag}}`;
+    // Count occurrences in stripped text vs raw XML to find split tags
+    const stripped = docXml.replace(/<[^>]+>/g, "");
+    const escapedTag = fullTag.replace(/[{}]/g, "\\$&");
+    const strippedCount = (stripped.match(new RegExp(escapedTag, "g")) || []).length;
+    if (strippedCount === 0) continue; // tag not in document
+    const rawCount = (docXml.match(new RegExp(escapedTag, "g")) || []).length;
+    if (strippedCount <= rawCount) continue; // all occurrences already consolidated
+
+    // There are split occurrences. Find each one in the stripped text and consolidate.
+    let searchFrom = 0;
+    for (let occ = 0; occ < strippedCount; occ++) {
+      // Re-strip after each modification
+      const currentStripped = docXml.replace(/<[^>]+>/g, "");
+      const tagPos = currentStripped.indexOf(fullTag, searchFrom);
+      if (tagPos === -1) break;
+
+      // Check if this occurrence is already consolidated in raw XML
+      // by verifying the chars are contiguous (no XML tags between them)
+      const charPositions: number[] = [];
+      let sIdx = 0;
+      let xIdx = 0;
+      while (xIdx < docXml.length && charPositions.length < fullTag.length) {
+        if (docXml[xIdx] === "<") {
+          const close = docXml.indexOf(">", xIdx);
+          xIdx = (close !== -1) ? close + 1 : xIdx + 1;
+          continue;
+        }
+        if (sIdx >= tagPos && sIdx < tagPos + fullTag.length) {
+          charPositions.push(xIdx);
+        }
+        if (sIdx >= tagPos + fullTag.length) break;
+        sIdx++;
+        xIdx++;
+      }
+      if (charPositions.length !== fullTag.length) { searchFrom = tagPos + fullTag.length; continue; }
+
+      // Check if already contiguous (no gaps = already in single node)
+      const isContiguous = charPositions.every((p, i) => i === 0 || p === charPositions[i - 1] + 1);
+      if (isContiguous) { searchFrom = tagPos + fullTag.length; continue; }
+
+      // Remove characters backwards to preserve earlier indices, then insert full tag
+      for (let i = charPositions.length - 1; i >= 1; i--) {
+        docXml = docXml.substring(0, charPositions[i]) + docXml.substring(charPositions[i] + 1);
+      }
+      docXml = docXml.substring(0, charPositions[0]) + fullTag + docXml.substring(charPositions[0] + 1);
+      searchFrom = tagPos + fullTag.length;
+    }
+  }
+
+  // Sanitize ALL curly braces in <w:t> nodes that are NOT part of our
+  // known docxtemplater tags. The template may contain user-typed braces
+  // (e.g. in TRL descriptions like "( } )") that confuse docxtemplater.
+  // Replace every { and } in <w:t> with fullwidth braces, THEN restore
+  // only the ones that are valid docxtemplater tags.
+  docXml = docXml.replace(
+    /(<w:t[^>]*>)([^<]*?)(<\/w:t>)/g,
+    (_match, open: string, content: string, close: string) => {
+      if (!content.includes("{") && !content.includes("}")) return `${open}${content}${close}`;
+      const escaped = content
+        .replace(/\{/g, "\uFF5B")
+        .replace(/\}/g, "\uFF5D");
+      return `${open}${escaped}${close}`;
+    }
+  );
+  // Restore valid docxtemplater tags: {@tagName} and {tagName}
+  // These were created by our own code above so they're in a single <w:t> node
+  docXml = docXml.replace(/\uFF5B(@?[a-zA-Z_][a-zA-Z0-9_]*)\uFF5D/g, "{$1}");
 
   zip.file("word/document.xml", docXml);
 }
@@ -1390,21 +1593,21 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     validityPeriod: `${formatDateBR(plan.validityStartDate)} a ${formatDateBR(plan.validityEndDate)}`,
 
     // Section 2: Project Type checkboxes
-    sw_dev_check: plan.projectTypes.includes("SW_DEV") ? "\u2612" : "\u2610",
-    product_dev_check: plan.projectTypes.includes("PRODUCT_DEV") ? "\u2612" : "\u2610",
-    process_dev_check: plan.projectTypes.includes("PROCESS_DEV") ? "\u2612" : "\u2610",
-    automation_check: plan.projectTypes.includes("AUTOMATION") ? "\u2612" : "\u2610",
-    training_pt_check: plan.projectTypes.includes("TRAINING") ? "\u2612" : "\u2610",
-    not_defined_pt_check: plan.projectTypes.includes("NOT_DEFINED") ? "\u2612" : "\u2610",
+    sw_dev_check: plan.projectTypes.includes("SW_DEV") ? "X" : "  ",
+    product_dev_check: plan.projectTypes.includes("PRODUCT_DEV") ? "X" : "  ",
+    process_dev_check: plan.projectTypes.includes("PROCESS_DEV") ? "X" : "  ",
+    automation_check: plan.projectTypes.includes("AUTOMATION") ? "X" : "  ",
+    training_pt_check: plan.projectTypes.includes("TRAINING") ? "X" : "  ",
+    not_defined_pt_check: plan.projectTypes.includes("NOT_DEFINED") ? "X" : "  ",
 
     // Section 3: Activity Type checkboxes
-    basic_research_check: plan.activityTypes.includes("BASIC_RESEARCH") ? "\u2612" : "\u2610",
-    applied_research_check: plan.activityTypes.includes("APPLIED_RESEARCH") ? "\u2612" : "\u2610",
-    experimental_dev_check: plan.activityTypes.includes("EXPERIMENTAL_DEV") ? "\u2612" : "\u2610",
-    tech_innovation_check: plan.activityTypes.includes("TECH_INNOVATION") ? "\u2612" : "\u2610",
-    training_at_check: plan.activityTypes.includes("TRAINING") ? "\u2612" : "\u2610",
-    consulting_check: plan.activityTypes.includes("CONSULTING") ? "\u2612" : "\u2610",
-    not_defined_at_check: plan.activityTypes.includes("NOT_DEFINED") ? "\u2612" : "\u2610",
+    basic_research_check: plan.activityTypes.includes("BASIC_RESEARCH") ? "X" : "  ",
+    applied_research_check: plan.activityTypes.includes("APPLIED_RESEARCH") ? "X" : "  ",
+    experimental_dev_check: plan.activityTypes.includes("EXPERIMENTAL_DEV") ? "X" : "  ",
+    tech_innovation_check: plan.activityTypes.includes("TECH_INNOVATION") ? "X" : "  ",
+    training_at_check: plan.activityTypes.includes("TRAINING") ? "X" : "  ",
+    consulting_check: plan.activityTypes.includes("CONSULTING") ? "X" : "  ",
+    not_defined_at_check: plan.activityTypes.includes("NOT_DEFINED") ? "X" : "  ",
 
     // Sections 4-7: Rich text (raw OOXML)
     motivacao: tiptapToOoxml(plan.motivacao as JSONContent | null),
@@ -1424,7 +1627,7 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
       INDICATORS.flatMap((ind) => {
         const d = plan.indicators?.[ind.key];
         return [
-          [`${ind.key}_check`, d?.enabled ? "\u2612" : "\u2610"],
+          [`${ind.key}_check`, d?.enabled ? "X" : "  "],
           [`${ind.key}_qty`, d?.enabled ? String(d.quantity ?? 0) : ""],
         ];
       })
@@ -1437,7 +1640,7 @@ export async function generateDocx(plan: PlanFormData): Promise<Buffer> {
     ...Object.fromEntries(
       TRL_LEVELS.map((trl) => [
         `trl${trl.level}_check`,
-        plan.trlMrlLevel === trl.level ? "(X)" : "( )",
+        plan.trlMrlLevel === trl.level ? "X" : "  ",
       ])
     ),
 
