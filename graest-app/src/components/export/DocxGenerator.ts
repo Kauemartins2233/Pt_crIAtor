@@ -1136,13 +1136,17 @@ function buildCronogramaFinanceiroOoxml(fin: FinanceiroData, projectMonths: numb
     c("", FIN_TOTAL_SHADING)
   ));
 
-  // Title paragraph on the landscape page (replaceFinanceiroTagsInTemplate removes
-  // the original title from the template and injects section breaks around the tag)
+  // Title paragraph on the landscape page using Ttulo1 style (same as template headings).
+  // replaceFinanceiroTagsInTemplate removes the original title from the template
+  // and injects section breaks around the tag.
   const cronTitle: string = [
-    `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="12" w:space="1" w:color="000000"/></w:pBdr>`,
-    `<w:spacing w:after="200"/></w:pPr>`,
-    `<w:r><w:rPr>${DEFAULT_FONT}<w:b/></w:rPr>`,
-    `<w:t>18.${"\u00A0\u00A0\u00A0\u00A0"}CRONOGRAMA DE EXECU\u00C7\u00C3O</w:t>`,
+    `<w:p><w:pPr>`,
+    `<w:pStyle w:val="Ttulo1"/>`,
+    `<w:spacing w:before="0" w:line="360" w:lineRule="auto"/>`,
+    `<w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr>`,
+    `</w:pPr>`,
+    `<w:r><w:rPr><w:rFonts w:ascii="Verdana" w:hAnsi="Verdana"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr>`,
+    `<w:t>CRONOGRAMA DE EXECU\u00C7\u00C3O</w:t>`,
     `</w:r></w:p>`,
   ].join("");
 
